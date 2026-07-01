@@ -972,6 +972,13 @@ div.search-box:focus { outline: none; }
   letter-spacing: .3px;
 }
 .mtag.adult { border-color: rgba(255,71,163,0.25); color: var(--neon2); }
+.mtag.mtag-tropo { border-color: rgba(255,71,163,0.3); color: var(--neon2); }
+.mtag.mtag-personaje { border-color: rgba(71,255,224,0.3); color: var(--neon3); }
+.modal-extra-block { margin-top: 12px; display: flex; flex-direction: column; gap: 9px; }
+.modal-extra-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.modal-extra-label { font-size: 10px; letter-spacing: .08em; color: var(--dim); text-transform: uppercase; margin-right: 2px; }
+.modal-extra-locked { font-size: 12px; color: var(--muted); font-style: italic; }
+.modal-extra-locked a { color: var(--neon3); cursor: pointer; text-decoration: underline; font-style: normal; }
 
 /* ── SCROLL TOP ───────────────────────────────────────── */
 .scroll-top {
@@ -1595,6 +1602,32 @@ div.search-box:focus { outline: none; }
 .vote-feedback-m { font-size: 11px; color: var(--neon3); margin-top: 5px; min-height: 14px; }
 .login-prompt-m { font-size: 12px; color: var(--muted); text-align: center; padding: 4px 0; }
 .login-prompt-m a { color: var(--neon); cursor: pointer; text-decoration: underline; }
+
+/* ── SHELF (LISTA DE LECTURA) EN MODAL ───────────────────── */
+.shelf-btns-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.shelf-btn {
+  padding: 7px 14px; border-radius: 2px;
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 500; letter-spacing: .3px;
+  cursor: pointer; transition: all .18s;
+}
+.shelf-btn:hover { border-color: rgba(245,240,232,0.35); color: var(--paper); }
+.shelf-btn.cs-want.active { background: rgba(71,255,224,0.16); border-color: var(--neon3); color: var(--neon3); }
+.shelf-btn.cs-reading.active { background: rgba(232,255,71,0.16); border-color: var(--neon); color: var(--neon); }
+.shelf-btn.cs-read.active { background: rgba(107,255,158,0.16); border-color: #6bff9e; color: #6bff9e; }
+.shelf-remove-btn { margin-top: 2px; }
+
+/* shelf status badge on card */
+.card-shelf-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 8px; letter-spacing: .5px; font-weight: 600;
+  padding: 2px 6px; border-radius: 1px; margin-bottom: 5px;
+  font-family: 'DM Sans', sans-serif;
+}
+.card-shelf-badge.cs-want { background: rgba(71,255,224,0.18); color: var(--neon3); }
+.card-shelf-badge.cs-reading { background: rgba(232,255,71,0.18); color: var(--neon); }
+.card-shelf-badge.cs-read { background: rgba(107,255,158,0.18); color: #6bff9e; }
 
 /* avg star badge on card */
 .card-avg {
@@ -2251,6 +2284,18 @@ body.home-active .topbar-center { display: none; }
       </div>
     </div>
 
+    <!-- Mi estantería dropdown -->
+    <div class="fdrop" id="dropShelf">
+      <span class="fval" id="valShelf">📚 Mi estantería</span>
+      <span class="arrow">▼</span>
+      <div class="drop-panel" id="panelShelf">
+        <div class="dopt on" data-f="shelf" data-v="all">Todas</div>
+        <div class="dopt" data-f="shelf" data-v="want">＋ Quiero leer</div>
+        <div class="dopt" data-f="shelf" data-v="reading">📖 Leyendo</div>
+        <div class="dopt" data-f="shelf" data-v="read">✓ Terminado</div>
+      </div>
+    </div>
+
     <div class="filter-sep"></div>
 
     <!-- +18 toggle (ocultar) -->
@@ -2337,6 +2382,16 @@ body.home-active .topbar-center { display: none; }
         <button class="fsopt" data-f="demo" data-v="shounen">⚔️ Shounen</button>
         <button class="fsopt" data-f="demo" data-v="seinen">🗡️ Seinen</button>
         <button class="fsopt" data-f="demo" data-v="josei">🌹 Josei</button>
+      </div>
+    </div>
+    <!-- Mi estantería -->
+    <div class="fsheet-section">
+      <div class="fsheet-sec-label">📚 Mi estantería</div>
+      <div class="fsheet-opts" id="fsShelfOpts">
+        <button class="fsopt on" data-f="shelf" data-v="all">Todas</button>
+        <button class="fsopt" data-f="shelf" data-v="want">＋ Quiero leer</button>
+        <button class="fsopt" data-f="shelf" data-v="reading">📖 Leyendo</button>
+        <button class="fsopt" data-f="shelf" data-v="read">✓ Terminado</button>
       </div>
     </div>
     <!-- Orden -->
@@ -2632,6 +2687,89 @@ function refreshCardBadge(id) {
   });
 }
 
+// ── MI ESTANTERÍA (reading_status) ────────────────────────
+const SHELF_INFO = {
+  want:    { label: 'Quiero leer', icon: '＋', cls: 'cs-want' },
+  reading: { label: 'Leyendo',     icon: '📖', cls: 'cs-reading' },
+  read:    { label: 'Terminado',   icon: '✓',  cls: 'cs-read' }
+};
+let myReadingStatus = {}; // { manga_id: 'want' | 'reading' | 'read' }
+
+async function loadMyReadingStatus() {
+  if (!SB_READY || !currentUser) return;
+  const { data } = await sb.from('reading_status').select('book_id,status').eq('user_id', currentUser.id);
+  myReadingStatus = {};
+  if (data) data.forEach(r => myReadingStatus[r.book_id] = r.status);
+}
+
+function buildShelfSectionHTML(e) {
+  if (!currentUser) return `
+      <div class="rating-locked-box">
+        <div class="rlb-icon">🔒</div>
+        <p>Tu estantería personal es solo para personas registradas.<br><a onclick="closeModal();openAuthModal()">Inicia sesión</a> para guardar tu progreso.</p>
+      </div>`;
+  const cur = myReadingStatus[e.id];
+  const btns = Object.entries(SHELF_INFO).map(([key, info]) =>
+    `<button class="shelf-btn ${info.cls}${cur === key ? ' active' : ''}" onclick="setReadingStatus('${key}')">${info.icon} ${info.label}</button>`
+  ).join('');
+  return `
+    <div class="shelf-btns-row">${btns}</div>
+    ${cur ? `<button class="btn-vote-del shelf-remove-btn" onclick="removeReadingStatus()">Quitar de mi lista</button>` : ''}`;
+}
+
+function refreshShelfSection() {
+  const sec = document.getElementById('shelfSection');
+  if (sec && activeModalItem) sec.innerHTML = buildShelfSectionHTML(activeModalItem);
+}
+
+async function setReadingStatus(status) {
+  if (!SB_READY || !currentUser || !activeModalItem) return;
+  const id = activeModalItem.id;
+  const prev = myReadingStatus[id];
+  myReadingStatus[id] = status; // optimista
+  refreshShelfSection();
+  refreshShelfBadge(id);
+  const { error } = await sb.from('reading_status')
+    .upsert({ user_id: currentUser.id, book_id: id, status }, { onConflict: 'user_id,book_id' });
+  if (error) {
+    if (prev) myReadingStatus[id] = prev; else delete myReadingStatus[id];
+    refreshShelfSection();
+    refreshShelfBadge(id);
+  } else if (fShelf !== 'all') {
+    renderSections(false);
+  }
+}
+
+async function removeReadingStatus() {
+  if (!SB_READY || !currentUser || !activeModalItem) return;
+  const id = activeModalItem.id;
+  const prev = myReadingStatus[id];
+  delete myReadingStatus[id];
+  refreshShelfSection();
+  refreshShelfBadge(id);
+  const { error } = await sb.from('reading_status').delete().eq('user_id', currentUser.id).eq('book_id', id);
+  if (error) {
+    if (prev) myReadingStatus[id] = prev;
+    refreshShelfSection();
+    refreshShelfBadge(id);
+  } else if (fShelf !== 'all') {
+    renderSections(false);
+  }
+}
+
+function refreshShelfBadge(id) {
+  document.querySelectorAll(`.card[data-id="${id}"] .card-shelf-badge`).forEach(el => el.remove());
+  const status = currentUser ? myReadingStatus[id] : null;
+  if (!status) return;
+  const info = SHELF_INFO[status];
+  document.querySelectorAll(`.card[data-id="${id}"] .card-info`).forEach(infoEl => {
+    const badge = document.createElement('div');
+    badge.className = 'card-shelf-badge ' + info.cls;
+    badge.innerHTML = `${info.icon} ${esc(info.label)}`;
+    infoEl.insertBefore(badge, infoEl.firstChild);
+  });
+}
+
 const DATA = 'manga_data.json';
 
 const SECTION_ORDER = ['Manhwa','Manga','Manhua','Webtoon','Sin Clasificación','Cómic','Novela Gráfica'];
@@ -2719,6 +2857,7 @@ let hideAdult = false;
 let fOnlyAdult = false; // solo +18
 let fEstado = 'all', fSub = 'all', fTags = [], fQ = ''; // fTags is now an array
 let fDemo = 'all';
+let fShelf = 'all'; // all | want | reading | read — filtro de estantería personal
 let fTropos = [], fPersonajes = [];
 let activeSec = 'all'; // active category tab
 let activeSort = 'recent'; // recent | rating | az
@@ -2737,6 +2876,7 @@ function pushState() {
   if (fEstado   !== 'all')  p.set('estado', fEstado);
   if (fDemo     !== 'all')  p.set('demo', fDemo);
   if (fSub      !== 'all')  p.set('sub', fSub);
+  if (fShelf    !== 'all')  p.set('shelf', fShelf);
   if (fTags.length > 0)     p.set('tags', fTags.join(','));
   if (fTropos.length > 0)   p.set('tropos', fTropos.join(','));
   if (fPersonajes.length > 0) p.set('personajes', fPersonajes.join(','));
@@ -2762,6 +2902,7 @@ function loadState() {
   if (p.has('estado')) fEstado   = p.get('estado');
   if (p.has('demo'))  fDemo      = p.get('demo');
   if (p.has('sub'))   fSub       = p.get('sub');
+  if (p.has('shelf')) fShelf     = p.get('shelf');
   if (p.has('tags'))  fTags      = p.get('tags').split(',').filter(Boolean);
   // legacy single tag support
   if (p.has('tag') && !p.has('tags')) fTags = [p.get('tag')];
@@ -2807,8 +2948,8 @@ async function init() {
       currentUser = session?.user || null;
       renderAuthArea();
       updateAuthGatedUI();
-      if (currentUser) loadMyRatings().then(() => renderSections(false));
-      else { myRatings = {}; renderSections(false); }
+      if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus()]).then(() => { renderSections(false); if (activeModalItem) openModal(activeModalItem, true); });
+      else { myRatings = {}; myReadingStatus = {}; renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
     });
   }
   renderAuthArea();
@@ -2823,7 +2964,7 @@ async function init() {
     console.warn('No se pudo cargar manga_data.json:', e.message);
     allData = [];
   }
-  if (SB_READY && currentUser) await loadMyRatings();
+  if (SB_READY && currentUser) await Promise.all([loadMyRatings(), loadMyReadingStatus()]);
 
   buildStats();
   buildCatTabs();
@@ -3177,12 +3318,21 @@ function updateAuthGatedUI() {
     renderSections(true);
   }
 
-  ['dropTropo', 'dropPersonaje'].forEach(id => {
+  if (locked && fShelf !== 'all') {
+    fShelf = 'all';
+    updateDropLabel('dropShelf','valShelf', '📚 Mi estantería', false, 'on');
+    document.querySelectorAll('#panelShelf .dopt').forEach(o => o.classList.toggle('on', o.dataset.v === 'all'));
+    const fsShelfOpts = document.getElementById('fsShelfOpts');
+    if (fsShelfOpts) fsShelfOpts.querySelectorAll('.fsopt').forEach(o => o.className = 'fsopt' + (o.dataset.v === 'all' ? ' on' : ''));
+    renderSections(true);
+  }
+
+  ['dropTropo', 'dropPersonaje', 'dropShelf'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.classList.toggle('locked', locked); if (locked) el.classList.remove('open'); }
   });
 
-  ['fsTropoOpts', 'fsPersonajeOpts'].forEach(id => {
+  ['fsTropoOpts', 'fsPersonajeOpts', 'fsShelfOpts'].forEach(id => {
     const opts = document.getElementById(id);
     if (!opts) return;
     const section = opts.closest('.fsheet-section');
@@ -3268,6 +3418,8 @@ function renderInkGrid() {
       : `<div class="card-gen" style="--gen-bg:#2e0a1a"><div class="card-gen-title">${esc(e.titulo.slice(0,40))}</div></div>`;
     const ec = ESTADO_CLS[e.estado] || 'e-fin';
     const ei = ESTADO_ICONS[e.estado] || '';
+    const shelfSt = currentUser ? myReadingStatus[e.id] : null;
+    const shelfBadge = shelfSt ? `<div class="card-shelf-badge ${SHELF_INFO[shelfSt].cls}">${SHELF_INFO[shelfSt].icon} ${esc(SHELF_INFO[shelfSt].label)}</div>` : '';
     d.innerHTML = `
       ${coverHtml}
       <span class="ink-club-badge">INK</span>
@@ -3275,6 +3427,7 @@ function renderInkGrid() {
       <span class="card-estado ${ec}">${ei}</span>
       <div class="card-overlay"></div>
       <div class="card-info">
+        ${shelfBadge}
         <div class="card-title">${esc(e.titulo)}</div>
         <div class="card-tags">${(e.tags||[]).slice(0,3).map(t=>`<span class="ctag">${tagLabel(t)}</span>`).join('')}</div>
       </div>
@@ -3332,6 +3485,13 @@ function applyStateToUI() {
     document.querySelectorAll('#panelSub .dopt').forEach(o => {
       o.classList.toggle('on-teal', o.dataset.v === fSub);
       o.classList.toggle('on', false);
+    });
+  }
+  if (fShelf !== 'all') {
+    const shl = {'want':'＋ Quiero leer','reading':'📖 Leyendo','read':'✓ Terminado'};
+    updateDropLabel('dropShelf','valShelf', shl[fShelf] || '📚 Mi estantería', true, 'on');
+    document.querySelectorAll('#panelShelf .dopt').forEach(o => {
+      o.classList.toggle('on', o.dataset.v === fShelf);
     });
   }
   if (fTags.length > 0) {
@@ -3588,6 +3748,8 @@ function buildCard(e, bgColor) {
 
   const ec = ESTADO_CLS[e.estado] || 'e-fin';
   const ei = ESTADO_ICONS[e.estado] || '';
+  const shelfSt = currentUser ? myReadingStatus[e.id] : null;
+  const shelfBadge = shelfSt ? `<div class="card-shelf-badge ${SHELF_INFO[shelfSt].cls}">${SHELF_INFO[shelfSt].icon} ${esc(SHELF_INFO[shelfSt].label)}</div>` : '';
 
   d.innerHTML = `
     ${coverHtml}
@@ -3595,6 +3757,7 @@ function buildCard(e, bgColor) {
     <span class="card-estado ${ec}">${ei}</span>
     <div class="card-overlay"></div>
     <div class="card-info">
+      ${shelfBadge}
       <div class="card-title">${esc(e.titulo)}</div>
       <div class="card-tags">${tags}</div>
     </div>
@@ -3610,7 +3773,7 @@ function buildCard(e, bgColor) {
 
 /* ── MODAL ──────────────────────────────────────────────── */
 let _preModalUrl = null;
-function openModal(e) {
+function openModal(e, isRefresh) {
   activeModalItem = e;
   pendingStar = myRatings[e.id] || 0;
 
@@ -3650,6 +3813,19 @@ function openModal(e) {
     </div>
     ${e.desc ? '<div class="modal-desc">' + esc(e.desc) + '</div>' : '<div class="modal-desc" style="opacity:.35;font-style:italic">Sin descripción.</div>'}
     <div class="modal-tags">${tags}</div>
+    ${((e.tropos && e.tropos.length) || (e.personajes && e.personajes.length)) ? `
+    <div class="modal-extra-block">
+      ${currentUser ? `
+        ${e.tropos && e.tropos.length ? `<div class="modal-extra-row"><span class="modal-extra-label">🪢 Tropes</span>${e.tropos.map(t=>'<span class="mtag mtag-tropo">'+esc(tagLabel(t))+'</span>').join('')}</div>` : ''}
+        ${e.personajes && e.personajes.length ? `<div class="modal-extra-row"><span class="modal-extra-label">🦋 Personajes</span>${e.personajes.map(t=>'<span class="mtag mtag-personaje">'+esc(tagLabel(t))+'</span>').join('')}</div>` : ''}
+      ` : `
+        <div class="modal-extra-locked">🔒 Tropes y personajes solo para personas registradas. <a onclick="closeModal();openAuthModal()">Inicia sesión</a></div>
+      `}
+    </div>` : ''}
+    <div class="rating-block shelf-block">
+      <div class="rating-block-title">📚 Mi estantería</div>
+      <div id="shelfSection">${buildShelfSectionHTML(e)}</div>
+    </div>
     <div class="rating-block">
       <div class="rating-block-title">Valoraciones de la comunidad</div>
       ${currentUser ? `
@@ -3664,6 +3840,8 @@ function openModal(e) {
   document.getElementById('modalWrap').classList.add('open');
   document.body.style.overflow = 'hidden';
   attachStarEvents();
+
+  if (isRefresh) return;
 
   // URL propia para la historia
   _preModalUrl = location.href;
@@ -3693,6 +3871,9 @@ function matches(e) {
   if (fSub === 'bib' && !e.in_biblioteca) return false;
   if (fSub === 'files' && !e.in_files) return false;
   if (fSub === 'both' && !(e.in_biblioteca && e.in_files)) return false;
+  if (fShelf !== 'all') {
+    if (!currentUser || myReadingStatus[e.id] !== fShelf) return false;
+  }
   // Multi-tag: entry must have ALL selected tags
   if (fTags.length > 0) {
     const entryTags = (e.tags||[]).map(t => t.toLowerCase());
@@ -3811,6 +3992,7 @@ function bindEvents() {
         if (f === 'demo')   { fDemo = v;   updateDropLabel('dropDemo','valDemo', v === 'all' ? 'Demográfico' : demoLabel(v), v !== 'all', 'on'); }
         if (f === 'sub')    { fSub = v;    updateDropLabel('dropSub','valSub', v === 'all' ? 'Ubicación' : (v === 'bib' ? 'Biblioteca' : v === 'files' ? 'FILES' : 'Ambos'), v !== 'all', 'on-teal'); }
         if (f === 'sort')   { activeSort = v; const sl = {'recent':'Recientes','rating':'★ Más valorados','az':'Az A–Z'}; updateDropLabel('dropSort','valSort', sl[v], v !== 'recent', 'on'); }
+        if (f === 'shelf')  { fShelf = v; const shl = {'all':'📚 Mi estantería','want':'＋ Quiero leer','reading':'📖 Leyendo','read':'✓ Terminado'}; updateDropLabel('dropShelf','valShelf', shl[v], v !== 'all', 'on'); }
         drop.classList.remove('open');
         renderSections(true);
       } else {
@@ -3982,6 +4164,8 @@ function syncFsheetState() {
   applyOpts(document.getElementById('fsEstadoOpts'), 'estado', fEstado, 'on');
   applyOpts(document.getElementById('fsDemoOpts'), 'demo', fDemo, 'on');
   applyOpts(document.getElementById('fsSubOpts'), 'sub', fSub, 'on-teal');
+  const fsShelfOptsEl = document.getElementById('fsShelfOpts');
+  if (fsShelfOptsEl) applyOpts(fsShelfOptsEl, 'shelf', fShelf, 'on');
   // Multi-tag sync on fsheet
   const fsTagOpts = document.getElementById('fsTagOpts');
   if (fsTagOpts) fsTagOpts.querySelectorAll('.fsopt').forEach(o => {
@@ -4004,7 +4188,7 @@ function syncFsheetState() {
   document.getElementById('fsAdultHideTog').classList.toggle('on', hideAdult);
   document.getElementById('fsAdultOnlyTog').classList.toggle('on', fOnlyAdult);
   // Reset button enabled/disabled
-  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
+  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fShelf !== 'all' || fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
   document.getElementById('fsheetReset').disabled = !hasFilter;
 }
 
@@ -4015,7 +4199,7 @@ function updateMobBar() {
   const dot = document.getElementById('mobActiveDot');
 
   const chips = [];
-  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
+  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fShelf !== 'all' || fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
 
   btn.classList.toggle('has-active', hasFilter);
   dot.style.display = hasFilter ? 'block' : 'none';
@@ -4025,6 +4209,10 @@ function updateMobBar() {
   if (fSub !== 'all') {
     const l = fSub === 'bib' ? '📚 Biblioteca' : fSub === 'files' ? '📁 FILES' : 'Ambos';
     chips.push({ cls: 'mob-chip-sub', label: l, clear: () => { fSub='all'; onFsheetChange(); } });
+  }
+  if (fShelf !== 'all') {
+    const shl = {'want':'＋ Quiero leer','reading':'📖 Leyendo','read':'✓ Terminado'};
+    chips.push({ cls: 'mob-chip-estado', label: shl[fShelf] || fShelf, clear: () => { fShelf='all'; onFsheetChange(); } });
   }
   fTags.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fTags = fTags.filter(x=>x!==t); onFsheetChange(); } }));
   fTropos.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fTropos = fTropos.filter(x=>x!==t); onFsheetChange(); } }));
@@ -4050,6 +4238,8 @@ function onFsheetChange() {
   updateDropLabel('dropEstado','valEstado', fEstado === 'all' ? 'Estado' : fEstado, fEstado !== 'all', 'on');
   updateDropLabel('dropDemo','valDemo', fDemo === 'all' ? 'Demográfico' : demoLabel(fDemo), fDemo !== 'all', 'on');
   updateDropLabel('dropSub','valSub', fSub === 'all' ? 'Ubicación' : sl2, fSub !== 'all', 'on-teal');
+  const shl2 = {'want':'＋ Quiero leer','reading':'📖 Leyendo','read':'✓ Terminado'};
+  updateDropLabel('dropShelf','valShelf', fShelf === 'all' ? '📚 Mi estantería' : (shl2[fShelf] || fShelf), fShelf !== 'all', 'on');
   updateTagDropUI();
   updateTropoDropUI();
   updatePersonajeDropUI();
@@ -4070,19 +4260,20 @@ function bindFsheetEvents() {
   document.getElementById('mobFilterOpenBtn').addEventListener('click', openFsheet);
   document.getElementById('fsheetOverlay').addEventListener('click', closeFsheet);
 
-  // Option buttons (estado, demo, sub, sort — tag is handled by buildTagFilter)
-  ['fsEstadoOpts','fsDemoOpts','fsSubOpts','fsSortOpts'].forEach(id => {
+  // Option buttons (estado, demo, sub, sort, shelf — tag is handled by buildTagFilter)
+  ['fsEstadoOpts','fsDemoOpts','fsSubOpts','fsSortOpts','fsShelfOpts'].forEach(id => {
     document.getElementById(id).addEventListener('click', e => {
       const opt = e.target.closest('.fsopt');
       if (!opt) return;
       const f = opt.dataset.f, v = opt.dataset.v;
-      const clsMap = { estado: 'on', demo: 'on', sub: 'on-teal', sort: 'on' };
+      const clsMap = { estado: 'on', demo: 'on', sub: 'on-teal', sort: 'on', shelf: 'on' };
       document.getElementById(id).querySelectorAll('.fsopt').forEach(o => o.className = 'fsopt');
       opt.classList.add(clsMap[f]);
       if (f === 'estado') fEstado = v;
       if (f === 'demo')   fDemo   = v;
       if (f === 'sub')    fSub    = v;
       if (f === 'sort')   activeSort = v;
+      if (f === 'shelf')  fShelf  = v;
       onFsheetChange();
     });
   });
@@ -4101,7 +4292,7 @@ function bindFsheetEvents() {
 
   // Reset
   document.getElementById('fsheetReset').addEventListener('click', () => {
-    fEstado = 'all'; fDemo = 'all'; fSub = 'all'; fTags = []; fTropos = []; fPersonajes = [];
+    fEstado = 'all'; fDemo = 'all'; fSub = 'all'; fShelf = 'all'; fTags = []; fTropos = []; fPersonajes = [];
     hideAdult = false; fOnlyAdult = false; activeSort = 'recent';
     onFsheetChange();
   });

@@ -698,6 +698,7 @@ const SUPABASE_KEY = document.querySelector('meta[name="sb-key"]')?.content || '
 const SB_READY = SUPABASE_URL && !SUPABASE_URL.startsWith('TU_');
 const sb = SB_READY ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 let totalRatings = 0;
+let totalShelfEntries = 0;
 
 // ── ADMIN WHITELIST ───────────────────────────────────────
 // Add the emails of people allowed to access this panel.
@@ -817,11 +818,17 @@ async function loadRatingsCount() {
   totalRatings = count || 0;
 }
 
+async function loadShelfCount() {
+  if (!SB_READY) return;
+  const { count } = await sb.from('reading_status').select('user_id', { count: 'exact', head: true });
+  totalShelfEntries = count || 0;
+}
+
 async function initApp(){
   try{const r=await fetch(DATA_URL);allData=await r.json();}
   catch{allData=[];toast('No se pudo cargar manga_data.json','err');}
   normalizeAllTags();
-  await loadRatingsCount();
+  await Promise.all([loadRatingsCount(), loadShelfCount()]);
   buildStats();updateIncompleteCount();applyFilters();renderInkAdmin();bindEvents();
 }
 
@@ -836,7 +843,8 @@ function buildStats(){
     {n:t,l:'Total',c:'var(--neon)'},{n:cont,l:'En curso',c:'var(--neon)'},
     {n:fin,l:'Finalizadas',c:'var(--neon3)'},{n:bib,l:'Biblioteca',c:'var(--neon3)'},
     {n:files,l:'FILES',c:'var(--neon)'},{n:adult,l:'+18',c:'var(--neon2)'},
-    {n:totalRatings,l:'Valoraciones',c:'#c9975a'}
+    {n:totalRatings,l:'Valoraciones',c:'#c9975a'},
+    {n:totalShelfEntries,l:'En estanterías',c:'#8cc8ff'}
   ].map(s=>`<div class="stat-card" style="--sc-c:${s.c}"><div class="stat-n">${s.n}</div><div class="stat-l">${s.l}</div></div>`).join('');
 }
 

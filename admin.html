@@ -554,6 +554,13 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
           </div>
           <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: CEO, Brujas, Policia…</div>
         </div>
+        <div class="form-full fg">
+          <label class="flbl" style="color:#ffc847">⚠️ Advertencias de contenido</label>
+          <div class="tags-wrap" id="advertenciasWrap" onclick="document.getElementById('advertenciaInp').focus()">
+            <input type="text" id="advertenciaInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="advertenciaSuggestions">
+          </div>
+          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: Violencia, Autolesión, Muerte de un personaje…</div>
+        </div>
         <div class="fg">
           <label class="flbl">Ubicación</label>
           <div class="checks">
@@ -638,6 +645,17 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
   <option value="Piratas"><option value="Policia"><option value="Politica"><option value="Realeza">
   <option value="Vampiras"><option value="Zombie">
 </datalist>
+<datalist id="advertenciaSuggestions">
+  <option value="Violencia"><option value="Violencia gráfica"><option value="Abuso físico">
+  <option value="Abuso psicológico"><option value="Abuso sexual"><option value="Acoso / Bullying">
+  <option value="Autolesión"><option value="Suicidio"><option value="Trastorno alimenticio">
+  <option value="Muerte de un personaje"><option value="Muerte de un ser querido"><option value="Enfermedad terminal">
+  <option value="Infidelidad"><option value="Relación tóxica"><option value="Manipulación / Gaslighting">
+  <option value="Diferencia de edad significativa"><option value="Trauma / PTSD"><option value="Secuestro">
+  <option value="Contenido sexual explícito"><option value="Dubcon / Consentimiento dudoso"><option value="No-con">
+  <option value="Adicción / Drogas"><option value="Alcoholismo"><option value="Homofobia / Transfobia">
+  <option value="Racismo"><option value="Guerra"><option value="Gore">
+</datalist>
 
 <div class="toast" id="toast"></div>
 
@@ -646,7 +664,7 @@ const DATA_URL='manga_data.json';
 const ADULT_TAGS=new Set(['erotica','erotic','erótica']);
 const ECLS={Finalizado:'b-fin',Continúa:'b-cont',Hiatus:'b-hiatus',Cancelado:'b-cancel'};
 const EICO={Finalizado:'✓',Continúa:'▶',Hiatus:'⏸',Cancelado:'✗'};
-let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[];
+let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[],advertenciasList=[];
 
 // ── TAG NORMALIZATION ─────────────────────────────────────
 const TAG_NORMALIZE_MAP = {
@@ -883,9 +901,10 @@ function renderTable(){
     const demoInfo=DEMO_BADGE[e.demografico];
     const demoBadge=demoInfo?`<span class="badge" style="background:${demoInfo.bg};color:${demoInfo.col};border:1px solid ${demoInfo.bd}">${demoInfo.icon} ${demoInfo.label}</span>`:'';
     const brokenBadge=e.imagen?`<span class="img-broken img-broken-badge" style="display:none">⚠ IMG ROTA</span>`:'';
+    const cwBadge=(e.advertencias&&e.advertencias.length)?`<span class="badge" style="background:rgba(255,200,71,.12);color:#ffc847;border:1px solid rgba(255,200,71,.4)" title="${esc(e.advertencias.join(', '))}">⚠️ ${e.advertencias.length}</span>`:'';
     return `<tr>
       <td class="td-cov">${cov}</td>
-      <td class="td-tit"><div class="td-titulo">${esc(e.titulo)}</div>${e.adult?'<span class="adult-flag">+18</span>':''}${inkBadge}${crBadge}${demoBadge}${brokenBadge}${incompleteFilter&&(!e.titulos_alt||!e.titulos_alt.length)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(71,160,255,.15);color:#47a0ff;border-color:rgba(71,160,255,.4)">✎ SIN ALT</span>':''}${incompleteFilter&&e.estado==='Finalizado'&&(!e.capitulos_totales||e.capitulos_totales<=0)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,200,71,.12);color:#ffc847;border-color:rgba(255,200,71,.4)">✎ SIN CAPS</span>':''}${incompleteFilter&&(!e.autor||(Array.isArray(e.autor)?e.autor.length===0:false))?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN AUTOR</span>':''}${incompleteFilter&&!e.anio_inicio?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(140,200,255,.12);color:#8cc8ff;border-color:rgba(140,200,255,.4)">✎ SIN AÑO</span>':''}${incompleteFilter&&!e.content_rating?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,140,200,.12);color:#ff8cc8;border-color:rgba(255,140,200,.4)">✎ SIN RATING</span>':''}${incompleteFilter&&e.seccion==='Manga'&&!e.demografico?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN DEMOGRÁFICO</span>':''}</td>
+      <td class="td-tit"><div class="td-titulo">${esc(e.titulo)}</div>${e.adult?'<span class="adult-flag">+18</span>':''}${inkBadge}${crBadge}${demoBadge}${cwBadge}${brokenBadge}${incompleteFilter&&(!e.titulos_alt||!e.titulos_alt.length)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(71,160,255,.15);color:#47a0ff;border-color:rgba(71,160,255,.4)">✎ SIN ALT</span>':''}${incompleteFilter&&e.estado==='Finalizado'&&(!e.capitulos_totales||e.capitulos_totales<=0)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,200,71,.12);color:#ffc847;border-color:rgba(255,200,71,.4)">✎ SIN CAPS</span>':''}${incompleteFilter&&(!e.autor||(Array.isArray(e.autor)?e.autor.length===0:false))?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN AUTOR</span>':''}${incompleteFilter&&!e.anio_inicio?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(140,200,255,.12);color:#8cc8ff;border-color:rgba(140,200,255,.4)">✎ SIN AÑO</span>':''}${incompleteFilter&&!e.content_rating?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,140,200,.12);color:#ff8cc8;border-color:rgba(255,140,200,.4)">✎ SIN RATING</span>':''}${incompleteFilter&&e.seccion==='Manga'&&!e.demografico?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN DEMOGRÁFICO</span>':''}</td>
       <td class="td-sec">${esc(e.seccion)}</td>
       <td class="td-tags"><div class="tag-row">${tags}</div></td>
       <td><span class="badge ${ec}">${ei} ${esc(e.estado)}</span></td>
@@ -921,7 +940,7 @@ function pagRange(cur,tot){
 
 function openEdit(id){
   const e=allData.find(x=>x.id===id);editingId=id;tagsList=[...(e.tags||[])];
-  tropesList=[...(e.tropos||[])];personajesList=[...(e.personajes||[])];
+  tropesList=[...(e.tropos||[])];personajesList=[...(e.personajes||[])];advertenciasList=[...(e.advertencias||[])];
   document.getElementById('mEditTitle').textContent='Editar historia';
   document.getElementById('fId').value=e.id;
   document.getElementById('fTitulo').value=e.titulo||'';
@@ -942,10 +961,10 @@ function openEdit(id){
   document.getElementById('fDemografico').value=e.demografico||'';
   const _autores=Array.isArray(e.autor)?e.autor:(e.autor?[e.autor]:[]);autorList=[..._autores];document.getElementById('autorInp').value='';renderAutorPills();
   const _alts=Array.isArray(e.titulos_alt)?e.titulos_alt:(e.titulos_alt?[e.titulos_alt]:[]);altList=[..._alts];document.getElementById('altInp').value='';renderAltPills();
-  updateAdultLbl();updateCov(e.imagen||'');renderPills();renderTropePills();renderPersonajePills();openMod('editWrap');
+  updateAdultLbl();updateCov(e.imagen||'');renderPills();renderTropePills();renderPersonajePills();renderAdvertenciaPills();openMod('editWrap');
 }
 function openAdd(){
-  editingId=null;tagsList=[];tropesList=[];personajesList=[];
+  editingId=null;tagsList=[];tropesList=[];personajesList=[];advertenciasList=[];
   document.getElementById('mEditTitle').textContent='Nueva historia';
   document.getElementById('fTitulo').value='';document.getElementById('fImagen').value='';
   document.getElementById('fDesc').value='';document.getElementById('fBib').checked=false;
@@ -960,7 +979,7 @@ function openAdd(){
   document.getElementById('fDemografico').value='';
   autorList=[];document.getElementById('autorInp').value='';renderAutorPills();
   altList=[];document.getElementById('altInp').value='';renderAltPills();
-  updateAdultLbl();document.getElementById('covThumb').style.display='none';renderPills();renderTropePills();renderPersonajePills();openMod('editWrap');
+  updateAdultLbl();document.getElementById('covThumb').style.display='none';renderPills();renderTropePills();renderPersonajePills();renderAdvertenciaPills();openMod('editWrap');
 }
 function saveEntry(){
   // Flush any text typed in altInp that wasn't confirmed with Enter
@@ -978,6 +997,9 @@ function saveEntry(){
   // Flush any text typed in personajeInp that wasn't confirmed with Enter
   const _personajePending=document.getElementById('personajeInp').value.trim();
   if(_personajePending){addPersonaje(_personajePending);document.getElementById('personajeInp').value='';}
+  // Flush any text typed in advertenciaInp that wasn't confirmed with Enter
+  const _advertenciaPending=document.getElementById('advertenciaInp').value.trim();
+  if(_advertenciaPending){addAdvertencia(_advertenciaPending);document.getElementById('advertenciaInp').value='';}
   const titulo=document.getElementById('fTitulo').value.trim();
   if(!titulo){toast('El título es obligatorio','err');return;}
   const bib=document.getElementById('fBib').checked,files=document.getElementById('fFiles').checked;
@@ -999,6 +1021,7 @@ function saveEntry(){
     tropos:[...tropesList],personajes:[...personajesList],
   };
   if(altList.length)entry.titulos_alt=[...altList]; else delete entry.titulos_alt;
+  if(advertenciasList.length)entry.advertencias=[...advertenciasList]; else delete entry.advertencias;
   if(estado==='Finalizado'&&capsVal>0)entry.capitulos_totales=capsVal;
   if(!inkClub){delete entry.ink_club;delete entry.ink_categories;}
   if(autorList.length)entry.autor=[...autorList]; else delete entry.autor;
@@ -1073,6 +1096,22 @@ function addPersonaje(v){
   personajesList.push(t);renderPersonajePills();
 }
 function removePersonaje(t){personajesList=personajesList.filter(x=>x!==t);renderPersonajePills();}
+function renderAdvertenciaPills(){
+  const wrap=document.getElementById('advertenciasWrap'),inp=document.getElementById('advertenciaInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  advertenciasList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.style.cssText='border-color:rgba(255,200,71,0.35);color:#ffc847';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAdvertencia('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+}
+function addAdvertencia(v){
+  const t=v.trim().replace(/^#/,'');if(!t||advertenciasList.includes(t))return;
+  advertenciasList.push(t);renderAdvertenciaPills();
+}
+function removeAdvertencia(t){advertenciasList=advertenciasList.filter(x=>x!==t);renderAdvertenciaPills();}
 function renderAltPills(){
   const wrap=document.getElementById('altWrap'),inp=document.getElementById('altInp');
   wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
@@ -1219,6 +1258,10 @@ function bindEvents(){
   document.getElementById('personajeInp').addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===','){e.preventDefault();addPersonaje(e.target.value);e.target.value='';}
     else if(e.key==='Backspace'&&!e.target.value&&personajesList.length){personajesList.pop();renderPersonajePills();}
+  });
+  document.getElementById('advertenciaInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addAdvertencia(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&advertenciasList.length){advertenciasList.pop();renderAdvertenciaPills();}
   });
   document.getElementById('altInp').addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===','){e.preventDefault();addAlt(e.target.value);e.target.value='';}

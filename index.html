@@ -956,6 +956,28 @@ div.search-box:focus { outline: none; }
   margin-bottom: 12px;
 }
 
+/* ── ADVERTENCIAS DE CONTENIDO ───────────────────────────── */
+.modal-cw-box {
+  background: rgba(255,200,71,0.07);
+  border: 1px solid rgba(255,200,71,0.25);
+  padding: 10px 12px; border-radius: 1px;
+  margin-bottom: 12px;
+}
+.modal-cw-title {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: #ffc847; font-weight: 700; margin-bottom: 7px;
+  font-family: 'DM Sans', sans-serif;
+}
+.modal-cw-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.cw-tag {
+  font-size: 10.5px; padding: 3px 9px;
+  background: rgba(255,200,71,0.12);
+  border: 1px solid rgba(255,200,71,0.3);
+  border-radius: 1px; color: #ffc847;
+  font-family: 'DM Sans', sans-serif; letter-spacing: .2px;
+}
+
 .modal-desc {
   font-size: 13px; color: rgba(245,240,232,0.65);
   line-height: 1.75; margin-bottom: 16px;
@@ -1469,6 +1491,130 @@ div.search-box:focus { outline: none; }
   font-family: 'DM Sans', sans-serif; transition: color .15s; letter-spacing: .3px;
 }
 .btn-logout-top:hover { color: var(--neon2); }
+
+/* ── USER MENU DROPDOWN ───────────────────────────────── */
+.user-chip-top { position: relative; cursor: pointer; user-select: none; }
+.user-chip-top:hover { border-color: var(--border2); }
+.user-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  min-width: 210px; background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 6px; box-shadow: 0 14px 34px rgba(0,0,0,.55);
+  padding: 6px; display: none; flex-direction: column; gap: 2px; z-index: 400;
+}
+.user-dropdown.open { display: flex; }
+.user-dropdown-head { display: flex; align-items: center; gap: 9px; padding: 8px 10px 10px; }
+.user-dropdown-avatar {
+  width: 30px; height: 30px; border-radius: 6px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--neon), var(--neon3));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--screen);
+}
+.user-dropdown-name {
+  font-size: 13px; color: var(--paper); font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.user-dropdown-div { height: 1px; background: var(--border); margin: 2px 6px 6px; }
+.user-dropdown-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: 4px; border: none; background: transparent;
+  color: var(--paper); font-family: 'DM Sans', sans-serif; font-size: 12.5px;
+  text-align: left; cursor: pointer; transition: background .15s; width: 100%;
+}
+.user-dropdown-item:hover { background: rgba(245,240,232,0.06); }
+.user-dropdown-item.danger { color: var(--neon2); }
+.user-dropdown-item.danger:hover { background: rgba(255,71,163,0.08); }
+
+/* ── MI ESTANTERÍA — VISTA COMPLETA ────────────────────── */
+#shelfView {
+  display: none; position: relative; z-index: 1;
+  padding-top: 52px; min-height: 100vh;
+}
+#shelfView.active { display: flex; }
+body.shelf-active .filter-strip,
+body.shelf-active .hero,
+body.shelf-active .mobile-search,
+body.shelf-active #top10Section,
+body.shelf-active .top10-divider,
+body.shelf-active #mainContent,
+body.shelf-active #inkSection,
+body.shelf-active .mob-filter-bar,
+body.shelf-active .fsheet,
+body.shelf-active .fsheet-overlay,
+body.shelf-active .ts-watermark,
+body.shelf-active #homeView,
+body.shelf-active .scroll-top { display: none !important; }
+body.shelf-active .topbar-center { display: none; }
+
+.shelf-sidebar {
+  width: 250px; flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 28px 18px; position: sticky; top: 52px;
+  height: calc(100vh - 52px); overflow-y: auto;
+}
+.shelf-sidebar-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 23px; letter-spacing: 1px;
+  color: var(--white); display: flex; align-items: center; gap: 8px;
+}
+.shelf-sidebar-sub {
+  font-size: 10px; letter-spacing: 1.5px; color: var(--neon);
+  margin: 4px 0 26px; text-transform: uppercase;
+}
+.shelf-nav-label {
+  font-size: 10px; letter-spacing: 1.5px; color: var(--dim);
+  text-transform: uppercase; margin: 0 0 10px 4px;
+}
+.shelf-nav-item {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 10px 12px; margin-bottom: 4px; border-radius: 4px;
+  border: 1px solid transparent; background: transparent; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+  transition: all .15s; text-align: left;
+}
+.shelf-nav-item:hover { background: rgba(245,240,232,0.05); color: var(--paper); }
+.shelf-nav-item.on { background: rgba(232,255,71,0.08); border-color: rgba(232,255,71,0.3); color: var(--neon); }
+.shelf-nav-item .snl { display: flex; align-items: center; gap: 8px; }
+.shelf-nav-count {
+  font-size: 11px; padding: 1px 7px; border-radius: 10px;
+  background: rgba(245,240,232,0.08); color: var(--muted);
+}
+.shelf-nav-item.on .shelf-nav-count { background: rgba(232,255,71,0.18); color: var(--neon); }
+.shelf-back-btn {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 24px; padding: 9px 12px; border-radius: 4px;
+  border: 1px solid var(--border); background: transparent; color: var(--dim);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; width: 100%;
+  transition: all .15s;
+}
+.shelf-back-btn:hover { border-color: var(--neon3); color: var(--neon3); }
+
+.shelf-main { flex: 1; padding: 28px 30px 60px; min-width: 0; }
+.shelf-main-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.shelf-main-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--white); }
+.shelf-main-count { font-size: 12px; color: var(--dim); }
+
+.shelf-toolbar { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; align-items: center; }
+.shelf-search {
+  flex: 1; min-width: 180px; max-width: 360px;
+  padding: 9px 12px; border-radius: 4px; border: 1px solid var(--border2);
+  background: var(--surface); color: var(--paper); font-family: 'DM Sans', sans-serif;
+  font-size: 13px; outline: none; transition: border-color .15s;
+}
+.shelf-search:focus { border-color: var(--neon); }
+.shelf-select {
+  padding: 9px 10px; border-radius: 4px; border: 1px solid var(--border2);
+  background: var(--surface); color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 12px; outline: none; cursor: pointer;
+}
+.shelf-select:focus { border-color: var(--neon); }
+
+.shelf-empty { text-align: center; padding: 70px 20px; color: var(--dim); }
+.shelf-empty-icon { font-size: 32px; margin-bottom: 12px; opacity: .6; }
+
+@media (max-width: 860px) {
+  #shelfView.active { flex-direction: column; }
+  .shelf-sidebar { width: 100%; position: relative; top: 0; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 18px 16px; }
+  .shelf-main { padding: 20px 16px 60px; }
+}
 
 /* ── AUTH MODAL ───────────────────────────────────────── */
 .auth-modal-wrap {
@@ -2141,6 +2287,46 @@ body.home-active .topbar-center { display: none; }
 
 </div><!-- /homeView -->
 
+<div id="shelfView">
+  <aside class="shelf-sidebar">
+    <div class="shelf-sidebar-title">📚 Mi estantería</div>
+    <div class="shelf-sidebar-sub">GL PANELS</div>
+    <div class="shelf-nav-label">Estanterías</div>
+    <button class="shelf-nav-item" data-shelf-tab="all" onclick="setShelfTab('all')">
+      <span class="snl">📖 Todos los libros</span><span class="shelf-nav-count" id="snc-all">0</span>
+    </button>
+    <button class="shelf-nav-item" data-shelf-tab="want" onclick="setShelfTab('want')">
+      <span class="snl">＋ Quiero leer</span><span class="shelf-nav-count" id="snc-want">0</span>
+    </button>
+    <button class="shelf-nav-item" data-shelf-tab="reading" onclick="setShelfTab('reading')">
+      <span class="snl">📖 Leyendo</span><span class="shelf-nav-count" id="snc-reading">0</span>
+    </button>
+    <button class="shelf-nav-item" data-shelf-tab="read" onclick="setShelfTab('read')">
+      <span class="snl">✓ Terminados</span><span class="shelf-nav-count" id="snc-read">0</span>
+    </button>
+    <button class="shelf-back-btn" onclick="closeShelf()">← Volver al catálogo</button>
+  </aside>
+  <div class="shelf-main">
+    <div class="shelf-main-head">
+      <div class="shelf-main-title" id="shelfMainTitle">Todos los libros</div>
+      <div class="shelf-main-count" id="shelfMainCount"></div>
+    </div>
+    <div class="shelf-toolbar">
+      <input type="text" class="shelf-search" id="shelfSearch" placeholder="Buscar en tu estantería…" autocomplete="off" spellcheck="false">
+      <select class="shelf-select" id="shelfSeccionSel"><option value="all">Todas las secciones</option></select>
+      <select class="shelf-select" id="shelfSortSel">
+        <option value="titulo">A–Z</option>
+        <option value="recent">Más recientes</option>
+      </select>
+    </div>
+    <div class="grid" id="shelfGrid"></div>
+    <div class="shelf-empty" id="shelfEmpty" style="display:none">
+      <div class="shelf-empty-icon">📚</div>
+      <div id="shelfEmptyMsg">No hay historias aquí todavía.</div>
+    </div>
+  </div>
+</div><!-- /shelfView -->
+
 <!-- AUTH MODAL -->
 <div class="auth-modal-wrap" id="authModalWrap" onclick="handleAuthBgClick(event)">
   <div class="auth-modal">
@@ -2507,17 +2693,38 @@ function renderAuthArea() {
   const area = document.getElementById('authArea');
   if (!area) return;
   if (currentUser) {
-    const initials = (currentUser.email || '?')[0].toUpperCase();
+    const uname = (currentUser.user_metadata && currentUser.user_metadata.telegram) || (currentUser.email || '?').split('@')[0];
+    const initials = uname.slice(0, 2).toUpperCase();
     area.innerHTML = `
-      <div class="user-chip-top">
+      <div class="user-chip-top" id="userChipTop" onclick="toggleUserMenu(event)">
         <div class="user-avatar-top">${initials}</div>
-        <span class="user-email-top">${currentUser.email}</span>
-        <button class="btn-logout-top" onclick="signOut()">salir</button>
+        <span class="user-email-top">@${esc(uname)}</span>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown-head">
+            <div class="user-dropdown-avatar">${initials}</div>
+            <div class="user-dropdown-name">@${esc(uname)}</div>
+          </div>
+          <div class="user-dropdown-div"></div>
+          <button class="user-dropdown-item" onclick="event.stopPropagation();openShelf('all')">📚 Mi estantería</button>
+          <button class="user-dropdown-item danger" onclick="event.stopPropagation();signOut()">Cerrar sesión</button>
+        </div>
       </div>`;
   } else {
     area.innerHTML = `<button class="auth-topbar-btn" onclick="openAuthModal()">ENTRAR</button>`;
   }
 }
+
+function toggleUserMenu(e) {
+  e.stopPropagation();
+  document.getElementById('userDropdown')?.classList.toggle('open');
+}
+document.addEventListener('click', (e) => {
+  const dd = document.getElementById('userDropdown');
+  const chip = document.getElementById('userChipTop');
+  if (dd && dd.classList.contains('open') && chip && !chip.contains(e.target)) {
+    dd.classList.remove('open');
+  }
+});
 
 function openAuthModal() {
   document.getElementById('authModalWrap').classList.add('open');
@@ -2770,6 +2977,115 @@ function refreshShelfBadge(id) {
   });
 }
 
+// ── MI ESTANTERÍA — VISTA COMPLETA ────────────────────────
+let shelfActive = false;
+let shelfTab = 'all';
+let shelfQ = '';
+let shelfSeccion = 'all';
+let shelfSort = 'titulo';
+
+const SHELF_TAB_LABELS = { all: 'Todos los libros', want: 'Quiero leer', reading: 'Leyendo', read: 'Terminados' };
+
+function buildShelfSeccionOptions() {
+  const sel = document.getElementById('shelfSeccionSel');
+  if (!sel || !allData.length) return;
+  const present = new Set(allData.map(e => e.seccion));
+  sel.innerHTML = '<option value="all">Todas las secciones</option>' +
+    SECTION_ORDER.filter(s => present.has(s)).map(s => `<option value="${esc(s)}">${SECTION_ICONS[s] || ''} ${esc(s)}</option>`).join('');
+}
+
+function bindShelfEvents() {
+  const s = document.getElementById('shelfSearch');
+  if (s) s.addEventListener('input', () => { shelfQ = s.value; renderShelfView(); });
+  const sel = document.getElementById('shelfSeccionSel');
+  if (sel) sel.addEventListener('change', () => { shelfSeccion = sel.value; renderShelfView(); });
+  const sort = document.getElementById('shelfSortSel');
+  if (sort) sort.addEventListener('change', () => { shelfSort = sort.value; renderShelfView(); });
+}
+
+function showShelfOverlay() {
+  document.getElementById('userDropdown')?.classList.remove('open');
+  document.body.classList.add('shelf-active');
+  document.getElementById('shelfView').classList.add('active');
+  buildShelfSeccionOptions();
+  renderShelfView();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function openShelf(tab) {
+  if (!currentUser) { openAuthModal(); return; }
+  shelfActive = true;
+  if (tab) shelfTab = tab;
+  showShelfOverlay();
+  history.pushState(null, '', '?view=shelf');
+}
+
+function closeShelf() {
+  shelfActive = false;
+  document.body.classList.remove('shelf-active');
+  document.getElementById('shelfView').classList.remove('active');
+  if (homeActive) history.pushState(null, '', '?view=home');
+  else pushState();
+}
+
+function setShelfTab(tab) {
+  shelfTab = tab;
+  renderShelfView();
+}
+
+function shelfEntries() {
+  if (!currentUser) return [];
+  return allData.filter(e => {
+    const st = myReadingStatus[e.id];
+    if (!st) return false;
+    if (shelfTab !== 'all' && st !== shelfTab) return false;
+    if (shelfSeccion !== 'all' && e.seccion !== shelfSeccion) return false;
+    if (shelfQ) {
+      const q = shelfQ.toLowerCase();
+      const autorStr = (Array.isArray(e.autor) ? e.autor.join(' ') : (e.autor || '')).toLowerCase();
+      const tagStr = (e.tags || []).join(' ').toLowerCase();
+      if (!e.titulo.toLowerCase().includes(q) && !autorStr.includes(q) && !tagStr.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function sortShelfItems(items) {
+  if (shelfSort === 'recent') return items.slice();
+  return items.slice().sort((a, b) => a.titulo.localeCompare(b.titulo, 'es'));
+}
+
+function renderShelfCounts() {
+  const counts = { all: 0, want: 0, reading: 0, read: 0 };
+  Object.values(myReadingStatus).forEach(st => { if (counts[st] !== undefined) { counts[st]++; counts.all++; } });
+  Object.entries(counts).forEach(([k, v]) => { const el = document.getElementById('snc-' + k); if (el) el.textContent = v; });
+}
+
+function renderShelfView() {
+  if (!document.getElementById('shelfView')) return;
+  renderShelfCounts();
+  document.querySelectorAll('.shelf-nav-item').forEach(b => b.classList.toggle('on', b.dataset.shelfTab === shelfTab));
+
+  const items = sortShelfItems(shelfEntries());
+
+  document.getElementById('shelfMainTitle').textContent = SHELF_TAB_LABELS[shelfTab] || 'Todos los libros';
+  document.getElementById('shelfMainCount').textContent = `${items.length} historia${items.length !== 1 ? 's' : ''}`;
+
+  const grid = document.getElementById('shelfGrid');
+  grid.innerHTML = '';
+  items.forEach(e => grid.appendChild(buildCard(e, '#111118')));
+
+  const emptyEl = document.getElementById('shelfEmpty');
+  const emptyMsg = document.getElementById('shelfEmptyMsg');
+  if (items.length === 0) {
+    emptyMsg.textContent = shelfQ || shelfSeccion !== 'all'
+      ? 'No se encontraron historias con esos filtros.'
+      : 'Todavía no tienes historias aquí. Explora el catálogo y añade alguna a tu estantería.';
+  }
+  emptyEl.style.display = items.length === 0 ? '' : 'none';
+  grid.style.display = items.length === 0 ? 'none' : '';
+}
+
 const DATA = 'manga_data.json';
 
 const SECTION_ORDER = ['Manhwa','Manga','Manhua','Webtoon','Sin Clasificación','Cómic','Novela Gráfica'];
@@ -2870,7 +3186,7 @@ let inkCat = 'all'; // active ink club category
 
 // ── URL STATE ─────────────────────────────────────────────
 function pushState() {
-  if (homeActive) return; // home view manages its own URL
+  if (homeActive || shelfActive) return; // home/shelf views manage their own URL
   const p = new URLSearchParams();
   if (activeSec !== 'all')  p.set('sec', activeSec);
   if (fEstado   !== 'all')  p.set('estado', fEstado);
@@ -2948,8 +3264,8 @@ async function init() {
       currentUser = session?.user || null;
       renderAuthArea();
       updateAuthGatedUI();
-      if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus()]).then(() => { renderSections(false); if (activeModalItem) openModal(activeModalItem, true); });
-      else { myRatings = {}; myReadingStatus = {}; renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
+      if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus()]).then(() => { renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); });
+      else { myRatings = {}; myReadingStatus = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
     });
   }
   renderAuthArea();
@@ -2971,6 +3287,7 @@ async function init() {
   buildTagFilter();
   buildTropoFilter();
   buildPersonajeFilter();
+  buildShelfSeccionOptions();
   updateAuthGatedUI();
   applyStateToUI();
 
@@ -2994,9 +3311,15 @@ async function init() {
   }
 
   bindEvents();
+  bindShelfEvents();
   bindFsheetEvents();
   bindModalSwipe();
   updateMobBar();
+
+  if (new URLSearchParams(location.search).get('view') === 'shelf' && currentUser) {
+    shelfActive = true;
+    showShelfOverlay();
+  }
 
   // Handle browser back/forward
   window.addEventListener('popstate', () => {
@@ -3008,6 +3331,15 @@ async function init() {
       activeModalItem = null;
       _preModalUrl = null;
       document.title = 'GL PANELS — カタログ';
+      return;
+    }
+    if (shelfActive && p.get('view') !== 'shelf') {
+      shelfActive = false;
+      document.body.classList.remove('shelf-active');
+      document.getElementById('shelfView').classList.remove('active');
+    } else if (!shelfActive && p.get('view') === 'shelf' && currentUser) {
+      shelfActive = true;
+      showShelfOverlay();
       return;
     }
     if (p.get('view') === 'home') {
@@ -3811,6 +4143,11 @@ function openModal(e, isRefresh) {
         </div>
       </div>
     </div>
+    ${e.advertencias && e.advertencias.length ? `
+    <div class="modal-cw-box">
+      <div class="modal-cw-title">⚠️ Advertencias de contenido</div>
+      <div class="modal-cw-tags">${e.advertencias.map(a => `<span class="cw-tag">${esc(a)}</span>`).join('')}</div>
+    </div>` : ''}
     ${e.desc ? '<div class="modal-desc">' + esc(e.desc) + '</div>' : '<div class="modal-desc" style="opacity:.35;font-style:italic">Sin descripción.</div>'}
     <div class="modal-tags">${tags}</div>
     ${((e.tropos && e.tropos.length) || (e.personajes && e.personajes.length)) ? `

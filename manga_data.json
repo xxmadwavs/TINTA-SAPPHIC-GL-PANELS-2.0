@@ -255,10 +255,12 @@
       "Misterio",
       "Romance"
     ],
-    "in_biblioteca": false,
+    "in_biblioteca": true,
     "in_files": false,
     "adult": false,
-    "subido": "",
+    "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "¿A manos de quién morirá el ciervo?"
     ],
@@ -269,9 +271,7 @@
       "呉羽"
     ],
     "anio_inicio": 2023,
-    "content_rating": "safe",
-    "tropos": [],
-    "personajes": []
+    "content_rating": "safe"
   },
   {
     "id": "gl_1782470935708_o5z",
@@ -529,10 +529,12 @@
       "Fantasia",
       "Romance"
     ],
-    "in_biblioteca": false,
+    "in_biblioteca": true,
     "in_files": false,
     "adult": false,
-    "subido": "",
+    "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Koiiro no Kyoukai"
     ],
@@ -542,9 +544,7 @@
       "水山めろ"
     ],
     "anio_inicio": 2024,
-    "content_rating": "safe",
-    "tropos": [],
-    "personajes": []
+    "content_rating": "safe"
   },
   {
     "id": "gl_1778185292064_bni",
@@ -619,10 +619,12 @@
       "Drama",
       "Romance"
     ],
-    "in_biblioteca": false,
+    "in_biblioteca": true,
     "in_files": false,
     "adult": true,
-    "subido": "",
+    "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "En el pantano del angel"
     ],
@@ -630,9 +632,7 @@
       "Hong Baek"
     ],
     "anio_inicio": 2025,
-    "content_rating": "erotica",
-    "tropos": [],
-    "personajes": []
+    "content_rating": "erotica"
   },
   {
     "id": "gl_1778185186358_im4",
@@ -6456,6 +6456,8 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Our Dreams at Dusk"
     ],
@@ -6465,8 +6467,7 @@
     ],
     "anio_inicio": 2015,
     "content_rating": "safe",
-    "tropos": [],
-    "personajes": []
+    "demografico": "seinen"
   },
   {
     "id": "shimeji_simulation_229",
@@ -6485,6 +6486,8 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "シメジシミュレーション"
     ],
@@ -6494,8 +6497,7 @@
     ],
     "anio_inicio": 2019,
     "content_rating": "safe",
-    "tropos": [],
-    "personajes": []
+    "demografico": "seinen"
   },
   {
     "id": "sekai_no_owari_to_majo_no_koi_230",
@@ -6514,6 +6516,8 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "A Witch's Love at the End of the World"
     ],
@@ -6523,8 +6527,7 @@
     ],
     "anio_inicio": 2018,
     "content_rating": "safe",
-    "tropos": [],
-    "personajes": []
+    "demografico": "shoujo"
   },
   {
     "id": "sougou_tovarisch_231",
@@ -6601,6 +6604,8 @@
     "in_files": true,
     "adult": true,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "The Forbidden Peach",
       "水蜜桃は少女にかじられる"
@@ -6609,9 +6614,9 @@
     "autor": [
       "Amasaki Iroha"
     ],
+    "anio_inicio": 2020,
     "content_rating": "erotica",
-    "tropos": [],
-    "personajes": []
+    "demografico": "shounen"
   },
   {
     "id": "tatoe_todokanu_ito_da_to_shite_mo_234",
@@ -6693,6 +6698,8 @@
     "in_files": true,
     "adult": true,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Vampeerz, My Peer Vampires"
     ],
@@ -6702,31 +6709,36 @@
     ],
     "anio_inicio": 2019,
     "content_rating": "sugestiva",
-    "tropos": [],
-    "personajes": []
+    "demografico": "seinen"
   },
   {
     "id": "watashi_no_shumi_tte_hen_desu_ka__237",
     "titulo": "Watashi no Shumi tte Hen Desu ka?",
     "seccion": "Manga",
     "estado": "Finalizado",
-    "imagen": "https://static.comix.to/6fad/i/e/5f/68e5fe32abc8a.jpg",
+    "imagen": "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1589303055i/53402307.jpg",
     "desc": "Todos poseemos gustos variados y con eso pasatiempos, pero para Fujiyama Maiko su pasatiempo término convirtiéndose de algo más que eso, ya que su hobby es; mirar el trasero de otras chicas. Clasificarlos de acorde a sus gustos era una de sus rutinas mañaneras debido a que el tren que ella toma es exclusiva para mujeres, pero ¿Que pasara el día en el que la chica con el mejor trasero que haya visto en su vida descubra su extraño pasatiempo?",
     "tags": [
-      "Erotica"
+      "Erotica",
+      "Hentai",
+      "Harén"
     ],
     "in_biblioteca": true,
     "in_files": true,
     "adult": true,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [
+      "Trio"
+    ],
+    "personajes": [],
     "titulos_alt": [
       "Himitsu no Zettai Ryouiki",
       "Is My Hobby Weird?",
       "Secret Honey's Absolute Territory"
     ],
     "capitulos_totales": 8,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2015,
+    "content_rating": "erotica"
   },
   {
     "id": "yasuko_endo_acecha_en_la_noche_238",

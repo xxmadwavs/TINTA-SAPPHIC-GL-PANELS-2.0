@@ -348,6 +348,15 @@ div.search-box:focus { outline: none; }
 .fdrop .arrow { font-size: 8px; opacity: .5; transition: transform .15s; display: inline-block; }
 .fdrop.open .arrow { transform: rotate(180deg); }
 .fdrop .fval { max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
+.fdrop.locked { opacity: .5; cursor: pointer; }
+.fdrop.locked:hover { opacity: .75; border-color: rgba(245,240,232,0.3); }
+.fsheet-section.locked-section .fsheet-opts { opacity: .4; pointer-events: none; filter: grayscale(.5); }
+.fsheet-locked-msg { font-size: 11px; color: var(--muted); margin-top: 7px; }
+.fsheet-locked-msg a { color: var(--neon3); cursor: pointer; text-decoration: underline; }
+.rating-locked-box { padding: 14px 4px 4px; text-align: center; }
+.rating-locked-box .rlb-icon { font-size: 22px; opacity: .6; margin-bottom: 6px; }
+.rating-locked-box p { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.6; }
+.rating-locked-box a { color: var(--neon3); cursor: pointer; text-decoration: underline; font-weight: 600; }
 
 .drop-panel {
   position: absolute; top: calc(100% + 6px); left: 0;
@@ -1110,8 +1119,8 @@ div.search-box:focus { outline: none; }
 
   /* ── Drop panels — don't go off-screen ── */
   .drop-panel { min-width: 140px; border-radius: 10px; }
-  /* Last dropdown opens to the right so it doesn't overflow left */
-  #dropTag .drop-panel { left: auto; right: 0; }
+  /* Last dropdowns open to the right so they don't overflow left */
+  #dropTag .drop-panel, #dropDemo .drop-panel { left: auto; right: 0; }
 
   /* ── Main padding ── */
   .main { padding: 20px 10px 60px; }
@@ -2200,6 +2209,37 @@ body.home-active .topbar-center { display: none; }
       </div>
     </div>
 
+    <!-- Tropes dropdown (populated dynamically) -->
+    <div class="fdrop" id="dropTropo">
+      <span class="fval" id="valTropo">🪢 Tropes</span>
+      <span class="arrow">▼</span>
+      <div class="drop-panel" id="panelTropo">
+        <div class="dopt on-pink" data-f="tropo" data-v="__all__">Todos</div>
+      </div>
+    </div>
+
+    <!-- Personajes dropdown (populated dynamically) -->
+    <div class="fdrop" id="dropPersonaje">
+      <span class="fval" id="valPersonaje">🦋 Personajes</span>
+      <span class="arrow">▼</span>
+      <div class="drop-panel" id="panelPersonaje">
+        <div class="dopt on-pink" data-f="personaje" data-v="__all__">Todos</div>
+      </div>
+    </div>
+
+    <!-- Demográfico dropdown -->
+    <div class="fdrop" id="dropDemo">
+      <span class="fval" id="valDemo">Demográfico</span>
+      <span class="arrow">▼</span>
+      <div class="drop-panel" id="panelDemo">
+        <div class="dopt on" data-f="demo" data-v="all">Todas</div>
+        <div class="dopt" data-f="demo" data-v="shoujo">🎀 Shoujo</div>
+        <div class="dopt" data-f="demo" data-v="shounen">⚔️ Shounen</div>
+        <div class="dopt" data-f="demo" data-v="seinen">🗡️ Seinen</div>
+        <div class="dopt" data-f="demo" data-v="josei">🌹 Josei</div>
+      </div>
+    </div>
+
     <!-- Orden dropdown -->
     <div class="fdrop" id="dropSort">
       <span class="fval" id="valSort">Recientes</span>
@@ -2272,6 +2312,31 @@ body.home-active .topbar-center { display: none; }
       <div class="fsheet-sec-label">Género <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
       <div class="fsheet-opts" id="fsTagOpts">
         <button class="fsopt on-pink" data-f="tag" data-v="__all__">Todos</button>
+      </div>
+    </div>
+    <!-- Tropes -->
+    <div class="fsheet-section">
+      <div class="fsheet-sec-label">🪢 Tropes <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
+      <div class="fsheet-opts" id="fsTropoOpts">
+        <button class="fsopt on-pink" data-f="tropo" data-v="__all__">Todos</button>
+      </div>
+    </div>
+    <!-- Personajes -->
+    <div class="fsheet-section">
+      <div class="fsheet-sec-label">🦋 Personajes <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
+      <div class="fsheet-opts" id="fsPersonajeOpts">
+        <button class="fsopt on-pink" data-f="personaje" data-v="__all__">Todos</button>
+      </div>
+    </div>
+    <!-- Demográfico -->
+    <div class="fsheet-section">
+      <div class="fsheet-sec-label">Demográfico</div>
+      <div class="fsheet-opts" id="fsDemoOpts">
+        <button class="fsopt on" data-f="demo" data-v="all">Todas</button>
+        <button class="fsopt" data-f="demo" data-v="shoujo">🎀 Shoujo</button>
+        <button class="fsopt" data-f="demo" data-v="shounen">⚔️ Shounen</button>
+        <button class="fsopt" data-f="demo" data-v="seinen">🗡️ Seinen</button>
+        <button class="fsopt" data-f="demo" data-v="josei">🌹 Josei</button>
       </div>
     </div>
     <!-- Orden -->
@@ -2625,7 +2690,14 @@ function normalizeTag(t) {
   const lower = t.toLowerCase().trim();
   return TAG_NORMALIZE[lower] || (t.charAt(0).toUpperCase() + t.slice(1).trim().replace(/\.$/, ''));
 }
-function tagLabel(t) { return TAG_LABELS[t] || t.replace(/_/g, ' '); }
+function tagLabel(t) {
+  if (TAG_LABELS[t]) return TAG_LABELS[t];
+  return t
+    .replace(/_/g, ' ')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // separa camelCase/PascalCase: AgeGap -> Age Gap
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2') // separa siglas pegadas a palabra: SciFi -> Sci Fi
+    .replace(/\b(To|Of|With|And)\b/g, m => m.toLowerCase()); // conectoras en minúscula: Enemies to Lovers
+}
 
 // palette for generated covers — one per section
 const GEN_PALETTES = {
@@ -2646,6 +2718,8 @@ let allData = [];
 let hideAdult = false;
 let fOnlyAdult = false; // solo +18
 let fEstado = 'all', fSub = 'all', fTags = [], fQ = ''; // fTags is now an array
+let fDemo = 'all';
+let fTropos = [], fPersonajes = [];
 let activeSec = 'all'; // active category tab
 let activeSort = 'recent'; // recent | rating | az
 let homeActive = false; // home view state — set by init()
@@ -2661,8 +2735,11 @@ function pushState() {
   const p = new URLSearchParams();
   if (activeSec !== 'all')  p.set('sec', activeSec);
   if (fEstado   !== 'all')  p.set('estado', fEstado);
+  if (fDemo     !== 'all')  p.set('demo', fDemo);
   if (fSub      !== 'all')  p.set('sub', fSub);
   if (fTags.length > 0)     p.set('tags', fTags.join(','));
+  if (fTropos.length > 0)   p.set('tropos', fTropos.join(','));
+  if (fPersonajes.length > 0) p.set('personajes', fPersonajes.join(','));
   if (hideAdult)            p.set('adult', '1');
   if (activeSort !== 'recent') p.set('sort', activeSort);
   if (fOnlyAdult)             p.set('only18', '1');
@@ -2683,10 +2760,13 @@ function loadState() {
   homeActive = false;
   if (p.has('sec'))   activeSec  = p.get('sec');
   if (p.has('estado')) fEstado   = p.get('estado');
+  if (p.has('demo'))  fDemo      = p.get('demo');
   if (p.has('sub'))   fSub       = p.get('sub');
   if (p.has('tags'))  fTags      = p.get('tags').split(',').filter(Boolean);
   // legacy single tag support
   if (p.has('tag') && !p.has('tags')) fTags = [p.get('tag')];
+  if (p.has('tropos'))      fTropos     = p.get('tropos').split(',').filter(Boolean);
+  if (p.has('personajes'))  fPersonajes = p.get('personajes').split(',').filter(Boolean);
   if (p.get('adult') === '1') hideAdult = true;
   if (p.has('sort'))  activeSort = p.get('sort');
   if (p.get('only18') === '1') fOnlyAdult = true;
@@ -2726,6 +2806,7 @@ async function init() {
     sb.auth.onAuthStateChange((_e, session) => {
       currentUser = session?.user || null;
       renderAuthArea();
+      updateAuthGatedUI();
       if (currentUser) loadMyRatings().then(() => renderSections(false));
       else { myRatings = {}; renderSections(false); }
     });
@@ -2747,6 +2828,9 @@ async function init() {
   buildStats();
   buildCatTabs();
   buildTagFilter();
+  buildTropoFilter();
+  buildPersonajeFilter();
+  updateAuthGatedUI();
   applyStateToUI();
 
   // Always render Top 10 (needed for catalog)
@@ -2947,6 +3031,178 @@ function updateTagDropUI() {
   });
 }
 
+// ── TROPO FILTER (dynamic, multi-select) ──────────────────
+function buildTropoFilter() {
+  const tropoCount = {};
+  allData.forEach(e => (e.tropos||[]).forEach(t => { tropoCount[t] = (tropoCount[t]||0) + 1; }));
+  const sortedTropos = Object.entries(tropoCount).sort((a, b) => b[1] - a[1]).map(([t]) => t);
+
+  const panel = document.getElementById('panelTropo');
+  if (panel) {
+    panel.innerHTML = `<div class="dopt on-pink" data-f="tropo" data-v="__all__">Todos</div>` +
+      sortedTropos.map(t =>
+        `<div class="dopt" data-f="tropo" data-v="${esc(t)}">${tagLabel(t)}</div>`
+      ).join('');
+    panel.querySelectorAll('.dopt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const v = opt.dataset.v;
+        if (v === '__all__') { fTropos = []; }
+        else {
+          const idx = fTropos.indexOf(v);
+          if (idx >= 0) fTropos.splice(idx, 1);
+          else fTropos.push(v);
+        }
+        updateTropoDropUI();
+        onFsheetChange();
+      });
+    });
+  }
+
+  const fsOpts = document.getElementById('fsTropoOpts');
+  if (fsOpts) {
+    fsOpts.innerHTML = `<button class="fsopt on-pink" data-f="tropo" data-v="__all__">Todos</button>` +
+      sortedTropos.map(t =>
+        `<button class="fsopt" data-f="tropo" data-v="${esc(t)}">${tagLabel(t)}</button>`
+      ).join('');
+    fsOpts.addEventListener('click', e => {
+      const opt = e.target.closest('.fsopt');
+      if (!opt) return;
+      const v = opt.dataset.v;
+      if (v === '__all__') { fTropos = []; }
+      else {
+        const idx = fTropos.indexOf(v);
+        if (idx >= 0) fTropos.splice(idx, 1);
+        else fTropos.push(v);
+      }
+      updateTropoDropUI();
+      onFsheetChange();
+    });
+  }
+}
+
+function updateTropoDropUI() {
+  const hasTropo = fTropos.length > 0;
+  const lbl = hasTropo
+    ? fTropos.length === 1 ? tagLabel(fTropos[0]) : `${fTropos.length} tropes`
+    : '🪢 Tropes';
+  updateDropLabel('dropTropo', 'valTropo', lbl, hasTropo, 'on-pink');
+  const panel = document.getElementById('panelTropo');
+  if (panel) panel.querySelectorAll('.dopt').forEach(o => {
+    if (o.dataset.v === '__all__') o.classList.toggle('on-pink', fTropos.length === 0);
+    else o.classList.toggle('on-pink', fTropos.includes(o.dataset.v));
+  });
+  const fsOpts = document.getElementById('fsTropoOpts');
+  if (fsOpts) fsOpts.querySelectorAll('.fsopt').forEach(o => {
+    if (o.dataset.v === '__all__') o.classList.toggle('on-pink', fTropos.length === 0);
+    else o.classList.toggle('on-pink', fTropos.includes(o.dataset.v));
+  });
+}
+
+// ── PERSONAJE FILTER (dynamic, multi-select) ──────────────
+function buildPersonajeFilter() {
+  const personajeCount = {};
+  allData.forEach(e => (e.personajes||[]).forEach(t => { personajeCount[t] = (personajeCount[t]||0) + 1; }));
+  const sortedPersonajes = Object.entries(personajeCount).sort((a, b) => b[1] - a[1]).map(([t]) => t);
+
+  const panel = document.getElementById('panelPersonaje');
+  if (panel) {
+    panel.innerHTML = `<div class="dopt on-pink" data-f="personaje" data-v="__all__">Todos</div>` +
+      sortedPersonajes.map(t =>
+        `<div class="dopt" data-f="personaje" data-v="${esc(t)}">${tagLabel(t)}</div>`
+      ).join('');
+    panel.querySelectorAll('.dopt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const v = opt.dataset.v;
+        if (v === '__all__') { fPersonajes = []; }
+        else {
+          const idx = fPersonajes.indexOf(v);
+          if (idx >= 0) fPersonajes.splice(idx, 1);
+          else fPersonajes.push(v);
+        }
+        updatePersonajeDropUI();
+        onFsheetChange();
+      });
+    });
+  }
+
+  const fsOpts = document.getElementById('fsPersonajeOpts');
+  if (fsOpts) {
+    fsOpts.innerHTML = `<button class="fsopt on-pink" data-f="personaje" data-v="__all__">Todos</button>` +
+      sortedPersonajes.map(t =>
+        `<button class="fsopt" data-f="personaje" data-v="${esc(t)}">${tagLabel(t)}</button>`
+      ).join('');
+    fsOpts.addEventListener('click', e => {
+      const opt = e.target.closest('.fsopt');
+      if (!opt) return;
+      const v = opt.dataset.v;
+      if (v === '__all__') { fPersonajes = []; }
+      else {
+        const idx = fPersonajes.indexOf(v);
+        if (idx >= 0) fPersonajes.splice(idx, 1);
+        else fPersonajes.push(v);
+      }
+      updatePersonajeDropUI();
+      onFsheetChange();
+    });
+  }
+}
+
+function updatePersonajeDropUI() {
+  const hasPersonaje = fPersonajes.length > 0;
+  const lbl = hasPersonaje
+    ? fPersonajes.length === 1 ? tagLabel(fPersonajes[0]) : `${fPersonajes.length} personajes`
+    : '🦋 Personajes';
+  updateDropLabel('dropPersonaje', 'valPersonaje', lbl, hasPersonaje, 'on-pink');
+  const panel = document.getElementById('panelPersonaje');
+  if (panel) panel.querySelectorAll('.dopt').forEach(o => {
+    if (o.dataset.v === '__all__') o.classList.toggle('on-pink', fPersonajes.length === 0);
+    else o.classList.toggle('on-pink', fPersonajes.includes(o.dataset.v));
+  });
+  const fsOpts = document.getElementById('fsPersonajeOpts');
+  if (fsOpts) fsOpts.querySelectorAll('.fsopt').forEach(o => {
+    if (o.dataset.v === '__all__') o.classList.toggle('on-pink', fPersonajes.length === 0);
+    else o.classList.toggle('on-pink', fPersonajes.includes(o.dataset.v));
+  });
+}
+
+// ── AUTH-GATED FILTERS (tropes / personajes: solo usuarias registradas) ──
+function updateAuthGatedUI() {
+  const locked = !currentUser;
+
+  if (locked && (fTropos.length || fPersonajes.length)) {
+    fTropos = [];
+    fPersonajes = [];
+    updateTropoDropUI();
+    updatePersonajeDropUI();
+    renderSections(true);
+  }
+
+  ['dropTropo', 'dropPersonaje'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.toggle('locked', locked); if (locked) el.classList.remove('open'); }
+  });
+
+  ['fsTropoOpts', 'fsPersonajeOpts'].forEach(id => {
+    const opts = document.getElementById(id);
+    if (!opts) return;
+    const section = opts.closest('.fsheet-section');
+    if (!section) return;
+    section.classList.toggle('locked-section', locked);
+    opts.querySelectorAll('.fsopt').forEach(b => b.disabled = locked);
+    let msg = section.querySelector('.fsheet-locked-msg');
+    if (locked) {
+      if (!msg) {
+        msg = document.createElement('div');
+        msg.className = 'fsheet-locked-msg';
+        msg.innerHTML = '🔒 <a onclick="closeFsheet();openAuthModal()">Inicia sesión</a> para filtrar por esta categoría.';
+        section.appendChild(msg);
+      }
+    } else if (msg) {
+      msg.remove();
+    }
+  });
+}
+
 // ── INK CLUB ──────────────────────────────────────────────
 function getInkData() {
   return allData.filter(e => e.ink_club);
@@ -3064,6 +3320,12 @@ function applyStateToUI() {
       o.classList.toggle('on', o.dataset.v === fEstado);
     });
   }
+  if (fDemo !== 'all') {
+    updateDropLabel('dropDemo','valDemo', demoLabel(fDemo), true, 'on');
+    document.querySelectorAll('#panelDemo .dopt').forEach(o => {
+      o.classList.toggle('on', o.dataset.v === fDemo);
+    });
+  }
   if (fSub !== 'all') {
     const label = fSub === 'bib' ? 'Biblioteca' : fSub === 'files' ? 'FILES' : 'Ambos';
     updateDropLabel('dropSub','valSub', label, true, 'on-teal');
@@ -3074,6 +3336,12 @@ function applyStateToUI() {
   }
   if (fTags.length > 0) {
     updateTagDropUI();
+  }
+  if (fTropos.length > 0) {
+    updateTropoDropUI();
+  }
+  if (fPersonajes.length > 0) {
+    updatePersonajeDropUI();
   }
 }
 
@@ -3368,7 +3636,7 @@ function openModal(e) {
         <div class="modal-sec">${esc(e.seccion)}</div>
         <div class="modal-title">${esc(e.titulo)}</div>
         ${e.titulos_alt && e.titulos_alt.length ? `<div class="modal-alt-titles">${e.titulos_alt.map(t=>`<span class="modal-alt-title">${esc(t)}</span>`).join('')}</div>` : ''}
-        ${e.autor ? `<div class="modal-autor">✍️ ${esc(e.autor)}${e.anio_inicio ? ' · ' + esc(String(e.anio_inicio)) : ''}</div>` : (e.anio_inicio ? `<div class="modal-autor">${esc(String(e.anio_inicio))}</div>` : '')}
+        ${(() => { const autores = Array.isArray(e.autor) ? e.autor : (e.autor ? [e.autor] : []); const autorStr = autores.join(', '); return autorStr ? `<div class="modal-autor">✍️ ${esc(autorStr)}${e.anio_inicio ? ' · ' + esc(String(e.anio_inicio)) : ''}</div>` : (e.anio_inicio ? `<div class="modal-autor">${esc(String(e.anio_inicio))}</div>` : ''); })()}
         ${e.adult ? '<div class="modal-adult-warn">🔞 Contenido para mayores de 18 años</div>' : ''}
         <div class="modal-meta">
           <span class="mbadge ${mc}">${ei} ${esc(e.estado)}</span>
@@ -3384,8 +3652,13 @@ function openModal(e) {
     <div class="modal-tags">${tags}</div>
     <div class="rating-block">
       <div class="rating-block-title">Valoraciones de la comunidad</div>
+      ${currentUser ? `
       <div class="community-row" id="communityRow">${buildCommunityRowHTML(e)}</div>
-      <div id="voteSection">${buildVoteSectionHTML(e)}</div>
+      <div id="voteSection">${buildVoteSectionHTML(e)}</div>` : `
+      <div class="rating-locked-box">
+        <div class="rlb-icon">🔒</div>
+        <p>Las valoraciones son solo para personas registradas.<br><a onclick="closeModal();openAuthModal()">Inicia sesión</a> para verlas y votar.</p>
+      </div>`}
     </div>`;
 
   document.getElementById('modalWrap').classList.add('open');
@@ -3416,6 +3689,7 @@ function matches(e) {
   if (hideAdult && e.adult) return false;
   if (fOnlyAdult && !e.adult) return false;
   if (fEstado !== 'all' && e.estado !== fEstado) return false;
+  if (fDemo !== 'all' && e.demografico !== fDemo) return false;
   if (fSub === 'bib' && !e.in_biblioteca) return false;
   if (fSub === 'files' && !e.in_files) return false;
   if (fSub === 'both' && !(e.in_biblioteca && e.in_files)) return false;
@@ -3424,13 +3698,29 @@ function matches(e) {
     const entryTags = (e.tags||[]).map(t => t.toLowerCase());
     if (!fTags.every(ft => entryTags.includes(ft.toLowerCase()))) return false;
   }
+  // Multi-trope: entry must have ALL selected tropes
+  if (fTropos.length > 0) {
+    const entryTropos = (e.tropos||[]).map(t => t.toLowerCase());
+    if (!fTropos.every(ft => entryTropos.includes(ft.toLowerCase()))) return false;
+  }
+  // Multi-personaje: entry must have ALL selected personajes
+  if (fPersonajes.length > 0) {
+    const entryPersonajes = (e.personajes||[]).map(t => t.toLowerCase());
+    if (!fPersonajes.every(ft => entryPersonajes.includes(ft.toLowerCase()))) return false;
+  }
   if (fQ) {
     const q = fQ.toLowerCase();
     const alt = (e.titulos_alt||[]).join(' ').toLowerCase();
+    const autorStr = (Array.isArray(e.autor) ? e.autor.join(' ') : (e.autor||'')).toLowerCase();
+    // Tropos/personajes solo cuentan en la búsqueda para usuarias registradas
+    const tropoStr = currentUser ? (e.tropos||[]).join(' ').toLowerCase() : '';
+    const personajeStr = currentUser ? (e.personajes||[]).join(' ').toLowerCase() : '';
     if (!e.titulo.toLowerCase().includes(q) &&
         !(e.desc||'').toLowerCase().includes(q) &&
         !(e.tags||[]).join(' ').toLowerCase().includes(q) &&
-        !(e.autor||'').toLowerCase().includes(q) &&
+        !autorStr.includes(q) &&
+        !tropoStr.includes(q) &&
+        !personajeStr.includes(q) &&
         !alt.includes(q)) return false;
   }
   return true;
@@ -3500,17 +3790,27 @@ function bindEvents() {
   document.querySelectorAll('.fdrop').forEach(drop => {
     // clicking the button area (not an option) toggles open/close
     drop.addEventListener('click', e => {
+      if (drop.classList.contains('locked')) {
+        e.stopPropagation();
+        openAuthModal();
+        return;
+      }
       const opt = e.target.closest('.dopt');
       if (opt) {
+        // tag/tropo/personaje are multi-select and handled by their own build*Filter() listeners
+        if (opt.dataset.f === 'tag' || opt.dataset.f === 'tropo' || opt.dataset.f === 'personaje') {
+          e.stopPropagation();
+          return;
+        }
         // handle option selection
         const f = opt.dataset.f, v = opt.dataset.v;
         drop.querySelectorAll('.dopt').forEach(o => o.classList.remove('on','on-teal','on-pink'));
-        const cls = f === 'sub' ? 'on-teal' : f === 'tag' ? 'on-pink' : 'on';
+        const cls = f === 'sub' ? 'on-teal' : 'on';
         opt.classList.add(cls);
         if (f === 'estado') { fEstado = v; updateDropLabel('dropEstado','valEstado', v === 'all' ? 'Estado' : v, v !== 'all', 'on'); }
+        if (f === 'demo')   { fDemo = v;   updateDropLabel('dropDemo','valDemo', v === 'all' ? 'Demográfico' : demoLabel(v), v !== 'all', 'on'); }
         if (f === 'sub')    { fSub = v;    updateDropLabel('dropSub','valSub', v === 'all' ? 'Ubicación' : (v === 'bib' ? 'Biblioteca' : v === 'files' ? 'FILES' : 'Ambos'), v !== 'all', 'on-teal'); }
         if (f === 'sort')   { activeSort = v; const sl = {'recent':'Recientes','rating':'★ Más valorados','az':'Az A–Z'}; updateDropLabel('dropSort','valSort', sl[v], v !== 'recent', 'on'); }
-        // tag handled by buildTagFilter (multi-select)
         drop.classList.remove('open');
         renderSections(true);
       } else {
@@ -3560,6 +3860,10 @@ function updateDropLabel(dropId, valId, label, active, activeCls) {
   document.getElementById(valId).textContent = label;
   drop.classList.remove('on','on-teal','on-pink');
   if (active) drop.classList.add(activeCls);
+}
+function demoLabel(v) {
+  const map = { shoujo: '🎀 Shoujo', shounen: '⚔️ Shounen', seinen: '🗡️ Seinen', josei: '🌹 Josei' };
+  return map[v] || v;
 }
 
 function groupBy(arr) {
@@ -3676,6 +3980,7 @@ function syncFsheetState() {
     });
   };
   applyOpts(document.getElementById('fsEstadoOpts'), 'estado', fEstado, 'on');
+  applyOpts(document.getElementById('fsDemoOpts'), 'demo', fDemo, 'on');
   applyOpts(document.getElementById('fsSubOpts'), 'sub', fSub, 'on-teal');
   // Multi-tag sync on fsheet
   const fsTagOpts = document.getElementById('fsTagOpts');
@@ -3683,11 +3988,23 @@ function syncFsheetState() {
     if (o.dataset.v === '__all__') o.className = 'fsopt' + (fTags.length === 0 ? ' on-pink' : '');
     else o.className = 'fsopt' + (fTags.includes(o.dataset.v) ? ' on-pink' : '');
   });
+  // Multi-trope sync on fsheet
+  const fsTropoOpts = document.getElementById('fsTropoOpts');
+  if (fsTropoOpts) fsTropoOpts.querySelectorAll('.fsopt').forEach(o => {
+    if (o.dataset.v === '__all__') o.className = 'fsopt' + (fTropos.length === 0 ? ' on-pink' : '');
+    else o.className = 'fsopt' + (fTropos.includes(o.dataset.v) ? ' on-pink' : '');
+  });
+  // Multi-personaje sync on fsheet
+  const fsPersonajeOpts = document.getElementById('fsPersonajeOpts');
+  if (fsPersonajeOpts) fsPersonajeOpts.querySelectorAll('.fsopt').forEach(o => {
+    if (o.dataset.v === '__all__') o.className = 'fsopt' + (fPersonajes.length === 0 ? ' on-pink' : '');
+    else o.className = 'fsopt' + (fPersonajes.includes(o.dataset.v) ? ' on-pink' : '');
+  });
   applyOpts(document.getElementById('fsSortOpts'), 'sort', activeSort, 'on');
   document.getElementById('fsAdultHideTog').classList.toggle('on', hideAdult);
   document.getElementById('fsAdultOnlyTog').classList.toggle('on', fOnlyAdult);
   // Reset button enabled/disabled
-  const hasFilter = fEstado !== 'all' || fSub !== 'all' || fTags.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
+  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
   document.getElementById('fsheetReset').disabled = !hasFilter;
 }
 
@@ -3698,17 +4015,20 @@ function updateMobBar() {
   const dot = document.getElementById('mobActiveDot');
 
   const chips = [];
-  const hasFilter = fEstado !== 'all' || fSub !== 'all' || fTags.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
+  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || hideAdult || fOnlyAdult || activeSort !== 'recent';
 
   btn.classList.toggle('has-active', hasFilter);
   dot.style.display = hasFilter ? 'block' : 'none';
 
   if (fEstado !== 'all') chips.push({ cls: 'mob-chip-estado', label: fEstado, clear: () => { fEstado='all'; onFsheetChange(); } });
+  if (fDemo !== 'all') chips.push({ cls: 'mob-chip-estado', label: demoLabel(fDemo), clear: () => { fDemo='all'; onFsheetChange(); } });
   if (fSub !== 'all') {
     const l = fSub === 'bib' ? '📚 Biblioteca' : fSub === 'files' ? '📁 FILES' : 'Ambos';
     chips.push({ cls: 'mob-chip-sub', label: l, clear: () => { fSub='all'; onFsheetChange(); } });
   }
   fTags.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fTags = fTags.filter(x=>x!==t); onFsheetChange(); } }));
+  fTropos.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fTropos = fTropos.filter(x=>x!==t); onFsheetChange(); } }));
+  fPersonajes.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fPersonajes = fPersonajes.filter(x=>x!==t); onFsheetChange(); } }));
   if (hideAdult) chips.push({ cls: 'mob-chip-adult', label: 'Ocultar +18', clear: () => { hideAdult=false; onFsheetChange(); } });
   if (fOnlyAdult) chips.push({ cls: 'mob-chip-adult', label: 'Solo +18', clear: () => { fOnlyAdult=false; onFsheetChange(); } });
   if (activeSort !== 'recent') {
@@ -3728,8 +4048,11 @@ function onFsheetChange() {
   // Sync desktop dropdowns too
   const sl2 = fSub === 'bib' ? 'Biblioteca' : fSub === 'files' ? 'FILES' : 'Ambos';
   updateDropLabel('dropEstado','valEstado', fEstado === 'all' ? 'Estado' : fEstado, fEstado !== 'all', 'on');
+  updateDropLabel('dropDemo','valDemo', fDemo === 'all' ? 'Demográfico' : demoLabel(fDemo), fDemo !== 'all', 'on');
   updateDropLabel('dropSub','valSub', fSub === 'all' ? 'Ubicación' : sl2, fSub !== 'all', 'on-teal');
   updateTagDropUI();
+  updateTropoDropUI();
+  updatePersonajeDropUI();
   const sl3 = {'recent':'Recientes','rating':'★ Más valorados','az':'Az A–Z'};
   updateDropLabel('dropSort','valSort', sl3[activeSort], activeSort !== 'recent', 'on');
   // adult UI sync
@@ -3747,16 +4070,17 @@ function bindFsheetEvents() {
   document.getElementById('mobFilterOpenBtn').addEventListener('click', openFsheet);
   document.getElementById('fsheetOverlay').addEventListener('click', closeFsheet);
 
-  // Option buttons (estado, sub, sort — tag is handled by buildTagFilter)
-  ['fsEstadoOpts','fsSubOpts','fsSortOpts'].forEach(id => {
+  // Option buttons (estado, demo, sub, sort — tag is handled by buildTagFilter)
+  ['fsEstadoOpts','fsDemoOpts','fsSubOpts','fsSortOpts'].forEach(id => {
     document.getElementById(id).addEventListener('click', e => {
       const opt = e.target.closest('.fsopt');
       if (!opt) return;
       const f = opt.dataset.f, v = opt.dataset.v;
-      const clsMap = { estado: 'on', sub: 'on-teal', sort: 'on' };
+      const clsMap = { estado: 'on', demo: 'on', sub: 'on-teal', sort: 'on' };
       document.getElementById(id).querySelectorAll('.fsopt').forEach(o => o.className = 'fsopt');
       opt.classList.add(clsMap[f]);
       if (f === 'estado') fEstado = v;
+      if (f === 'demo')   fDemo   = v;
       if (f === 'sub')    fSub    = v;
       if (f === 'sort')   activeSort = v;
       onFsheetChange();
@@ -3777,7 +4101,7 @@ function bindFsheetEvents() {
 
   // Reset
   document.getElementById('fsheetReset').addEventListener('click', () => {
-    fEstado = 'all'; fSub = 'all'; fTags = [];
+    fEstado = 'all'; fDemo = 'all'; fSub = 'all'; fTags = []; fTropos = []; fPersonajes = [];
     hideAdult = false; fOnlyAdult = false; activeSort = 'recent';
     onFsheetChange();
   });

@@ -490,9 +490,12 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
           <label class="flbl">Capítulos totales</label>
           <input type="number" id="fCaps" class="finput" min="1" placeholder="Ej: 48">
         </div>
-        <div class="fg">
+        <div class="form-full fg">
           <label class="flbl">Autor / Artista</label>
-          <input type="text" id="fAutor" class="finput" placeholder="Ej: Nagata Kabi">
+          <div class="tags-wrap" id="autorWrap" onclick="document.getElementById('autorInp').focus()">
+            <input type="text" id="autorInp" class="tag-inp" placeholder="Nombre del autor/a, Enter para añadir…">
+          </div>
+          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Para historias con varios autores/artistas</div>
         </div>
         <div class="fg">
           <label class="flbl">Año de inicio</label>
@@ -507,6 +510,17 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
             <option value="erotica">🔴 Erótica</option>
           </select>
           <div class="fhint">Referencia tipo MangaDex (safe / sugestiva / erótica)</div>
+        </div>
+        <div class="fg">
+          <label class="flbl">Demográfico</label>
+          <select id="fDemografico" class="fsel">
+            <option value="">— Sin especificar —</option>
+            <option value="shoujo">🎀 Shoujo</option>
+            <option value="shounen">⚔️ Shounen</option>
+            <option value="seinen">🗡️ Seinen</option>
+            <option value="josei">🌹 Josei</option>
+          </select>
+          <div class="fhint">Demográfico editorial original de la obra</div>
         </div>
         <div class="form-full fg">
           <label class="flbl">URL de portada</label>
@@ -525,6 +539,20 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
             <input type="text" id="tagInp" class="tag-inp" placeholder="Escribe y pulsa Enter…">
           </div>
           <div class="fhint">Enter o coma para añadir · Backspace elimina el último · "Erotica" activa +18 auto</div>
+        </div>
+        <div class="form-full fg">
+          <label class="flbl">🪢 Tropes</label>
+          <div class="tags-wrap" id="tropesWrap" onclick="document.getElementById('tropeInp').focus()">
+            <input type="text" id="tropeInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="tropeSuggestions">
+          </div>
+          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: SlowBurn, EnemiesToLovers…</div>
+        </div>
+        <div class="form-full fg">
+          <label class="flbl">🦋 Personajes</label>
+          <div class="tags-wrap" id="personajesWrap" onclick="document.getElementById('personajeInp').focus()">
+            <input type="text" id="personajeInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="personajeSuggestions">
+          </div>
+          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: CEO, Brujas, Policia…</div>
         </div>
         <div class="fg">
           <label class="flbl">Ubicación</label>
@@ -581,6 +609,36 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
 
 </div><!-- /appShell -->
 
+<datalist id="tropeSuggestions">
+  <option value="AgeGap"><option value="Alpha/Beta/Omega"><option value="Arranged Marriage">
+  <option value="Best Friend's Sister"><option value="Bi Awakening"><option value="Bodyguard/VIP">
+  <option value="BossEmployee"><option value="ChildhoodFriends"><option value="Coming Out tardío">
+  <option value="Conexión Mental / Bond"><option value="Destined Lovers"><option value="EnemiesToLovers">
+  <option value="FakeRelationship"><option value="ForbiddenLove"><option value="ForcedProximity">
+  <option value="Found Family"><option value="FriendsToLovers"><option value="FriendsWithBenefits">
+  <option value="GrumpySunshine"><option value="Hurt/Comfort"><option value="Ice Queen × Toaster Oven">
+  <option value="JealousyTrope"><option value="Lesbian Awakening"><option value="LoveTriangle">
+  <option value="MarriageOfConvenience"><option value="May-December Romance"><option value="One Night Stand → More">
+  <option value="OppositesAttract"><option value="Only One Bed"><option value="Reencarnacion">
+  <option value="RevengeRomance"><option value="RichPoorRomance"><option value="Rivals to Lovers">
+  <option value="Road Trip"><option value="Roommates"><option value="SecretRelationship">
+  <option value="SecondChanceRomance"><option value="Sex Toys / Juguetes Sexuales"><option value="SlowBurn">
+  <option value="Soulmates"><option value="Stranded Together"><option value="Strangers to Lovers">
+  <option value="StudentTeacher"><option value="Toaster Oven"><option value="UnrequitedLove">
+  <option value="WhyChoose"><option value="WorkplaceRomance">
+</datalist>
+<datalist id="personajeSuggestions">
+  <option value="Abogada"><option value="Actriz"><option value="Angel"><option value="Asexual">
+  <option value="Azafata"><option value="Bailarina"><option value="Bisexual"><option value="Brujas">
+  <option value="Cambiaformas"><option value="Cantante"><option value="CEO"><option value="Demonio">
+  <option value="Deportista"><option value="Empresaria"><option value="Escritora"><option value="Espiritus">
+  <option value="Estudiantes"><option value="Famosa"><option value="Futbolista"><option value="Granjera">
+  <option value="Guardaespaldas"><option value="IceQueen"><option value="MadreSoltera"><option value="Medico">
+  <option value="Militar"><option value="MujerLobo"><option value="Nerd"><option value="Piloto">
+  <option value="Piratas"><option value="Policia"><option value="Politica"><option value="Realeza">
+  <option value="Vampiras"><option value="Zombie">
+</datalist>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -588,7 +646,7 @@ const DATA_URL='manga_data.json';
 const ADULT_TAGS=new Set(['erotica','erotic','erótica']);
 const ECLS={Finalizado:'b-fin',Continúa:'b-cont',Hiatus:'b-hiatus',Cancelado:'b-cancel'};
 const EICO={Finalizado:'✓',Continúa:'▶',Hiatus:'⏸',Cancelado:'✗'};
-let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[];
+let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[];
 
 // ── TAG NORMALIZATION ─────────────────────────────────────
 const TAG_NORMALIZE_MAP = {
@@ -610,7 +668,11 @@ function normalizeTag(t){
   return TAG_NORMALIZE_MAP[l]||(t.charAt(0).toUpperCase()+t.slice(1).trim().replace(/\.$/,''));
 }
 function normalizeAllTags(){
-  allData.forEach(e=>{if(e.tags)e.tags=[...new Set(e.tags.map(normalizeTag))];});
+  allData.forEach(e=>{
+    if(e.tags)e.tags=[...new Set(e.tags.map(normalizeTag))];
+    if(!Array.isArray(e.tropos))e.tropos=[];
+    if(!Array.isArray(e.personajes))e.personajes=[];
+  });
 }
 
 // ── THEME ─────────────────────────────────────────────────
@@ -789,7 +851,7 @@ function applyFilters(){
     if(adv==='safe'&&e.adult)return false;
     if(ink==='ink'&&!e.ink_club)return false;
     if(ink==='noink'&&e.ink_club)return false;
-    if(q){const t=e.titulo.toLowerCase(),d=(e.desc||'').toLowerCase(),tg=(e.tags||[]).join(' ').toLowerCase(),alt=(e.titulos_alt||[]).join(' ').toLowerCase(),au=(e.autor||'').toLowerCase();if(!t.includes(q)&&!d.includes(q)&&!tg.includes(q)&&!alt.includes(q)&&!au.includes(q))return false;}
+    if(q){const t=e.titulo.toLowerCase(),d=(e.desc||'').toLowerCase(),tg=(e.tags||[]).join(' ').toLowerCase(),alt=(e.titulos_alt||[]).join(' ').toLowerCase(),au=(Array.isArray(e.autor)?e.autor.join(' '):(e.autor||'')).toLowerCase(),tr=(e.tropos||[]).join(' ').toLowerCase(),pe=(e.personajes||[]).join(' ').toLowerCase();if(!t.includes(q)&&!d.includes(q)&&!tg.includes(q)&&!alt.includes(q)&&!au.includes(q)&&!tr.includes(q)&&!pe.includes(q))return false;}
     return true;
   });
   page=1;renderTable();
@@ -809,10 +871,13 @@ function renderTable(){
     const CR_BADGE={safe:{icon:'🟢',label:'SAFE',bg:'rgba(71,255,140,.12)',col:'#47ff8c',bd:'rgba(71,255,140,.35)'},sugestiva:{icon:'🟡',label:'SUGESTIVA',bg:'rgba(255,200,71,.12)',col:'#ffc847',bd:'rgba(255,200,71,.4)'},erotica:{icon:'🔴',label:'ERÓTICA',bg:'rgba(255,71,113,.12)',col:'#ff4771',bd:'rgba(255,71,113,.4)'}};
     const crInfo=CR_BADGE[e.content_rating];
     const crBadge=crInfo?`<span class="badge" style="background:${crInfo.bg};color:${crInfo.col};border:1px solid ${crInfo.bd}">${crInfo.icon} ${crInfo.label}</span>`:'';
+    const DEMO_BADGE={shoujo:{icon:'🎀',label:'SHOUJO',bg:'rgba(255,140,200,.12)',col:'#ff8cc8',bd:'rgba(255,140,200,.4)'},shounen:{icon:'⚔️',label:'SHOUNEN',bg:'rgba(140,200,255,.12)',col:'#8cc8ff',bd:'rgba(140,200,255,.4)'},seinen:{icon:'🗡️',label:'SEINEN',bg:'rgba(180,140,255,.12)',col:'#b48cff',bd:'rgba(180,140,255,.4)'},josei:{icon:'🌹',label:'JOSEI',bg:'rgba(255,71,113,.12)',col:'#ff4771',bd:'rgba(255,71,113,.4)'}};
+    const demoInfo=DEMO_BADGE[e.demografico];
+    const demoBadge=demoInfo?`<span class="badge" style="background:${demoInfo.bg};color:${demoInfo.col};border:1px solid ${demoInfo.bd}">${demoInfo.icon} ${demoInfo.label}</span>`:'';
     const brokenBadge=e.imagen?`<span class="img-broken img-broken-badge" style="display:none">⚠ IMG ROTA</span>`:'';
     return `<tr>
       <td class="td-cov">${cov}</td>
-      <td class="td-tit"><div class="td-titulo">${esc(e.titulo)}</div>${e.adult?'<span class="adult-flag">+18</span>':''}${inkBadge}${crBadge}${brokenBadge}${incompleteFilter&&(!e.titulos_alt||!e.titulos_alt.length)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(71,160,255,.15);color:#47a0ff;border-color:rgba(71,160,255,.4)">✎ SIN ALT</span>':''}${incompleteFilter&&e.estado==='Finalizado'&&(!e.capitulos_totales||e.capitulos_totales<=0)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,200,71,.12);color:#ffc847;border-color:rgba(255,200,71,.4)">✎ SIN CAPS</span>':''}</td>
+      <td class="td-tit"><div class="td-titulo">${esc(e.titulo)}</div>${e.adult?'<span class="adult-flag">+18</span>':''}${inkBadge}${crBadge}${demoBadge}${brokenBadge}${incompleteFilter&&(!e.titulos_alt||!e.titulos_alt.length)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(71,160,255,.15);color:#47a0ff;border-color:rgba(71,160,255,.4)">✎ SIN ALT</span>':''}${incompleteFilter&&e.estado==='Finalizado'&&(!e.capitulos_totales||e.capitulos_totales<=0)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,200,71,.12);color:#ffc847;border-color:rgba(255,200,71,.4)">✎ SIN CAPS</span>':''}${incompleteFilter&&(!e.autor||(Array.isArray(e.autor)?e.autor.length===0:false))?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN AUTOR</span>':''}${incompleteFilter&&!e.anio_inicio?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(140,200,255,.12);color:#8cc8ff;border-color:rgba(140,200,255,.4)">✎ SIN AÑO</span>':''}${incompleteFilter&&!e.content_rating?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,140,200,.12);color:#ff8cc8;border-color:rgba(255,140,200,.4)">✎ SIN RATING</span>':''}${incompleteFilter&&e.seccion==='Manga'&&!e.demografico?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN DEMOGRÁFICO</span>':''}</td>
       <td class="td-sec">${esc(e.seccion)}</td>
       <td class="td-tags"><div class="tag-row">${tags}</div></td>
       <td><span class="badge ${ec}">${ei} ${esc(e.estado)}</span></td>
@@ -848,6 +913,7 @@ function pagRange(cur,tot){
 
 function openEdit(id){
   const e=allData.find(x=>x.id===id);editingId=id;tagsList=[...(e.tags||[])];
+  tropesList=[...(e.tropos||[])];personajesList=[...(e.personajes||[])];
   document.getElementById('mEditTitle').textContent='Editar historia';
   document.getElementById('fId').value=e.id;
   document.getElementById('fTitulo').value=e.titulo||'';
@@ -863,14 +929,15 @@ function openEdit(id){
   document.getElementById('inkCatField').style.display=e.ink_club?'block':'none';
   document.getElementById('fCaps').value=e.capitulos_totales||'';
   document.getElementById('capsField').style.display=e.estado==='Finalizado'?'':'none';
-  document.getElementById('fAutor').value=e.autor||'';
   document.getElementById('fAnioInicio').value=e.anio_inicio||'';
   document.getElementById('fContentRating').value=e.content_rating||'';
+  document.getElementById('fDemografico').value=e.demografico||'';
+  const _autores=Array.isArray(e.autor)?e.autor:(e.autor?[e.autor]:[]);autorList=[..._autores];document.getElementById('autorInp').value='';renderAutorPills();
   const _alts=Array.isArray(e.titulos_alt)?e.titulos_alt:(e.titulos_alt?[e.titulos_alt]:[]);altList=[..._alts];document.getElementById('altInp').value='';renderAltPills();
-  updateAdultLbl();updateCov(e.imagen||'');renderPills();openMod('editWrap');
+  updateAdultLbl();updateCov(e.imagen||'');renderPills();renderTropePills();renderPersonajePills();openMod('editWrap');
 }
 function openAdd(){
-  editingId=null;tagsList=[];
+  editingId=null;tagsList=[];tropesList=[];personajesList=[];
   document.getElementById('mEditTitle').textContent='Nueva historia';
   document.getElementById('fTitulo').value='';document.getElementById('fImagen').value='';
   document.getElementById('fDesc').value='';document.getElementById('fBib').checked=false;
@@ -880,19 +947,29 @@ function openAdd(){
   document.getElementById('inkCatField').style.display='none';
   document.getElementById('fCaps').value='';
   document.getElementById('capsField').style.display='none';
-  document.getElementById('fAutor').value='';
   document.getElementById('fAnioInicio').value='';
   document.getElementById('fContentRating').value='';
+  document.getElementById('fDemografico').value='';
+  autorList=[];document.getElementById('autorInp').value='';renderAutorPills();
   altList=[];document.getElementById('altInp').value='';renderAltPills();
-  updateAdultLbl();document.getElementById('covThumb').style.display='none';renderPills();openMod('editWrap');
+  updateAdultLbl();document.getElementById('covThumb').style.display='none';renderPills();renderTropePills();renderPersonajePills();openMod('editWrap');
 }
 function saveEntry(){
   // Flush any text typed in altInp that wasn't confirmed with Enter
   const _altPending=document.getElementById('altInp').value.trim();
   if(_altPending){addAlt(_altPending);document.getElementById('altInp').value='';}
+  // Flush any text typed in autorInp that wasn't confirmed with Enter
+  const _autorPending=document.getElementById('autorInp').value.trim();
+  if(_autorPending){addAutor(_autorPending);document.getElementById('autorInp').value='';}
   // Flush any text typed in tagInp that wasn't confirmed with Enter
   const _tagPending=document.getElementById('tagInp').value.trim();
   if(_tagPending){addTag(_tagPending);document.getElementById('tagInp').value='';}
+  // Flush any text typed in tropeInp that wasn't confirmed with Enter
+  const _tropePending=document.getElementById('tropeInp').value.trim();
+  if(_tropePending){addTrope(_tropePending);document.getElementById('tropeInp').value='';}
+  // Flush any text typed in personajeInp that wasn't confirmed with Enter
+  const _personajePending=document.getElementById('personajeInp').value.trim();
+  if(_personajePending){addPersonaje(_personajePending);document.getElementById('personajeInp').value='';}
   const titulo=document.getElementById('fTitulo').value.trim();
   if(!titulo){toast('El título es obligatorio','err');return;}
   const bib=document.getElementById('fBib').checked,files=document.getElementById('fFiles').checked;
@@ -911,16 +988,18 @@ function saveEntry(){
     imagen:document.getElementById('fImagen').value.trim(),desc:document.getElementById('fDesc').value.trim(),
     tags:normalizedTags,in_biblioteca:bib,in_files:files,adult,subido,
     ink_club:inkClub,ink_categories:inkCategories,
+    tropos:[...tropesList],personajes:[...personajesList],
   };
   if(altList.length)entry.titulos_alt=[...altList]; else delete entry.titulos_alt;
   if(estado==='Finalizado'&&capsVal>0)entry.capitulos_totales=capsVal;
   if(!inkClub){delete entry.ink_club;delete entry.ink_categories;}
-  const autorVal=document.getElementById('fAutor').value.trim();
-  if(autorVal)entry.autor=autorVal; else delete entry.autor;
+  if(autorList.length)entry.autor=[...autorList]; else delete entry.autor;
   const anioVal=parseInt(document.getElementById('fAnioInicio').value,10);
   if(anioVal>0)entry.anio_inicio=anioVal; else delete entry.anio_inicio;
   const contentRatingVal=document.getElementById('fContentRating').value;
   if(contentRatingVal)entry.content_rating=contentRatingVal; else delete entry.content_rating;
+  const demograficoVal=document.getElementById('fDemografico').value;
+  if(demograficoVal)entry.demografico=demograficoVal; else delete entry.demografico;
   if(editingId){
     const i=allData.findIndex(x=>x.id===editingId);
     if(i>=0)allData[i]=entry;
@@ -956,6 +1035,36 @@ function addTag(v){
   renderPills();
 }
 function removeTag(t){tagsList=tagsList.filter(x=>x!==t);renderPills();}
+function renderTropePills(){
+  const wrap=document.getElementById('tropesWrap'),inp=document.getElementById('tropeInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  tropesList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeTrope('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+}
+function addTrope(v){
+  const t=v.trim().replace(/^#/,'');if(!t||tropesList.includes(t))return;
+  tropesList.push(t);renderTropePills();
+}
+function removeTrope(t){tropesList=tropesList.filter(x=>x!==t);renderTropePills();}
+function renderPersonajePills(){
+  const wrap=document.getElementById('personajesWrap'),inp=document.getElementById('personajeInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  personajesList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removePersonaje('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+}
+function addPersonaje(v){
+  const t=v.trim().replace(/^#/,'');if(!t||personajesList.includes(t))return;
+  personajesList.push(t);renderPersonajePills();
+}
+function removePersonaje(t){personajesList=personajesList.filter(x=>x!==t);renderPersonajePills();}
 function renderAltPills(){
   const wrap=document.getElementById('altWrap'),inp=document.getElementById('altInp');
   wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
@@ -968,6 +1077,18 @@ function renderAltPills(){
 }
 function addAlt(v){const t=v.trim();if(!t||altList.includes(t))return;altList.push(t);renderAltPills();}
 function removeAlt(t){altList=altList.filter(x=>x!==t);renderAltPills();}
+function renderAutorPills(){
+  const wrap=document.getElementById('autorWrap'),inp=document.getElementById('autorInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  autorList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAutor('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+}
+function addAutor(v){const t=v.trim();if(!t||autorList.includes(t))return;autorList.push(t);renderAutorPills();}
+function removeAutor(t){autorList=autorList.filter(x=>x!==t);renderAutorPills();}
 
 
 
@@ -994,7 +1115,11 @@ let brokenIds=new Set();
 function isIncomplete(e){
   const sinAlt=!e.titulos_alt||e.titulos_alt.length===0;
   const sinCaps=e.estado==='Finalizado'&&(!e.capitulos_totales||e.capitulos_totales<=0);
-  return sinAlt||sinCaps;
+  const sinAutor=!e.autor||(Array.isArray(e.autor)?e.autor.length===0:false);
+  const sinAnio=!e.anio_inicio;
+  const sinContentRating=!e.content_rating;
+  const sinDemografico=e.seccion==='Manga'&&!e.demografico;
+  return sinAlt||sinCaps||sinAutor||sinAnio||sinContentRating||sinDemografico;
 }
 let incompleteFilter=false;
 function updateIncompleteCount(){
@@ -1079,9 +1204,21 @@ function bindEvents(){
     if(e.key==='Enter'||e.key===','){e.preventDefault();addTag(e.target.value);e.target.value='';}
     else if(e.key==='Backspace'&&!e.target.value&&tagsList.length){tagsList.pop();renderPills();}
   });
+  document.getElementById('tropeInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addTrope(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&tropesList.length){tropesList.pop();renderTropePills();}
+  });
+  document.getElementById('personajeInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addPersonaje(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&personajesList.length){personajesList.pop();renderPersonajePills();}
+  });
   document.getElementById('altInp').addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===','){e.preventDefault();addAlt(e.target.value);e.target.value='';}
     else if(e.key==='Backspace'&&!e.target.value&&altList.length){altList.pop();renderAltPills();}
+  });
+  document.getElementById('autorInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addAutor(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&autorList.length){autorList.pop();renderAutorPills();}
   });
   document.getElementById('fImagen').addEventListener('input',e=>updateCov(e.target.value.trim()));
   document.getElementById('fAdult').addEventListener('change',updateAdultLbl);

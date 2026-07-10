@@ -197,6 +197,11 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
 .tpill button{background:none;border:none;color:currentColor;cursor:pointer;padding:0;font-size:14px;line-height:1;opacity:.6}
 .tpill button:hover{opacity:1}
 .tag-inp{border:none;background:transparent;color:var(--paper);font-size:13px;outline:none;font-family:'DM Sans',sans-serif;min-width:90px;flex:1}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip-opt{padding:5px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11.5px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .13s;white-space:nowrap;line-height:1.4}
+.chip-opt:hover{border-color:var(--neon2);color:var(--neon2)}
+.chip-opt.active{background:rgba(255,71,163,.14);border-color:var(--neon2);color:var(--neon2)}
+.chip-opt.active-y{background:rgba(232,255,71,.14);border-color:var(--neon);color:var(--neon)}
 .checks{display:flex;flex-wrap:wrap;gap:12px;padding-top:4px}
 .chk{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;color:var(--muted);transition:color .15s}
 .chk:hover{color:var(--paper)}
@@ -210,6 +215,26 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
 .toast.ok{border-color:rgba(71,255,224,.4);color:var(--neon3)}
 .toast.err{border-color:rgba(255,71,163,.4);color:var(--neon2)}
 @media(max-width:768px){.form-grid{grid-template-columns:1fr}.form-full{grid-column:1}table td:nth-child(4),table th:nth-child(4),table td:nth-child(5),table th:nth-child(5){display:none}}
+
+/* ── EDIT MODAL: two-column layout (datos / taxonomía) ── */
+.modal-wide{max-width:1180px}
+.m-navpills{display:flex;flex-wrap:wrap;gap:6px;padding:10px 20px;border-bottom:1px solid var(--border);position:sticky;top:41px;background:var(--surface);z-index:1}
+.nav-pill{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;border-radius:1px;transition:all .15s;white-space:nowrap}
+.nav-pill:hover{border-color:var(--neon);color:var(--neon)}
+.m-split{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0}
+.m-left{padding:20px;border-right:1px solid var(--border)}
+.m-right{padding:20px;display:flex;flex-direction:column;gap:10px}
+@media(max-width:900px){.m-split{grid-template-columns:1fr}.m-left{border-right:none;border-bottom:1px solid var(--border)}}
+.acc-group{border:1px solid var(--border);background:var(--surface2)}
+.acc-head{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;user-select:none}
+.acc-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--neon2)}
+.acc-right{display:flex;align-items:center;gap:8px}
+.acc-count{font-size:10px;color:var(--dim);font-family:'Space Mono',monospace;min-width:14px;text-align:right}
+.acc-count:empty{display:none}
+.acc-chevron{font-size:11px;color:var(--dim);transition:transform .2s}
+.acc-group.open .acc-chevron{transform:rotate(90deg)}
+.acc-body{display:none;padding:0 14px 14px}
+.acc-group.open .acc-body{display:block;padding-top:2px}
 
 /* ── AUTH GATE ─────────────────────────────────────────── */
 #authGate{
@@ -454,137 +479,242 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
 
 <!-- EDIT MODAL -->
 <div class="mwrap" id="editWrap">
-  <div class="modal">
+  <div class="modal modal-wide">
     <div class="m-header">
       <div class="m-title" id="mEditTitle">Nueva historia</div>
       <button class="m-x" data-close="editWrap">✕</button>
     </div>
-    <div class="m-body">
-      <div class="form-grid">
-        <input type="hidden" id="fId">
-        <div class="form-full fg">
-          <label class="flbl">Título <span class="req">*</span></label>
-          <input type="text" id="fTitulo" class="finput" placeholder="Título de la historia">
-        </div>
-        <div class="form-full fg">
-          <label class="flbl">Títulos alternativos</label>
-          <div class="tags-wrap" id="altWrap" onclick="document.getElementById('altInp').focus()">
-            <input type="text" id="altInp" class="tag-inp" placeholder="Título alternativo, Enter para añadir…">
+    <div class="m-navpills">
+      <button type="button" class="nav-pill" data-jump="secBasicos">📋 Básicos</button>
+      <button type="button" class="nav-pill" data-jump="secGeneros">🎭 Géneros</button>
+      <button type="button" class="nav-pill" data-jump="secSubgeneros">🌈 Subgéneros</button>
+      <button type="button" class="nav-pill" data-jump="secDinamica">💞 Dinámica</button>
+      <button type="button" class="nav-pill" data-jump="secTropos">🪢 Tropos</button>
+      <button type="button" class="nav-pill" data-jump="secPersonajes">🦋 Personajes</button>
+      <button type="button" class="nav-pill" data-jump="secIdentidad">🏳️‍⚧️ Identidad</button>
+      <button type="button" class="nav-pill" data-jump="secEdad">🎂 Edad</button>
+      <button type="button" class="nav-pill" data-jump="secPais">🌍 País</button>
+      <button type="button" class="nav-pill" data-jump="secAdvertencias">⚠️ Advertencias</button>
+    </div>
+    <div class="m-body m-split">
+      <div class="m-left" id="secBasicos">
+        <div class="form-grid">
+          <input type="hidden" id="fId">
+          <div class="form-full fg">
+            <label class="flbl">Título <span class="req">*</span></label>
+            <input type="text" id="fTitulo" class="finput" placeholder="Título de la historia">
           </div>
-          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: título original japonés, inglés…</div>
-        </div>
-        <div class="fg">
-          <label class="flbl">Sección <span class="req">*</span></label>
-          <select id="fSeccion" class="fsel">
-            <option>Manhwa</option><option>Manga</option><option>Manhua</option>
-            <option>Webtoon</option><option>Sin Clasificación</option><option>Cómic</option><option>Novela Gráfica</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label class="flbl">Estado <span class="req">*</span></label>
-          <select id="fEstado" class="fsel">
-            <option>Continúa</option><option>Finalizado</option><option>Hiatus</option><option>Cancelado</option>
-          </select>
-        </div>
-        <div class="fg" id="capsField" style="display:none">
-          <label class="flbl">Capítulos totales</label>
-          <input type="number" id="fCaps" class="finput" min="1" placeholder="Ej: 48">
-        </div>
-        <div class="form-full fg">
-          <label class="flbl">Autor / Artista</label>
-          <div class="tags-wrap" id="autorWrap" onclick="document.getElementById('autorInp').focus()">
-            <input type="text" id="autorInp" class="tag-inp" placeholder="Nombre del autor/a, Enter para añadir…">
-          </div>
-          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Para historias con varios autores/artistas</div>
-        </div>
-        <div class="fg">
-          <label class="flbl">Año de inicio</label>
-          <input type="number" id="fAnioInicio" class="finput" min="1900" max="2100" placeholder="Ej: 2019">
-        </div>
-        <div class="fg">
-          <label class="flbl">Clasificación de contenido</label>
-          <select id="fContentRating" class="fsel">
-            <option value="">— Sin especificar —</option>
-            <option value="safe">🟢 Safe</option>
-            <option value="sugestiva">🟡 Sugestiva</option>
-            <option value="erotica">🔴 Erótica</option>
-          </select>
-          <div class="fhint">Referencia tipo MangaDex (safe / sugestiva / erótica)</div>
-        </div>
-        <div class="fg">
-          <label class="flbl">Demográfico</label>
-          <select id="fDemografico" class="fsel">
-            <option value="">— Sin especificar —</option>
-            <option value="shoujo">🎀 Shoujo</option>
-            <option value="shounen">⚔️ Shounen</option>
-            <option value="seinen">🗡️ Seinen</option>
-            <option value="josei">🌹 Josei</option>
-          </select>
-          <div class="fhint">Demográfico editorial original de la obra</div>
-        </div>
-        <div class="form-full fg">
-          <label class="flbl">URL de portada</label>
-          <div class="cov-row">
-            <input type="url" id="fImagen" class="finput" placeholder="https://…">
-            <img id="covThumb" class="cov-thumb" alt="preview">
-          </div>
-        </div>
-        <div class="form-full fg">
-          <label class="flbl">Descripción</label>
-          <textarea id="fDesc" class="ftxt" placeholder="Sinopsis…"></textarea>
-        </div>
-        <div class="form-full fg">
-          <label class="flbl">Tags / Géneros</label>
-          <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagInp').focus()">
-            <input type="text" id="tagInp" class="tag-inp" placeholder="Escribe y pulsa Enter…">
-          </div>
-          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · "Erotica" activa +18 auto</div>
-        </div>
-        <div class="form-full fg">
-          <label class="flbl">🪢 Tropes</label>
-          <div class="tags-wrap" id="tropesWrap" onclick="document.getElementById('tropeInp').focus()">
-            <input type="text" id="tropeInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="tropeSuggestions">
-          </div>
-          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: SlowBurn, EnemiesToLovers…</div>
-        </div>
-        <div class="form-full fg">
-          <label class="flbl">🦋 Personajes</label>
-          <div class="tags-wrap" id="personajesWrap" onclick="document.getElementById('personajeInp').focus()">
-            <input type="text" id="personajeInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="personajeSuggestions">
-          </div>
-          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: CEO, Brujas, Policia…</div>
-        </div>
-        <div class="form-full fg">
-          <label class="flbl" style="color:#ffc847">⚠️ Advertencias de contenido</label>
-          <div class="tags-wrap" id="advertenciasWrap" onclick="document.getElementById('advertenciaInp').focus()">
-            <input type="text" id="advertenciaInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="advertenciaSuggestions">
-          </div>
-          <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: Violencia, Autolesión, Muerte de un personaje…</div>
-        </div>
-        <div class="fg">
-          <label class="flbl">Ubicación</label>
-          <div class="checks">
-            <label class="chk"><input type="checkbox" id="fBib"> 📚 Biblioteca</label>
-            <label class="chk"><input type="checkbox" id="fFiles"> 📁 FILES</label>
-          </div>
-        </div>
-        <div class="fg" style="justify-content:flex-end">
-          <label class="flbl"> </label>
-          <label class="chk chk-adult" id="adultLbl">
-            <input type="checkbox" id="fAdult"> 🔞 Contenido +18
-          </label>
-        </div>
-        <div class="form-full fg">
-          <label class="flbl" style="color:var(--neon2)">📖 INK CLUB</label>
-          <div class="ink-club-form">
-            <label class="chk" style="margin-bottom:8px">
-              <input type="checkbox" id="fInkClub" style="accent-color:var(--neon2)">
-              <span style="color:var(--neon2)">Marcar como lectura del club INK CLUB</span>
-            </label>
-            <div id="inkCatField" style="display:none">
-              <div class="fhint" style="margin-bottom:5px">Categorías del club (separadas por coma):</div>
-              <input type="text" id="fInkCats" class="ink-club-cats-inp" placeholder="Ej: Enero 2025, Romance, Favoritas…">
+          <div class="form-full fg">
+            <label class="flbl">Títulos alternativos</label>
+            <div class="tags-wrap" id="altWrap" onclick="document.getElementById('altInp').focus()">
+              <input type="text" id="altInp" class="tag-inp" placeholder="Título alternativo, Enter para añadir…">
             </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Ej: título original japonés, inglés…</div>
+          </div>
+          <div class="fg">
+            <label class="flbl">Sección <span class="req">*</span></label>
+            <select id="fSeccion" class="fsel">
+              <option>Manhwa</option><option>Manga</option><option>Manhua</option>
+              <option>Webtoon</option><option>Sin Clasificación</option><option>Cómic</option><option>Novela Gráfica</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="flbl">Estado <span class="req">*</span></label>
+            <select id="fEstado" class="fsel">
+              <option>Continúa</option><option>Finalizado</option><option>Hiatus</option><option>Cancelado</option>
+            </select>
+          </div>
+          <div class="fg" id="capsField" style="display:none">
+            <label class="flbl">Capítulos totales</label>
+            <input type="number" id="fCaps" class="finput" min="1" placeholder="Ej: 48">
+          </div>
+          <div class="form-full fg">
+            <label class="flbl">Autor / Artista</label>
+            <div class="tags-wrap" id="autorWrap" onclick="document.getElementById('autorInp').focus()">
+              <input type="text" id="autorInp" class="tag-inp" placeholder="Nombre del autor/a, Enter para añadir…">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Para historias con varios autores/artistas</div>
+          </div>
+          <div class="fg">
+            <label class="flbl">Año de inicio</label>
+            <input type="number" id="fAnioInicio" class="finput" min="1900" max="2100" placeholder="Ej: 2019">
+          </div>
+          <div class="fg">
+            <label class="flbl">Clasificación de contenido</label>
+            <select id="fContentRating" class="fsel">
+              <option value="">— Sin especificar —</option>
+              <option value="safe">🟢 Safe</option>
+              <option value="sugestiva">🟡 Sugestiva</option>
+              <option value="erotica">🔴 Erótica</option>
+            </select>
+            <div class="fhint">Referencia tipo MangaDex (safe / sugestiva / erótica)</div>
+          </div>
+          <div class="fg">
+            <label class="flbl">Demográfico</label>
+            <select id="fDemografico" class="fsel">
+              <option value="">— Sin especificar —</option>
+              <option value="shoujo">🎀 Shoujo</option>
+              <option value="shounen">⚔️ Shounen</option>
+              <option value="seinen">🗡️ Seinen</option>
+              <option value="josei">🌹 Josei</option>
+            </select>
+            <div class="fhint">Demográfico editorial original de la obra</div>
+          </div>
+          <div class="form-full fg">
+            <label class="flbl">URL de portada</label>
+            <div class="cov-row">
+              <input type="url" id="fImagen" class="finput" placeholder="https://…">
+              <img id="covThumb" class="cov-thumb" alt="preview">
+            </div>
+          </div>
+          <div class="form-full fg">
+            <label class="flbl">Descripción</label>
+            <textarea id="fDesc" class="ftxt" placeholder="Sinopsis…"></textarea>
+          </div>
+          <div class="fg">
+            <label class="flbl">Ubicación</label>
+            <div class="checks">
+              <label class="chk"><input type="checkbox" id="fBib"> 📚 Biblioteca</label>
+              <label class="chk"><input type="checkbox" id="fFiles"> 📁 FILES</label>
+            </div>
+          </div>
+          <div class="fg" style="justify-content:flex-end">
+            <label class="flbl"> </label>
+            <label class="chk chk-adult" id="adultLbl">
+              <input type="checkbox" id="fAdult"> 🔞 Contenido +18
+            </label>
+          </div>
+          <div class="form-full fg">
+            <label class="flbl" style="color:var(--neon2)">📖 INK CLUB</label>
+            <div class="ink-club-form">
+              <label class="chk" style="margin-bottom:8px">
+                <input type="checkbox" id="fInkClub" style="accent-color:var(--neon2)">
+                <span style="color:var(--neon2)">Marcar como lectura del club INK CLUB</span>
+              </label>
+              <div id="inkCatField" style="display:none">
+                <div class="fhint" style="margin-bottom:5px">Categorías del club (separadas por coma):</div>
+                <input type="text" id="fInkCats" class="ink-club-cats-inp" placeholder="Ej: Enero 2025, Romance, Favoritas…">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="m-right">
+        <div class="acc-group" id="secGeneros">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">🎭 Géneros</span>
+            <span class="acc-right"><span class="acc-count" id="cntGeneros"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="tagsWrap" onclick="document.getElementById('tagInp').focus()">
+              <input type="text" id="tagInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="generoSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente · "Erótica" activa +18 auto</div>
+            <div class="chip-group" id="generoChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secSubgeneros">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">🌈 Subgéneros / Temáticas</span>
+            <span class="acc-right"><span class="acc-count" id="cntSubgeneros"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="subgenerosWrap" onclick="document.getElementById('subgeneroInp').focus()">
+              <input type="text" id="subgeneroInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="subgeneroSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="subgeneroChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secDinamica">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">💞 Dinámica de Pareja</span>
+            <span class="acc-right"><span class="acc-count" id="cntDinamica"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="dinamicaWrap" onclick="document.getElementById('dinamicaInp').focus()">
+              <input type="text" id="dinamicaInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="dinamicaSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="dinamicaChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secTropos">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">🪢 Tropos Narrativos</span>
+            <span class="acc-right"><span class="acc-count" id="cntTropos"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="tropesWrap" onclick="document.getElementById('tropeInp').focus()">
+              <input type="text" id="tropeInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="tropeSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="tropeChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secPersonajes">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">🦋 Personajes / Profesiones</span>
+            <span class="acc-right"><span class="acc-count" id="cntPersonajes"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="personajesWrap" onclick="document.getElementById('personajeInp').focus()">
+              <input type="text" id="personajeInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="personajeSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="personajeChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secIdentidad">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">🏳️‍⚧️ Identidad / Expresión de Género</span>
+            <span class="acc-right"><span class="acc-count" id="cntIdentidad"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="identidadWrap" onclick="document.getElementById('identidadInp').focus()">
+              <input type="text" id="identidadInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="identidadSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="identidadChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secEdad">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">🎂 Edad Protagonistas</span>
+            <span class="acc-right"><span class="acc-count" id="cntEdad"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="edadWrap" onclick="document.getElementById('edadInp').focus()">
+              <input type="text" id="edadInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="edadSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="edadChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secPais">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title">🌍 País y Cultura</span>
+            <span class="acc-right"><span class="acc-count" id="cntPais"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="paisWrap" onclick="document.getElementById('paisInp').focus()">
+              <input type="text" id="paisInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="paisSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="paisChips"></div>
+          </div>
+        </div>
+        <div class="acc-group" id="secAdvertencias">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <span class="acc-title" style="color:#ffc847">⚠️ Advertencias de contenido</span>
+            <span class="acc-right"><span class="acc-count" id="cntAdvertencias"></span><span class="acc-chevron">▸</span></span>
+          </div>
+          <div class="acc-body">
+            <div class="tags-wrap" id="advertenciasWrap" onclick="document.getElementById('advertenciaInp').focus()">
+              <input type="text" id="advertenciaInp" class="tag-inp" placeholder="Escribe y pulsa Enter…" list="advertenciaSuggestions">
+            </div>
+            <div class="fhint">Enter o coma para añadir · Backspace elimina el último · Si no aparece en la lista, escríbelo igualmente</div>
+            <div class="chip-group" id="advertenciaChips"></div>
           </div>
         </div>
       </div>
@@ -616,46 +746,15 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
 
 </div><!-- /appShell -->
 
-<datalist id="tropeSuggestions">
-  <option value="AgeGap"><option value="Alpha/Beta/Omega"><option value="Arranged Marriage">
-  <option value="Best Friend's Sister"><option value="Bi Awakening"><option value="Bodyguard/VIP">
-  <option value="BossEmployee"><option value="ChildhoodFriends"><option value="Coming Out tardío">
-  <option value="Conexión Mental / Bond"><option value="Destined Lovers"><option value="EnemiesToLovers">
-  <option value="FakeRelationship"><option value="ForbiddenLove"><option value="ForcedProximity">
-  <option value="Found Family"><option value="FriendsToLovers"><option value="FriendsWithBenefits">
-  <option value="GrumpySunshine"><option value="Hurt/Comfort"><option value="Ice Queen × Toaster Oven">
-  <option value="JealousyTrope"><option value="Lesbian Awakening"><option value="LoveTriangle">
-  <option value="MarriageOfConvenience"><option value="May-December Romance"><option value="One Night Stand → More">
-  <option value="OppositesAttract"><option value="Only One Bed"><option value="Reencarnacion">
-  <option value="RevengeRomance"><option value="RichPoorRomance"><option value="Rivals to Lovers">
-  <option value="Road Trip"><option value="Roommates"><option value="SecretRelationship">
-  <option value="SecondChanceRomance"><option value="Sex Toys / Juguetes Sexuales"><option value="SlowBurn">
-  <option value="Soulmates"><option value="Stranded Together"><option value="Strangers to Lovers">
-  <option value="StudentTeacher"><option value="Toaster Oven"><option value="UnrequitedLove">
-  <option value="WhyChoose"><option value="WorkplaceRomance">
-</datalist>
-<datalist id="personajeSuggestions">
-  <option value="Abogada"><option value="Actriz"><option value="Angel"><option value="Asexual">
-  <option value="Azafata"><option value="Bailarina"><option value="Bisexual"><option value="Brujas">
-  <option value="Cambiaformas"><option value="Cantante"><option value="CEO"><option value="Demonio">
-  <option value="Deportista"><option value="Empresaria"><option value="Escritora"><option value="Espiritus">
-  <option value="Estudiantes"><option value="Famosa"><option value="Futbolista"><option value="Granjera">
-  <option value="Guardaespaldas"><option value="IceQueen"><option value="MadreSoltera"><option value="Medico">
-  <option value="Militar"><option value="MujerLobo"><option value="Nerd"><option value="Piloto">
-  <option value="Piratas"><option value="Policia"><option value="Politica"><option value="Realeza">
-  <option value="Vampiras"><option value="Zombie">
-</datalist>
-<datalist id="advertenciaSuggestions">
-  <option value="Violencia"><option value="Violencia gráfica"><option value="Abuso físico">
-  <option value="Abuso psicológico"><option value="Abuso sexual"><option value="Acoso / Bullying">
-  <option value="Autolesión"><option value="Suicidio"><option value="Trastorno alimenticio">
-  <option value="Muerte de un personaje"><option value="Muerte de un ser querido"><option value="Enfermedad terminal">
-  <option value="Infidelidad"><option value="Relación tóxica"><option value="Manipulación / Gaslighting">
-  <option value="Diferencia de edad significativa"><option value="Trauma / PTSD"><option value="Secuestro">
-  <option value="Contenido sexual explícito"><option value="Dubcon / Consentimiento dudoso"><option value="No-con">
-  <option value="Adicción / Drogas"><option value="Alcoholismo"><option value="Homofobia / Transfobia">
-  <option value="Racismo"><option value="Guerra"><option value="Gore">
-</datalist>
+<datalist id="dinamicaSuggestions"></datalist>
+<datalist id="identidadSuggestions"></datalist>
+<datalist id="edadSuggestions"></datalist>
+<datalist id="paisSuggestions"></datalist>
+<datalist id="generoSuggestions"></datalist>
+<datalist id="subgeneroSuggestions"></datalist>
+<datalist id="tropeSuggestions"></datalist>
+<datalist id="personajeSuggestions"></datalist>
+<datalist id="advertenciaSuggestions"></datalist>
 
 <div class="toast" id="toast"></div>
 
@@ -664,22 +763,78 @@ const DATA_URL='manga_data.json';
 const ADULT_TAGS=new Set(['erotica','erotic','erótica']);
 const ECLS={Finalizado:'b-fin',Continúa:'b-cont',Hiatus:'b-hiatus',Cancelado:'b-cancel'};
 const EICO={Finalizado:'✓',Continúa:'▶',Hiatus:'⏸',Cancelado:'✗'};
-let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[],advertenciasList=[];
+let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[],advertenciasList=[],subgenerosList=[],dinamicaList=[],identidadList=[],edadList=[],paisList=[];
+
+/* ── LISTAS CANÓNICAS DE CATEGORÍAS (misma fuente que admin de libros) ── */
+const GENERO_OPTS=['Acción','Aventura','Biografía','Ciencia Ficción','Comedia Romántica','Contemporánea','Dark Academia','Distopía','Drama','Ensayo','Fantasía','Fantasía Urbana','Filosofía','Gótico','Histórica','Horror','Juvenil','Misterio','New Adult','No Ficción','Paranormal','Psicológico','Romance','Thriller','YA'];
+const SUBGENERO_OPTS=['Amnesia','Autodescubrimiento','Baihee 🐉','BDSM','Bisexual','Bullying','Celebridad','Coming of Age','Coming Out','Crimen','Dark Romance','Deporte','Erótica','Familia','Feminismo','GL Thai 🇹🇭','Interracial','Mafia','Magia','Mitología','Música','Navidad','No Binarie','Omegaverse','Poesía','Poliamor','Queer','Reality Show','Reencarnación','Segunda Oportunidad','Small Town','Sobrenatural','Trans','Universidad','Viaje en el Tiempo','Wattpad','WhyChoose'];
+const DINAMICA_OPTS=['Alfa × Omega','Andrógina × Andrógina','Andrógina × Butch','Andrógina × Femme','Bodyguard × VIP','Boss × Employee','Bruja × Mortal','Butch × Butch','Butch × Femme','Caos × Control','Cazadora × Monstruo','Cazadora × Presa','Chapera × Butch','Chapera × Femme','Dark × Light','Detective × Sospechosa','Diosa × Devota','Dominante × Sumisa','Famosa × Anónima','Femme × Femme','Feroz × Tierna','Fría × Cálida','Grumpy × Sunshine','Hada × Humana','Ice Queen × Softie','Ice Queen × Sunshine','Introvertida × Extrovertida','Jefa × Subordinada','Masc × Femme','Masc × Masc','Masc × Soft Butch','Mentora × Aprendiz','Nerd × Jock','Nerd × Popular','Protectora × Delicada','Realeza × Plebeya','Rich × Poor','Seria × Divertida','Sirena × Marinera','Soft Butch × Femme','Stud × Femme','Switch × Switch','Top × Bottom','Vampira × Humana','Veterana × Novata'];
+const TROPE_OPTS=['Age Gap','Alpha/Beta/Omega','Arranged Marriage',"Best Friend's Sister",'Bi Awakening','Bodyguard / VIP','Childhood Friends','Coming Out tardío','Conexión Mental / Bond','Destined Lovers','Enemies to Lovers','Fake Relationship','Forbidden Love','Forced Proximity','Found Family','Friends to Lovers','Friends with Benefits','Hurt/Comfort','Ice Queen × Toaster Oven','Jealousy Trope','Lesbian Awakening','Love Triangle','Marriage of Convenience','May-December Romance','One Night Stand → More','Only One Bed','Opposites Attract','Reencarnación','Revenge Romance','Rich / Poor Romance','Rivals to Lovers','Road Trip','Roommates','Second Chance Romance','Secret Relationship','Slow Burn','Soulmates','Sex Toys / Juguetes Sexuales','Stranded Together','Strangers to Lovers','Student × Teacher','Toaster Oven','Unrequited Love','Vacation Romance','WhyChoose','Workplace Romance'];
+const PERSONAJE_OPTS=['Abogada','Actriz','Ángel','Arqueóloga','Artista','Azafata','Bailarina','Bombera','Bruja','Camarera','Cambiaformas','Cantante','CEO','Chef','Científica','Demonio','Deportista','Detective','Diosa','Doctora / Médica','Editora','Empresaria','Enfermera','Escritora','Espíritu / Fantasma','Estudiante','Famosa','Farmacéutica','Florista','Fotógrafa','Futbolista','Granjera','Guardaespaldas','Hacker','Hada','Inspectora','Investigadora','Jardinera','Madre Soltera','Millonaria / Billonaria','Modelo','Mujer Lobo','Música','Piloto','Pirata','Policía','Política','Profesora','Psicóloga','Realeza','Reportera / Periodista','Sirena','Tatuadora','Vampira','Veterinaria','Zombie'];
+const IDENTIDAD_OPTS=['Andrógina','Asexual','Bisexual','Butch','Caos','Chapera / Stem','Control','Femme','Grumpy','Ice Queen','Introvertida','Lesbiana','Masc','Nerd','No Binarie','Pansexual','Queer','Soft Butch','Stud','Sunshine','Trans'];
+const EDAD_OPTS=['Young Adult (15–18)','New Adult (18–24)','25–39','+40'];
+const PAIS_OPTS=['Alemania','Argentina','Australia','Brasil','Canadá','Chile','China','Colombia','Corea del Sur','España','Estados Unidos','Francia','India','Italia','Japón','México','Reino Unido','Tailandia','Taiwán','Vietnam','Ambientación africana','Ambientación árabe','Ambientación asiática','Ambientación europea','Ambientación latinoamericana','Ambientación nórdica','Cultura indígena','Mundo fantástico'];
+const ADVERTENCIA_OPTS=['Abandono','Aborto','Abuso de Poder','Abuso Emocional / Gaslighting','Abuso Infantil','Abuso Sexual','Acoso / Hostigamiento','Acoso Cibernético','Acoso Sexual','Adopción Involuntaria','Adulto con Menor (relación)','Alcohol','Ansiedad / Ataques de Pánico','Anticoncepción sin Consentimiento','Autolesión','Bifobia','Bullying','Clasismo','Conflictos Familiares','Consentimiento Dudoso (Dub-Con)','Contenido Adulto (R18)','Crímenes de Odio','Crueldad Animal','Depresión','Disociación','Distanciamiento Familiar / Rechazo','Drogado sin Consentimiento','Drogas / Consumo de Sustancias','Embarazo Forzado','Enfermedad Mental','Enfermedad Terminal','Esclavitud','Esclavitud Sexual','Gordofobia / Fobia Corporal','Grooming','Guerra / Conflicto Armado','Homofobia','Hospitalización Psiquiátrica','Ideación Suicida','Incesto','Infantilización','Infertilidad / Pérdida Gestacional','Infidelidad','Islamofobia','Juego Patológico','Lesbofobia','Maltrato / Muerte de Animal','Maltrato Físico','Manipulación Psicológica','Matrimonio Forzado','Misoginia','Muerte','Muerte de un Ser Querido','Outing (revelar orientación sin consentimiento)','Parto / Complicaciones','Pensamientos Intrusivos / TOC','Persecución Religiosa','Pornografía de Venganza','Prostitución / Trabajo Sexual','PTSD / Trauma','Queerofobia / LGTBfobia','Racismo','Relación Tóxica','Secuestro / Cautiverio','Sin Consentimiento (Non-Con)','Sobredosis','Stalking','Suicidio / Intento de Suicidio','Terapia de Conversión','Terrorismo','Tráfico de Personas','Tráfico Sexual','Traición del Propio Cuerpo','Transfobia','Trastorno Bipolar','Trastornos Alimentarios','Trauma Mental','Trauma Religioso','Vergüenza Sexual (Slut Shaming)','Violación','Violación Grupal','Violencia Doméstica','Violencia Gráfica','Violencia sobre Personajes Secundarios'];
+
+/* Config: mapea cada categoría a su lista activa, su datalist, su contenedor de chips y sus funciones add/render */
+function getChipConfig(){
+  return {
+    genero:      {opts:GENERO_OPTS,      list:tagsList,         datalist:'generoSuggestions',      chipId:'generoChips',      add:addTag,         render:renderPills},
+    subgenero:   {opts:SUBGENERO_OPTS,   list:subgenerosList,   datalist:'subgeneroSuggestions',   chipId:'subgeneroChips',   add:addSubgenero,   render:renderSubgeneroPills},
+    dinamica:    {opts:DINAMICA_OPTS,    list:dinamicaList,     datalist:'dinamicaSuggestions',    chipId:'dinamicaChips',    add:addDinamica,    render:renderDinamicaPills},
+    trope:       {opts:TROPE_OPTS,       list:tropesList,       datalist:'tropeSuggestions',       chipId:'tropeChips',       add:addTrope,       render:renderTropePills},
+    personaje:   {opts:PERSONAJE_OPTS,   list:personajesList,   datalist:'personajeSuggestions',   chipId:'personajeChips',   add:addPersonaje,   render:renderPersonajePills},
+    identidad:   {opts:IDENTIDAD_OPTS,   list:identidadList,    datalist:'identidadSuggestions',   chipId:'identidadChips',   add:addIdentidad,   render:renderIdentidadPills},
+    edad:        {opts:EDAD_OPTS,        list:edadList,         datalist:'edadSuggestions',        chipId:'edadChips',        add:addEdad,        render:renderEdadPills},
+    pais:        {opts:PAIS_OPTS,        list:paisList,         datalist:'paisSuggestions',        chipId:'paisChips',        add:addPais,        render:renderPaisPills},
+    advertencia: {opts:ADVERTENCIA_OPTS, list:advertenciasList, datalist:'advertenciaSuggestions', chipId:'advertenciaChips', add:addAdvertencia, render:renderAdvertenciaPills},
+  };
+}
+function populateDatalists(){
+  const cfg=getChipConfig();
+  Object.values(cfg).forEach(c=>{
+    const dl=document.getElementById(c.datalist);
+    if(dl && !dl.childElementCount)dl.innerHTML=c.opts.map(v=>`<option value="${esc(v)}">`).join('');
+  });
+}
+function renderChipGroup(kind){
+  const cfg=getChipConfig()[kind];
+  if(!cfg)return;
+  const el=document.getElementById(cfg.chipId);
+  if(!el)return;
+  el.innerHTML=cfg.opts.map(v=>{
+    const active=cfg.list.includes(v);
+    return `<button type="button" class="chip-opt${active?' active':''}" onclick="chipClick('${kind}','${v.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">${esc(v)}</button>`;
+  }).join('');
+}
+function renderAllChipGroups(){
+  Object.keys(getChipConfig()).forEach(renderChipGroup);
+}
+function chipClick(kind,val){
+  const cfg=getChipConfig()[kind];
+  if(!cfg)return;
+  if(cfg.list.includes(val))cfg.list.splice(cfg.list.indexOf(val),1);
+  else cfg.add(val);
+  cfg.render();
+  renderChipGroup(kind);
+}
 
 // ── TAG NORMALIZATION ─────────────────────────────────────
 const TAG_NORMALIZE_MAP = {
-  'slice of life':'Slice_of_Life','slice_of_life':'Slice_of_Life',
+  'slice of life':'Slice of Life','slice_of_life':'Slice of Life','slice of like':'Slice of Life',
   'vida_escolar':'Escolar','vida escolar':'Escolar',
-  'historico':'Historica','histórico':'Historica','histórica':'Historica',
+  'historico':'Histórica','histórico':'Histórica','historica':'Histórica','histórica':'Histórica',
   'horro':'Horror','vamipiras':'Vampiras','vampiras':'Vampiras',
-  'psicologico':'Psicologico','psicológico':'Psicologico',
-  'accion':'Accion','acción':'Accion','fantasia':'Fantasia','fantasía':'Fantasia',
-  'magia':'Fantasia','sci-fi':'SciFi','scifi':'SciFi',
+  'psicologico':'Psicológico','psicológico':'Psicológico',
+  'accion':'Acción','acción':'Acción','fantasia':'Fantasía','fantasía':'Fantasía',
+  'magia':'Fantasía','sci-fi':'SciFi','scifi':'SciFi',
   'sobrenatural':'Supernatural','supernatural':'Supernatural',
-  'reencarnacion':'Reencarnacion','reencarnación':'Reencarnacion',
-  'viaje_tiempo':'Viaje_Tiempo','viaje tiempo':'Viaje_Tiempo',
-  'erotica':'Erotica','erótica':'Erotica','erotic':'Erotica',
-  'zombie':'Horror','drama.':'Drama','historico':'Historica',
+  'reencarnacion':'Reencarnación','reencarnación':'Reencarnación',
+  'viaje_tiempo':'Viaje en el Tiempo','viaje tiempo':'Viaje en el Tiempo','viaje en el tiempo':'Viaje en el Tiempo',
+  'erotica':'Erótica','erótica':'Erótica','erotic':'Erótica',
+  'zombie':'Horror','drama.':'Drama',
+  'musica':'Música','música':'Música',
+  'biografia':'Biografía','biografía':'Biografía',
 };
 function normalizeTag(t){
   const l=t.toLowerCase().trim();
@@ -843,6 +998,7 @@ async function loadShelfCount() {
 }
 
 async function initApp(){
+  populateDatalists();
   try{const r=await fetch(DATA_URL);allData=await r.json();}
   catch{allData=[];toast('No se pudo cargar manga_data.json','err');}
   normalizeAllTags();
@@ -938,9 +1094,26 @@ function pagRange(cur,tot){
   if(cur<tot-2)r.push('…');r.push(tot);return r;
 }
 
+function toggleAcc(headEl){
+  headEl.parentElement.classList.toggle('open');
+}
+function refreshAccCounts(){
+  const map={cntGeneros:tagsList,cntSubgeneros:subgenerosList,cntDinamica:dinamicaList,cntTropos:tropesList,cntPersonajes:personajesList,cntIdentidad:identidadList,cntEdad:edadList,cntPais:paisList,cntAdvertencias:advertenciasList};
+  Object.entries(map).forEach(([id,list])=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=list.length?list.length:'';
+  });
+}
+function setAccOpenState(){
+  document.querySelectorAll('.acc-group').forEach(g=>{
+    const cnt=document.getElementById('cnt'+g.id.replace('sec',''));
+    g.classList.toggle('open', !!(cnt&&cnt.textContent));
+  });
+}
 function openEdit(id){
   const e=allData.find(x=>x.id===id);editingId=id;tagsList=[...(e.tags||[])];
-  tropesList=[...(e.tropos||[])];personajesList=[...(e.personajes||[])];advertenciasList=[...(e.advertencias||[])];
+  tropesList=[...(e.tropos||[])];personajesList=[...(e.personajes||[])];advertenciasList=[...(e.advertencias||[])];subgenerosList=[...(e.subgeneros||[])];
+  dinamicaList=[...(e.dinamica_pareja||[])];identidadList=[...(e.identidad_genero||[])];edadList=[...(e.edad_protagonistas||[])];paisList=[...(e.pais_cultura||[])];
   document.getElementById('mEditTitle').textContent='Editar historia';
   document.getElementById('fId').value=e.id;
   document.getElementById('fTitulo').value=e.titulo||'';
@@ -961,10 +1134,12 @@ function openEdit(id){
   document.getElementById('fDemografico').value=e.demografico||'';
   const _autores=Array.isArray(e.autor)?e.autor:(e.autor?[e.autor]:[]);autorList=[..._autores];document.getElementById('autorInp').value='';renderAutorPills();
   const _alts=Array.isArray(e.titulos_alt)?e.titulos_alt:(e.titulos_alt?[e.titulos_alt]:[]);altList=[..._alts];document.getElementById('altInp').value='';renderAltPills();
-  updateAdultLbl();updateCov(e.imagen||'');renderPills();renderTropePills();renderPersonajePills();renderAdvertenciaPills();openMod('editWrap');
+  updateAdultLbl();updateCov(e.imagen||'');renderPills();renderSubgeneroPills();renderTropePills();renderPersonajePills();renderAdvertenciaPills();
+  renderDinamicaPills();renderIdentidadPills();renderEdadPills();renderPaisPills();refreshAccCounts();setAccOpenState();openMod('editWrap');
 }
 function openAdd(){
-  editingId=null;tagsList=[];tropesList=[];personajesList=[];advertenciasList=[];
+  editingId=null;tagsList=[];tropesList=[];personajesList=[];advertenciasList=[];subgenerosList=[];
+  dinamicaList=[];identidadList=[];edadList=[];paisList=[];
   document.getElementById('mEditTitle').textContent='Nueva historia';
   document.getElementById('fTitulo').value='';document.getElementById('fImagen').value='';
   document.getElementById('fDesc').value='';document.getElementById('fBib').checked=false;
@@ -979,7 +1154,8 @@ function openAdd(){
   document.getElementById('fDemografico').value='';
   autorList=[];document.getElementById('autorInp').value='';renderAutorPills();
   altList=[];document.getElementById('altInp').value='';renderAltPills();
-  updateAdultLbl();document.getElementById('covThumb').style.display='none';renderPills();renderTropePills();renderPersonajePills();renderAdvertenciaPills();openMod('editWrap');
+  updateAdultLbl();document.getElementById('covThumb').style.display='none';renderPills();renderSubgeneroPills();renderTropePills();renderPersonajePills();renderAdvertenciaPills();
+  renderDinamicaPills();renderIdentidadPills();renderEdadPills();renderPaisPills();refreshAccCounts();setAccOpenState();openMod('editWrap');
 }
 function saveEntry(){
   // Flush any text typed in altInp that wasn't confirmed with Enter
@@ -991,12 +1167,27 @@ function saveEntry(){
   // Flush any text typed in tagInp that wasn't confirmed with Enter
   const _tagPending=document.getElementById('tagInp').value.trim();
   if(_tagPending){addTag(_tagPending);document.getElementById('tagInp').value='';}
+  // Flush any text typed in subgeneroInp that wasn't confirmed with Enter
+  const _subgeneroPending=document.getElementById('subgeneroInp').value.trim();
+  if(_subgeneroPending){addSubgenero(_subgeneroPending);document.getElementById('subgeneroInp').value='';}
+  // Flush any text typed in dinamicaInp that wasn't confirmed with Enter
+  const _dinamicaPending=document.getElementById('dinamicaInp').value.trim();
+  if(_dinamicaPending){addDinamica(_dinamicaPending);document.getElementById('dinamicaInp').value='';}
   // Flush any text typed in tropeInp that wasn't confirmed with Enter
   const _tropePending=document.getElementById('tropeInp').value.trim();
   if(_tropePending){addTrope(_tropePending);document.getElementById('tropeInp').value='';}
   // Flush any text typed in personajeInp that wasn't confirmed with Enter
   const _personajePending=document.getElementById('personajeInp').value.trim();
   if(_personajePending){addPersonaje(_personajePending);document.getElementById('personajeInp').value='';}
+  // Flush any text typed in identidadInp that wasn't confirmed with Enter
+  const _identidadPending=document.getElementById('identidadInp').value.trim();
+  if(_identidadPending){addIdentidad(_identidadPending);document.getElementById('identidadInp').value='';}
+  // Flush any text typed in edadInp that wasn't confirmed with Enter
+  const _edadPending=document.getElementById('edadInp').value.trim();
+  if(_edadPending){addEdad(_edadPending);document.getElementById('edadInp').value='';}
+  // Flush any text typed in paisInp that wasn't confirmed with Enter
+  const _paisPending=document.getElementById('paisInp').value.trim();
+  if(_paisPending){addPais(_paisPending);document.getElementById('paisInp').value='';}
   // Flush any text typed in advertenciaInp that wasn't confirmed with Enter
   const _advertenciaPending=document.getElementById('advertenciaInp').value.trim();
   if(_advertenciaPending){addAdvertencia(_advertenciaPending);document.getElementById('advertenciaInp').value='';}
@@ -1022,6 +1213,11 @@ function saveEntry(){
   };
   if(altList.length)entry.titulos_alt=[...altList]; else delete entry.titulos_alt;
   if(advertenciasList.length)entry.advertencias=[...advertenciasList]; else delete entry.advertencias;
+  if(subgenerosList.length)entry.subgeneros=[...subgenerosList]; else delete entry.subgeneros;
+  if(dinamicaList.length)entry.dinamica_pareja=[...dinamicaList]; else delete entry.dinamica_pareja;
+  if(identidadList.length)entry.identidad_genero=[...identidadList]; else delete entry.identidad_genero;
+  if(edadList.length)entry.edad_protagonistas=[...edadList]; else delete entry.edad_protagonistas;
+  if(paisList.length)entry.pais_cultura=[...paisList]; else delete entry.pais_cultura;
   if(estado==='Finalizado'&&capsVal>0)entry.capitulos_totales=capsVal;
   if(!inkClub){delete entry.ink_club;delete entry.ink_categories;}
   if(autorList.length)entry.autor=[...autorList]; else delete entry.autor;
@@ -1058,6 +1254,7 @@ function renderPills(){
     p.innerHTML=`${esc(t)}<button type="button" onclick="removeTag('${esc(t)}')">×</button>`;
     wrap.insertBefore(p,inp);
   });
+  refreshAccCounts();renderChipGroup('genero');
 }
 function addTag(v){
   const t=v.trim().replace(/^#/,'');if(!t||tagsList.includes(t))return;
@@ -1066,6 +1263,86 @@ function addTag(v){
   renderPills();
 }
 function removeTag(t){tagsList=tagsList.filter(x=>x!==t);renderPills();}
+function renderSubgeneroPills(){
+  const wrap=document.getElementById('subgenerosWrap'),inp=document.getElementById('subgeneroInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  subgenerosList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeSubgenero('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+  refreshAccCounts();renderChipGroup('subgenero');
+}
+function addSubgenero(v){
+  const t=v.trim().replace(/^#/,'');if(!t||subgenerosList.includes(t))return;
+  subgenerosList.push(t);renderSubgeneroPills();
+}
+function removeSubgenero(t){subgenerosList=subgenerosList.filter(x=>x!==t);renderSubgeneroPills();}
+function renderDinamicaPills(){
+  const wrap=document.getElementById('dinamicaWrap'),inp=document.getElementById('dinamicaInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  dinamicaList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeDinamica('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+  refreshAccCounts();renderChipGroup('dinamica');
+}
+function addDinamica(v){
+  const t=v.trim().replace(/^#/,'');if(!t||dinamicaList.includes(t))return;
+  dinamicaList.push(t);renderDinamicaPills();
+}
+function removeDinamica(t){dinamicaList=dinamicaList.filter(x=>x!==t);renderDinamicaPills();}
+function renderIdentidadPills(){
+  const wrap=document.getElementById('identidadWrap'),inp=document.getElementById('identidadInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  identidadList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeIdentidad('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+  refreshAccCounts();renderChipGroup('identidad');
+}
+function addIdentidad(v){
+  const t=v.trim().replace(/^#/,'');if(!t||identidadList.includes(t))return;
+  identidadList.push(t);renderIdentidadPills();
+}
+function removeIdentidad(t){identidadList=identidadList.filter(x=>x!==t);renderIdentidadPills();}
+function renderEdadPills(){
+  const wrap=document.getElementById('edadWrap'),inp=document.getElementById('edadInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  edadList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeEdad('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+  refreshAccCounts();renderChipGroup('edad');
+}
+function addEdad(v){
+  const t=v.trim().replace(/^#/,'');if(!t||edadList.includes(t))return;
+  edadList.push(t);renderEdadPills();
+}
+function removeEdad(t){edadList=edadList.filter(x=>x!==t);renderEdadPills();}
+function renderPaisPills(){
+  const wrap=document.getElementById('paisWrap'),inp=document.getElementById('paisInp');
+  wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
+  paisList.forEach(t=>{
+    const p=document.createElement('div');
+    p.className='tpill';
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removePais('${esc(t)}')">×</button>`;
+    wrap.insertBefore(p,inp);
+  });
+  refreshAccCounts();renderChipGroup('pais');
+}
+function addPais(v){
+  const t=v.trim().replace(/^#/,'');if(!t||paisList.includes(t))return;
+  paisList.push(t);renderPaisPills();
+}
+function removePais(t){paisList=paisList.filter(x=>x!==t);renderPaisPills();}
 function renderTropePills(){
   const wrap=document.getElementById('tropesWrap'),inp=document.getElementById('tropeInp');
   wrap.querySelectorAll('.tpill').forEach(p=>p.remove());
@@ -1075,6 +1352,7 @@ function renderTropePills(){
     p.innerHTML=`${esc(t)}<button type="button" onclick="removeTrope('${esc(t)}')">×</button>`;
     wrap.insertBefore(p,inp);
   });
+  refreshAccCounts();renderChipGroup('trope');
 }
 function addTrope(v){
   const t=v.trim().replace(/^#/,'');if(!t||tropesList.includes(t))return;
@@ -1090,6 +1368,7 @@ function renderPersonajePills(){
     p.innerHTML=`${esc(t)}<button type="button" onclick="removePersonaje('${esc(t)}')">×</button>`;
     wrap.insertBefore(p,inp);
   });
+  refreshAccCounts();renderChipGroup('personaje');
 }
 function addPersonaje(v){
   const t=v.trim().replace(/^#/,'');if(!t||personajesList.includes(t))return;
@@ -1106,6 +1385,7 @@ function renderAdvertenciaPills(){
     p.innerHTML=`${esc(t)}<button type="button" onclick="removeAdvertencia('${esc(t)}')">×</button>`;
     wrap.insertBefore(p,inp);
   });
+  refreshAccCounts();renderChipGroup('advertencia');
 }
 function addAdvertencia(v){
   const t=v.trim().replace(/^#/,'');if(!t||advertenciasList.includes(t))return;
@@ -1251,6 +1531,33 @@ function bindEvents(){
     if(e.key==='Enter'||e.key===','){e.preventDefault();addTag(e.target.value);e.target.value='';}
     else if(e.key==='Backspace'&&!e.target.value&&tagsList.length){tagsList.pop();renderPills();}
   });
+  document.getElementById('subgeneroInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addSubgenero(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&subgenerosList.length){subgenerosList.pop();renderSubgeneroPills();}
+  });
+  document.getElementById('dinamicaInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addDinamica(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&dinamicaList.length){dinamicaList.pop();renderDinamicaPills();}
+  });
+  document.getElementById('identidadInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addIdentidad(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&identidadList.length){identidadList.pop();renderIdentidadPills();}
+  });
+  document.getElementById('edadInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addEdad(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&edadList.length){edadList.pop();renderEdadPills();}
+  });
+  document.getElementById('paisInp').addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){e.preventDefault();addPais(e.target.value);e.target.value='';}
+    else if(e.key==='Backspace'&&!e.target.value&&paisList.length){paisList.pop();renderPaisPills();}
+  });
+  document.querySelectorAll('.nav-pill').forEach(b=>b.addEventListener('click',()=>{
+    const target=document.getElementById(b.dataset.jump);
+    if(!target)return;
+    const group=target.classList.contains('acc-group')?target:null;
+    if(group)group.classList.add('open');
+    target.scrollIntoView({behavior:'smooth',block:'start'});
+  }));
   document.getElementById('tropeInp').addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===','){e.preventDefault();addTrope(e.target.value);e.target.value='';}
     else if(e.key==='Backspace'&&!e.target.value&&tropesList.length){tropesList.pop();renderTropePills();}

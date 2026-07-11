@@ -1,5 +1,72 @@
 [
   {
+    "id": "gl_1783715660430_pf4",
+    "titulo": "Addicted to Her",
+    "seccion": "Manhua",
+    "estado": "Finalizado",
+    "imagen": "https://mangadex.org/covers/283b1acd-5a16-46d4-a217-d0648a5a8374/05eac350-259a-41ae-8dba-707d8577411c.jpg.512.jpg",
+    "desc": "Nanzhi es la presidenta de una empresa de entretenimiento, siempre competente y perfecta, pero pocos conocen los secretos que esconde por las noches. Pero tal indulgencia nunca es un placer para Nanzhi, hasta que aparece ella... Esperando que sólo sea una extraña, descubre que es la hermana de su mejor amiga, además de eso, ¿Una nueva artista de su compañía? ¿Se volverá adicta a las constantes insinuaciones de está nueva chica?",
+    "tags": [
+      "Drama",
+      "Romance"
+    ],
+    "in_biblioteca": true,
+    "in_files": true,
+    "adult": false,
+    "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [
+      "Workplace Romance"
+    ],
+    "personajes": [
+      "CEO"
+    ],
+    "titulos_alt": [
+      "Can't Give her Up",
+      "Law of Attraction"
+    ],
+    "capitulos_totales": 60,
+    "autor": [
+      "清少零柒",
+      "爬爬工作室"
+    ],
+    "anio_inicio": 2022,
+    "content_rating": "sugestiva"
+  },
+  {
+    "id": "gl_1783714918468_rr8",
+    "titulo": "My Dear Lass",
+    "seccion": "Manhua",
+    "estado": "Continúa",
+    "imagen": "https://mangadex.org/covers/f74dc24b-3f38-44d5-b7d0-8c40f4b04e29/633844e2-a68a-476a-a1fb-38018078ffe3.png.512.jpg",
+    "desc": "\"Parece que me gustaría alguien como tú\". \n\n\"Eres como un poni\".\n\n El amor y la carrera de la \"zorra\" tonta y saltarina y su fiel \"poni\".",
+    "tags": [
+      "Comedia",
+      "Drama",
+      "Psicológico",
+      "Romance"
+    ],
+    "in_biblioteca": true,
+    "in_files": false,
+    "adult": false,
+    "subido": "Subido biblioteca",
+    "tropos": [
+      "Slow Burn"
+    ],
+    "personajes": [],
+    "titulos_alt": [
+      "Pequeña niña",
+      "小姑孃"
+    ],
+    "advertencias": [
+      "Homofobia"
+    ],
+    "autor": [
+      "Tracy Hu"
+    ],
+    "anio_inicio": 2022,
+    "content_rating": "safe"
+  },
+  {
     "id": "gl_1783366560163_fpt",
     "titulo": "Blue Journey",
     "seccion": "Manhwa",
@@ -3783,7 +3850,20 @@
       "Manhwa"
     ],
     "tropos": [],
-    "personajes": []
+    "personajes": [],
+    "titulos_alt": [
+      "킬 스위치"
+    ],
+    "subgeneros": [
+      "Universidad"
+    ],
+    "capitulos_totales": 53,
+    "autor": [
+      "1172",
+      "PeulHat"
+    ],
+    "anio_inicio": 2020,
+    "content_rating": "erotica"
   },
   {
     "id": "lilith_89",
@@ -5058,13 +5138,13 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Tenshi datta Osananajimi, Saikai Shitara Gyaru datta",
       "Childhood Friend, Big Love",
       "My Angel Childhood Friend was a Gal When We Met Again"
-    ],
-    "tropos": [],
-    "personajes": []
+    ]
   },
   {
     "id": "citrus___143",

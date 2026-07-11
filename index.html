@@ -409,6 +409,33 @@ div.search-box:focus { outline: none; }
   color: var(--dim); white-space: nowrap; flex-shrink: 0; margin-left: auto; padding-left: 8px;
 }
 
+/* ── FILTROS trigger button (desktop) ────────────────────── */
+.filters-trigger {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 14px; border-radius: 100px;
+  border: 1px solid var(--border2);
+  background: rgba(245,240,232,0.04); color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  cursor: pointer; white-space: nowrap; transition: all .18s; flex-shrink: 0;
+}
+.filters-trigger:hover { color: var(--paper); border-color: rgba(245,240,232,0.3); }
+.filters-trigger.has-active { background: rgba(232,255,71,0.1); border-color: rgba(232,255,71,0.45); color: var(--neon); }
+.filters-trigger .ft-icon { font-size: 13px; }
+.filters-trigger .ft-arrow { font-size: 8px; opacity: .5; transition: transform .15s; }
+.filters-trigger.open .ft-arrow { transform: rotate(180deg); }
+.filter-badge {
+  display: none;
+  align-items: center; justify-content: center;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 100px;
+  background: var(--neon); color: var(--ink);
+  font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
+}
+.filters-trigger.has-active .filter-badge { display: inline-flex; }
+
+/* legacy per-field dropdowns are replaced by the unified Filtros panel */
+.legacy-fdrops { display: none !important; }
+
 /* ── INK CLUB SECTION ────────────────────────────────── */
 .ink-section {
   max-width: 1400px; margin: 0 auto;
@@ -1348,29 +1375,63 @@ div.search-box:focus { outline: none; }
   flex: 1;
 }
 .fsheet-section {
-  padding: 14px 20px 8px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--border);
 }
 .fsheet-section:last-child { border-bottom: none; }
 .fsheet-sec-label {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
   font-family: 'DM Sans', sans-serif;
   font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--dim); margin-bottom: 10px;
+  color: var(--dim);
+  padding: 14px 0;
+  cursor: pointer; user-select: none;
 }
+.fsheet-sec-label:hover { color: var(--muted); }
+.fsheet-sec-label .fsc-left { display: flex; align-items: center; gap: 7px; }
+.fsheet-sec-label .fsc-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--neon2); display: none; flex-shrink: 0;
+}
+.fsheet-section.has-active .fsheet-sec-label .fsc-dot { display: block; }
+.fsheet-sec-label .fsc-chevron {
+  font-size: 9px; opacity: .45; transition: transform .18s; flex-shrink: 0;
+}
+.fsheet-section.collapsed .fsc-chevron { transform: rotate(-90deg); }
+.fsheet-section.no-accordion .fsc-chevron { display: none; }
+.fsheet-section.no-accordion .fsheet-sec-label { cursor: default; }
+.fsheet-section.no-accordion .fsheet-opts { display: flex !important; }
+
 .fsheet-opts {
-  display: flex; flex-wrap: wrap; gap: 7px;
+  display: flex; flex-direction: column; gap: 1px;
+  padding-bottom: 12px;
+  max-height: 260px; overflow-y: auto;
 }
+.fsheet-section.collapsed .fsheet-opts { display: none; }
+
 .fsopt {
-  padding: 7px 15px; border-radius: 100px;
-  border: 1px solid var(--border2);
-  background: rgba(245,240,232,0.04); color: var(--muted);
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; text-align: left;
+  padding: 8px 8px; border-radius: 8px;
+  border: none;
+  background: transparent; color: var(--muted);
   font-family: 'DM Sans', sans-serif; font-size: 13px;
-  cursor: pointer; transition: all .15s;
+  cursor: pointer; transition: all .12s;
 }
-.fsopt:active { transform: scale(0.95); }
-.fsopt.on       { background: rgba(232,255,71,0.12); border-color: rgba(232,255,71,0.5); color: var(--neon); }
-.fsopt.on-teal  { background: rgba(71,255,224,0.1);  border-color: rgba(71,255,224,0.4); color: var(--neon3); }
-.fsopt.on-pink  { background: rgba(255,71,163,0.12); border-color: rgba(255,71,163,0.5); color: var(--neon2); }
+.fsopt:hover { background: rgba(245,240,232,0.05); color: var(--paper); }
+.fsopt::before {
+  content: ''; width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0;
+  border: 1.5px solid var(--border2);
+  transition: all .12s;
+}
+.fsheet-opts.single .fsopt::before { border-radius: 50%; }
+.fsopt.on       { color: var(--neon); }
+.fsopt.on-teal  { color: var(--neon3); }
+.fsopt.on-pink  { color: var(--neon2); }
+.fsopt.on::before, .fsopt.on-teal::before, .fsopt.on-pink::before {
+  background: currentColor; border-color: currentColor;
+  box-shadow: inset 0 0 0 3px var(--surface, #16161f);
+}
 
 .fsheet-toggles { display: flex; flex-direction: column; gap: 1px; }
 .fsheet-toggle-row {
@@ -1393,6 +1454,34 @@ div.search-box:focus { outline: none; }
   background: var(--screen); transition: transform .2s;
 }
 .ftog.on::after { transform: translateX(20px); }
+
+/* ══════════════════════════════════════════════════════════
+   FILTROS PANEL — DESKTOP ANCHORED DROPDOWN MODE
+══════════════════════════════════════════════════════════ */
+@media (min-width: 601px) {
+  .fsheet-overlay.open { background: transparent; backdrop-filter: none; }
+
+  .fsheet.fsheet-desktop {
+    position: fixed;
+    bottom: auto; left: 0; right: auto;
+    width: 380px; max-width: 92vw;
+    max-height: min(75vh, 620px);
+    border-radius: 14px;
+    border: 1px solid var(--border2);
+    box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    padding-bottom: 6px;
+    transform: translateY(-8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .fsheet.fsheet-desktop.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .fsheet.fsheet-desktop .fsheet-handle { display: none; }
+}
 
 /* ══════════════════════════════════════════════════════════
    MOBILE TOP 10 — Vertical list
@@ -2392,8 +2481,19 @@ body.home-active .topbar-center { display: none; }
   </div>
   </div><!-- /cat-tabs-wrap -->
 
-  <!-- ROW 2: dropdown filters all in one line -->
+  <!-- ROW 2: unified Filtros trigger + quick toggles -->
   <div class="filter-row" id="filterRow">
+    <!-- Filtros: opens the unified, collapsible, list-style filter panel -->
+    <button class="filters-trigger" id="filtersMainBtn">
+      <span class="ft-icon">⊟</span> Filtros
+      <span class="filter-badge" id="filtersBadge">0</span>
+      <span class="ft-arrow">▼</span>
+    </button>
+
+    <div class="filter-sep"></div>
+
+  <!-- legacy per-field dropdowns kept in DOM (hidden) for existing JS bindings -->
+  <div class="legacy-fdrops">
     <!-- Estado dropdown -->
     <div class="fdrop" id="dropEstado">
       <span class="fval" id="valEstado">Estado</span>
@@ -2509,7 +2609,7 @@ body.home-active .topbar-center { display: none; }
       </div>
     </div>
 
-    <div class="filter-sep"></div>
+  </div><!-- /legacy-fdrops -->
 
     <!-- +18 toggle (ocultar) -->
     <button class="adult-pill-btn" id="adultPillBtn">
@@ -2543,11 +2643,11 @@ body.home-active .topbar-center { display: none; }
     <span class="fsheet-title">Filtros</span>
     <button class="fsheet-reset" id="fsheetReset">Limpiar todo</button>
   </div>
-  <div class="fsheet-body">
+  <div class="fsheet-body" id="fsheetBody">
     <!-- Estado -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">Estado</div>
-      <div class="fsheet-opts" id="fsEstadoOpts">
+    <div class="fsheet-section" data-field="estado">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>Estado</span><span class="fsc-chevron">▼</span></div>
+      <div class="fsheet-opts single" id="fsEstadoOpts">
         <button class="fsopt on" data-f="estado" data-v="all">Todas</button>
         <button class="fsopt" data-f="estado" data-v="Continúa">▶ Continúa</button>
         <button class="fsopt" data-f="estado" data-v="Finalizado">✓ Finalizado</button>
@@ -2556,9 +2656,9 @@ body.home-active .topbar-center { display: none; }
       </div>
     </div>
     <!-- Ubicación -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">Ubicación</div>
-      <div class="fsheet-opts" id="fsSubOpts">
+    <div class="fsheet-section" data-field="sub">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>Ubicación</span><span class="fsc-chevron">▼</span></div>
+      <div class="fsheet-opts single" id="fsSubOpts">
         <button class="fsopt on-teal" data-f="sub" data-v="all">Todas</button>
         <button class="fsopt" data-f="sub" data-v="bib">📚 Biblioteca</button>
         <button class="fsopt" data-f="sub" data-v="files">📁 FILES</button>
@@ -2566,51 +2666,51 @@ body.home-active .topbar-center { display: none; }
       </div>
     </div>
     <!-- Género -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">Género <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
+    <div class="fsheet-section" data-field="tag">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>Género <span style="font-size:9px;color:var(--dim);letter-spacing:0;text-transform:none">(multi)</span></span><span class="fsc-chevron">▼</span></div>
       <div class="fsheet-opts" id="fsTagOpts">
         <button class="fsopt on-pink" data-f="tag" data-v="__all__">Todos</button>
       </div>
     </div>
     <!-- Subgénero -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">🎭 Subgénero <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
+    <div class="fsheet-section" data-field="subgenero">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>🎭 Subgénero <span style="font-size:9px;color:var(--dim);letter-spacing:0;text-transform:none">(multi)</span></span><span class="fsc-chevron">▼</span></div>
       <div class="fsheet-opts" id="fsSubgeneroOpts">
         <button class="fsopt on-pink" data-f="subgenero" data-v="__all__">Todos</button>
       </div>
     </div>
     <!-- Tropes -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">🪢 Tropes <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
+    <div class="fsheet-section" data-field="tropo">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>🪢 Tropes <span style="font-size:9px;color:var(--dim);letter-spacing:0;text-transform:none">(multi)</span></span><span class="fsc-chevron">▼</span></div>
       <div class="fsheet-opts" id="fsTropoOpts">
         <button class="fsopt on-pink" data-f="tropo" data-v="__all__">Todos</button>
       </div>
     </div>
     <!-- Personajes -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">🦋 Personajes <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
+    <div class="fsheet-section" data-field="personaje">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>🦋 Personajes <span style="font-size:9px;color:var(--dim);letter-spacing:0;text-transform:none">(multi)</span></span><span class="fsc-chevron">▼</span></div>
       <div class="fsheet-opts" id="fsPersonajeOpts">
         <button class="fsopt on-pink" data-f="personaje" data-v="__all__">Todos</button>
       </div>
     </div>
     <!-- Autor/a -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">✍️ Autor/a <span style="font-size:9px;color:var(--dim);letter-spacing:0">(multi-selección)</span></div>
+    <div class="fsheet-section" data-field="autor">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>✍️ Autor/a <span style="font-size:9px;color:var(--dim);letter-spacing:0;text-transform:none">(multi)</span></span><span class="fsc-chevron">▼</span></div>
       <div class="fsheet-opts" id="fsAutorOpts">
         <button class="fsopt on-pink" data-f="autor" data-v="__all__">Todos</button>
       </div>
     </div>
     <!-- Año -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">Año</div>
-      <div class="fsheet-opts" id="fsAnioOpts">
+    <div class="fsheet-section" data-field="anio">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>Año</span><span class="fsc-chevron">▼</span></div>
+      <div class="fsheet-opts single" id="fsAnioOpts">
         <button class="fsopt on" data-f="anio" data-v="all">Todos</button>
       </div>
     </div>
     <!-- Demográfico -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">Demográfico</div>
-      <div class="fsheet-opts" id="fsDemoOpts">
+    <div class="fsheet-section" data-field="demo">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>Demográfico</span><span class="fsc-chevron">▼</span></div>
+      <div class="fsheet-opts single" id="fsDemoOpts">
         <button class="fsopt on" data-f="demo" data-v="all">Todas</button>
         <button class="fsopt" data-f="demo" data-v="shoujo">🎀 Shoujo</button>
         <button class="fsopt" data-f="demo" data-v="shounen">⚔️ Shounen</button>
@@ -2619,9 +2719,9 @@ body.home-active .topbar-center { display: none; }
       </div>
     </div>
     <!-- Mi estantería -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">📚 Mi estantería</div>
-      <div class="fsheet-opts" id="fsShelfOpts">
+    <div class="fsheet-section" data-field="shelf">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>📚 Mi estantería</span><span class="fsc-chevron">▼</span></div>
+      <div class="fsheet-opts single" id="fsShelfOpts">
         <button class="fsopt on" data-f="shelf" data-v="all">Todas</button>
         <button class="fsopt" data-f="shelf" data-v="want">＋ Quiero leer</button>
         <button class="fsopt" data-f="shelf" data-v="reading">📖 Leyendo</button>
@@ -2629,9 +2729,9 @@ body.home-active .topbar-center { display: none; }
       </div>
     </div>
     <!-- Orden -->
-    <div class="fsheet-section">
-      <div class="fsheet-sec-label">Ordenar por</div>
-      <div class="fsheet-opts" id="fsSortOpts">
+    <div class="fsheet-section no-accordion" data-field="sort">
+      <div class="fsheet-sec-label"><span class="fsc-left"><span class="fsc-dot"></span>Ordenar por</span><span class="fsc-chevron">▼</span></div>
+      <div class="fsheet-opts single" id="fsSortOpts">
         <button class="fsopt on" data-f="sort" data-v="recent">✦ Recientes</button>
         <button class="fsopt" data-f="sort" data-v="rating">★ Más valorados</button>
         <button class="fsopt" data-f="sort" data-v="az">A–Z</button>
@@ -3348,6 +3448,8 @@ async function init() {
   buildShelfSeccionOptions();
   updateAuthGatedUI();
   applyStateToUI();
+  initFsheetAccordion();
+  updateFiltersTrigger();
 
   // Always render Top 10 (needed for catalog)
   renderTop10();
@@ -4594,7 +4696,7 @@ function bindEvents() {
   document.getElementById('modalWrap').addEventListener('click', e => {
     if (e.target === document.getElementById('modalWrap')) closeModal();
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); document.querySelectorAll('.fdrop.open').forEach(d => d.classList.remove('open')); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); document.querySelectorAll('.fdrop.open').forEach(d => d.classList.remove('open')); closeFsheet(); } });
 
   // Scroll top
   const stBtn = document.getElementById('stBtn');
@@ -4723,14 +4825,38 @@ function isMobile() { return window.innerWidth <= 600; }
 function openFsheet() {
   syncFsheetState();
   document.getElementById('fsheetOverlay').classList.add('open');
-  document.getElementById('fsheet').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  const sheet = document.getElementById('fsheet');
+  sheet.classList.add('open');
+  const mobile = isMobile();
+  sheet.classList.toggle('fsheet-desktop', !mobile);
+  const trigger = document.getElementById('filtersMainBtn');
+  if (trigger) trigger.classList.add('open');
+  if (!mobile) {
+    positionFsheetDesktop();
+  } else {
+    document.body.style.overflow = 'hidden';
+  }
   bindFsheetSwipe();
 }
 function closeFsheet() {
   document.getElementById('fsheetOverlay').classList.remove('open');
   document.getElementById('fsheet').classList.remove('open');
+  const trigger = document.getElementById('filtersMainBtn');
+  if (trigger) trigger.classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// Position the Filtros panel like a dropdown, anchored under the trigger button
+function positionFsheetDesktop() {
+  const btn = document.getElementById('filtersMainBtn');
+  const sheet = document.getElementById('fsheet');
+  if (!btn || !sheet) return;
+  const r = btn.getBoundingClientRect();
+  const sheetWidth = Math.min(380, window.innerWidth * 0.92);
+  let left = r.left;
+  if (left + sheetWidth > window.innerWidth - 16) left = Math.max(16, window.innerWidth - sheetWidth - 16);
+  sheet.style.left = left + 'px';
+  sheet.style.top = (r.bottom + 8) + 'px';
 }
 
 function syncFsheetState() {
@@ -4832,6 +4958,69 @@ function updateMobBar() {
   });
 }
 
+// ── FILTROS badge + per-section active dots + accordion ──────
+function countActiveFilters() {
+  let n = 0;
+  if (fEstado !== 'all') n++;
+  if (fSub !== 'all') n++;
+  if (fDemo !== 'all') n++;
+  if (fShelf !== 'all') n++;
+  if (fAnio !== 'all') n++;
+  if (activeSort !== 'recent') n++;
+  n += fTags.length + fTropos.length + fPersonajes.length + fSubgeneros.length + fAutor.length;
+  return n;
+}
+
+function fsheetFieldHasActive(field) {
+  switch (field) {
+    case 'estado': return fEstado !== 'all';
+    case 'sub': return fSub !== 'all';
+    case 'tag': return fTags.length > 0;
+    case 'subgenero': return fSubgeneros.length > 0;
+    case 'tropo': return fTropos.length > 0;
+    case 'personaje': return fPersonajes.length > 0;
+    case 'autor': return fAutor.length > 0;
+    case 'anio': return fAnio !== 'all';
+    case 'demo': return fDemo !== 'all';
+    case 'shelf': return fShelf !== 'all';
+    case 'sort': return activeSort !== 'recent';
+    default: return false;
+  }
+}
+
+function updateFiltersTrigger() {
+  const n = countActiveFilters();
+  const btn = document.getElementById('filtersMainBtn');
+  const badge = document.getElementById('filtersBadge');
+  if (!btn || !badge) return;
+  badge.textContent = n;
+  btn.classList.toggle('has-active', n > 0);
+  document.querySelectorAll('#fsheetBody .fsheet-section[data-field]').forEach(sec => {
+    sec.classList.toggle('has-active', fsheetFieldHasActive(sec.dataset.field));
+  });
+}
+
+// Sets which accordion sections start open — called once after filters are built
+function initFsheetAccordion() {
+  document.querySelectorAll('#fsheetBody .fsheet-section[data-field]').forEach(sec => {
+    if (sec.classList.contains('no-accordion')) return;
+    const keepOpen = sec.dataset.field === 'estado';
+    sec.classList.toggle('collapsed', !keepOpen);
+  });
+}
+
+function bindFsheetAccordion() {
+  const body = document.getElementById('fsheetBody');
+  if (!body) return;
+  body.addEventListener('click', e => {
+    const label = e.target.closest('.fsheet-sec-label');
+    if (!label) return;
+    const sec = label.closest('.fsheet-section');
+    if (!sec || sec.classList.contains('no-accordion')) return;
+    sec.classList.toggle('collapsed');
+  });
+}
+
 function onFsheetChange() {
   // Sync desktop dropdowns too
   const sl2 = fSub === 'bib' ? 'Biblioteca' : fSub === 'files' ? 'FILES' : 'Ambos';
@@ -4856,12 +5045,26 @@ function onFsheetChange() {
   document.getElementById('onlyAdultBtn').classList.toggle('on', fOnlyAdult);
   syncFsheetState();
   updateMobBar();
+  updateFiltersTrigger();
   renderSections(true);
 }
 
 function bindFsheetEvents() {
   document.getElementById('mobFilterOpenBtn').addEventListener('click', openFsheet);
+  const filtersBtn = document.getElementById('filtersMainBtn');
+  if (filtersBtn) {
+    filtersBtn.addEventListener('click', () => {
+      const sheet = document.getElementById('fsheet');
+      if (sheet.classList.contains('open')) closeFsheet();
+      else openFsheet();
+    });
+  }
   document.getElementById('fsheetOverlay').addEventListener('click', closeFsheet);
+  bindFsheetAccordion();
+  window.addEventListener('resize', () => {
+    const sheet = document.getElementById('fsheet');
+    if (sheet.classList.contains('open') && !isMobile()) positionFsheetDesktop();
+  });
 
   // Option buttons (estado, demo, sub, sort, shelf, anio — tag/subgenero/tropo/personaje/autor handled by their own build*Filter)
   ['fsEstadoOpts','fsDemoOpts','fsSubOpts','fsSortOpts','fsShelfOpts','fsAnioOpts'].forEach(id => {

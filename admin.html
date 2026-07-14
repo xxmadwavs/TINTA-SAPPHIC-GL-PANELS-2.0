@@ -57,6 +57,28 @@ body.light table tbody tr:hover{background:var(--surface2);}
 .ink-club-form{margin-top:8px;padding:10px 12px;background:rgba(255,71,163,0.05);border:1px solid rgba(255,71,163,0.2)}
 .ink-club-cats-inp{width:100%;padding:6px 10px;background:var(--surface2);border:1px solid var(--border2);color:var(--paper);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;border-radius:1px;transition:border-color .2s}
 .ink-club-cats-inp:focus{border-color:var(--neon2)}
+
+/* ── ENLACES OFICIALES ADMIN SECTION ── */
+.link-admin-section{margin-top:32px;background:var(--surface);border:1px solid rgba(71,255,224,0.2);position:relative;overflow:hidden}
+.link-admin-section::before{content:'';display:block;height:2px;background:linear-gradient(90deg,var(--neon3),var(--neon))}
+.link-admin-head{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid var(--border)}
+.link-admin-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#fff}
+.link-admin-title span{color:var(--neon3)}
+.link-admin-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px}
+.link-admin-body{padding:16px 20px}
+.link-add-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border)}
+.link-inp{flex:1;min-width:140px;padding:7px 10px;background:var(--surface3);border:1px solid var(--border2);color:var(--paper);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;border-radius:1px;transition:border-color .2s}
+.link-inp:focus{border-color:var(--neon3)}
+.link-list{display:flex;flex-direction:column;gap:8px}
+.link-row{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);padding:8px 12px}
+.link-row-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.link-row-label{font-size:12.5px;font-weight:600;color:var(--paper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-row-url{font-size:10.5px;color:var(--dim);font-family:'Space Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-row-acts{display:flex;gap:6px;flex-shrink:0}
+.link-row-acts button{background:none;border:1px solid var(--border2);color:var(--dim);cursor:pointer;font-size:12px;padding:4px 8px;border-radius:2px;transition:all .15s}
+.link-row-acts button:hover{color:var(--neon3);border-color:var(--neon3)}
+.link-row-acts button.link-del:hover{color:var(--neon2);border-color:var(--neon2)}
+.link-empty{padding:20px;text-align:center;color:var(--dim);font-size:12px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--screen);color:var(--paper);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden;cursor:crosshair}
 body::before{content:'';position:fixed;inset:0;z-index:0;background-image:radial-gradient(circle,rgba(245,240,232,0.04) 2px,transparent 2px);background-size:18px 18px;pointer-events:none}
@@ -475,6 +497,30 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
       </div>
     </div>
   </div>
+
+  <!-- ENLACES OFICIALES ADMIN SECTION -->
+  <div class="link-admin-section">
+    <div class="link-admin-head">
+      <div>
+        <div class="link-admin-title">🔗 ENLACES <span>OFICIALES</span></div>
+        <div class="link-admin-sub">Fuentes y plataformas de referencia · <span id="linkAdminCount">0</span> enlaces</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label class="tb-btn" style="cursor:pointer">📂 Importar<input type="file" accept=".json" id="importLinksFile" style="display:none"></label>
+        <button class="tb-btn tb-neon" id="exportLinksBtn">💾 Exportar official_links.json</button>
+      </div>
+    </div>
+    <div class="link-admin-body">
+      <div class="link-add-row">
+        <input type="text" id="newLinkLabel" class="link-inp" placeholder="Nombre (ej: MangaBaka)">
+        <input type="url" id="newLinkUrl" class="link-inp" placeholder="https://...">
+        <button class="tb-btn tb-pink" id="addLinkBtn">+ Añadir enlace</button>
+      </div>
+      <div class="link-list" id="linksList">
+        <div class="link-empty">Sin enlaces oficiales todavía.</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- EDIT MODAL -->
@@ -760,10 +806,18 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
 
 <script>
 const DATA_URL='manga_data.json';
+const LINKS_URL='official_links.json';
+const DEFAULT_LINKS=[
+  {id:'mangabaka',label:'MangaBaka',url:'https://mangabaka.org/'},
+  {id:'mangaupdates',label:'MangaUpdates',url:'https://www.mangaupdates.com/'},
+  {id:'anilist',label:'AniList',url:'https://anilist.co/'},
+  {id:'myanimelist',label:'MyAnimeList',url:'https://myanimelist.net/'}
+];
 const ADULT_TAGS=new Set(['erotica','erotic','erótica']);
 const ECLS={Finalizado:'b-fin',Continúa:'b-cont',Hiatus:'b-hiatus',Cancelado:'b-cancel'};
 const EICO={Finalizado:'✓',Continúa:'▶',Hiatus:'⏸',Cancelado:'✗'};
 let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[],advertenciasList=[],subgenerosList=[],dinamicaList=[],identidadList=[],edadList=[],paisList=[];
+let officialLinks=[];
 
 /* ── LISTAS CANÓNICAS DE CATEGORÍAS (misma fuente que admin de libros) ── */
 const GENERO_OPTS=['Acción','Aventura','Biografía','Ciencia Ficción','Comedia Romántica','Contemporánea','Dark Academia','Distopía','Drama','Ensayo','Fantasía','Fantasía Urbana','Filosofía','Gótico','Histórica','Horror','Juvenil','Misterio','New Adult','No Ficción','Paranormal','Psicológico','Romance','Thriller','YA'];
@@ -1001,9 +1055,11 @@ async function initApp(){
   populateDatalists();
   try{const r=await fetch(DATA_URL);allData=await r.json();}
   catch{allData=[];toast('No se pudo cargar manga_data.json','err');}
+  try{const r=await fetch(LINKS_URL);const d=await r.json();officialLinks=Array.isArray(d)&&d.length?d:DEFAULT_LINKS.slice();}
+  catch{officialLinks=DEFAULT_LINKS.slice();}
   normalizeAllTags();
   await Promise.all([loadRatingsCount(), loadShelfCount()]);
-  buildStats();updateIncompleteCount();applyFilters();renderInkAdmin();bindEvents();
+  buildStats();updateIncompleteCount();applyFilters();renderInkAdmin();renderLinksAdmin();bindEvents();
 }
 
 // Boot: auth first, app second
@@ -1478,6 +1534,66 @@ function importJSON(file){
   r.readAsText(file);
 }
 
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function renderLinksAdmin(){
+  document.getElementById('linkAdminCount').textContent=officialLinks.length;
+  const list=document.getElementById('linksList');
+  if(!officialLinks.length){
+    list.innerHTML='<div class="link-empty">Sin enlaces oficiales todavía.</div>';
+    return;
+  }
+  list.innerHTML=officialLinks.map(l=>`<div class="link-row" data-id="${esc(l.id)}">
+    <div class="link-row-info">
+      <span class="link-row-label">${esc(l.label)}</span>
+      <span class="link-row-url">${esc(l.url)}</span>
+    </div>
+    <div class="link-row-acts">
+      <button class="link-edit" onclick="editLink('${esc(l.id)}')" title="Editar">✎</button>
+      <button class="link-del" onclick="removeLink('${esc(l.id)}')" title="Eliminar">✕</button>
+    </div>
+  </div>`).join('');
+}
+function addLink(){
+  const labelInp=document.getElementById('newLinkLabel'),urlInp=document.getElementById('newLinkUrl');
+  const label=labelInp.value.trim(),url=urlInp.value.trim();
+  if(!label||!url){toast('Nombre y URL son obligatorios','err');return;}
+  let fullUrl=url;
+  if(!/^https?:\/\//i.test(fullUrl))fullUrl='https://'+fullUrl;
+  officialLinks.push({id:uid(),label,url:fullUrl});
+  labelInp.value='';urlInp.value='';
+  renderLinksAdmin();
+  toast('Enlace añadido ✓','ok');
+}
+function removeLink(id){
+  officialLinks=officialLinks.filter(l=>l.id!==id);
+  renderLinksAdmin();
+  toast('Enlace eliminado','ok');
+}
+function editLink(id){
+  const l=officialLinks.find(l=>l.id===id);
+  if(!l)return;
+  const newLabel=prompt('Nombre del enlace:',l.label);
+  if(newLabel===null)return;
+  const newUrl=prompt('URL del enlace:',l.url);
+  if(newUrl===null)return;
+  const label=newLabel.trim(),url=newUrl.trim();
+  if(!label||!url){toast('Nombre y URL son obligatorios','err');return;}
+  l.label=label;
+  l.url=/^https?:\/\//i.test(url)?url:'https://'+url;
+  renderLinksAdmin();
+  toast('Enlace actualizado ✓','ok');
+}
+function exportLinksJSON(){
+  const blob=new Blob([JSON.stringify(officialLinks,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='official_links.json';a.click();
+  toast('official_links.json exportado ✓','ok');
+}
+function importLinksJSON(file){
+  const r=new FileReader();
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!Array.isArray(d))throw 0;officialLinks=d.map(l=>({id:l.id||uid(),label:l.label||'',url:l.url||''}));renderLinksAdmin();toast(`${d.length} enlaces importados ✓`,'ok');}catch{toast('JSON inválido','err');}};
+  r.readAsText(file);
+}
+
 function renderInkAdmin(){
   const inkData=allData.filter(e=>e.ink_club);
   document.getElementById('inkAdminCount').textContent=inkData.length;
@@ -1525,6 +1641,11 @@ function bindEvents(){
   document.getElementById('confirmDel').addEventListener('click',confirmDelete);
   [document.getElementById('exportBtn'),document.getElementById('exportBtn2')].forEach(b=>b?.addEventListener('click',exportJSON));
   [document.getElementById('importFile'),document.getElementById('importFile2')].forEach(inp=>inp?.addEventListener('change',e=>{if(e.target.files[0])importJSON(e.target.files[0]);}));
+  document.getElementById('addLinkBtn')?.addEventListener('click',addLink);
+  document.getElementById('exportLinksBtn')?.addEventListener('click',exportLinksJSON);
+  document.getElementById('importLinksFile')?.addEventListener('change',e=>{if(e.target.files[0])importLinksJSON(e.target.files[0]);});
+  document.getElementById('newLinkUrl')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addLink();}});
+  document.getElementById('newLinkLabel')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('newLinkUrl').focus();}});
   ['adminSearch','fSec','fEst','fAdv','fInk'].forEach(id=>document.getElementById(id)?.addEventListener('input',applyFilters));
   document.getElementById('perPage').addEventListener('change',e=>{perPage=+e.target.value;page=1;renderTable();});
   document.getElementById('tagInp').addEventListener('keydown',e=>{

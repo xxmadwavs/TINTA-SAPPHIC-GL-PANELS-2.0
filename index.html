@@ -2191,6 +2191,29 @@ body.home-active .topbar-center { display: none; }
   color: var(--neon); border-color: var(--neon);
   background: rgba(232,255,71,.06);
 }
+.hv-footer-links {
+  margin-top: 20px; padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.hv-footer-links-label {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 10px;
+}
+.hv-footer-links-row {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 8px;
+}
+.hv-footer-link {
+  font-size: 11.5px; font-family: 'DM Sans', sans-serif; font-weight: 500;
+  color: var(--muted); background: transparent;
+  border: 1px solid var(--border2); border-radius: 20px;
+  padding: 5px 14px; cursor: pointer; text-decoration: none;
+  transition: all .18s; letter-spacing: .02em; display: inline-flex; align-items: center; gap: 5px;
+}
+.hv-footer-link:hover {
+  color: var(--neon3); border-color: var(--neon3);
+  background: rgba(71,255,224,.06);
+}
 
 /* light mode tweaks for home */
 
@@ -2407,6 +2430,10 @@ body.home-active .topbar-center { display: none; }
       <button onclick="openInfoModal('sobre')" class="hv-footer-pill">Sobre nosotras</button>
       <button onclick="openInfoModal('privacidad')" class="hv-footer-pill">Política de privacidad</button>
       <button onclick="openInfoModal('terminos')" class="hv-footer-pill">Términos de uso</button>
+    </div>
+    <div class="hv-footer-links" id="officialLinksZone" style="display:none">
+      <div class="hv-footer-links-label">Enlaces oficiales</div>
+      <div class="hv-footer-links-row" id="officialLinksRow"></div>
     </div>
   </div>
 
@@ -5291,6 +5318,7 @@ var MODAL_DATA = {
       '<p style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:1rem"><span style="color:var(--neon);font-weight:700">GL PANELS</span> es un cat\u00e1logo comunitario dedicado al manga y manhwa GL \u2014 Girls Love, Yuri y todo el espectro de historias entre chicas. Naci\u00f3 del proyecto <span style="color:var(--neon2)">Tinta Sapphic</span>, un espacio que lleva tiempo cubriendo series y pel\u00edculas GL desde todos los rincones del mundo.</p>',
       '<p style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:1rem">La idea es simple: que ning\u00fan manga GL quede sin descubrir. Aqu\u00ed encontrar\u00e1s obras de todo tipo \u2014 romance, fantas\u00eda, drama, slice of life \u2014 con filtros por g\u00e9nero, estado, idioma e idioma original para que encuentres exactamente lo que buscas.</p>',
       '<p style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:1.25rem">El cat\u00e1logo se mantiene activo gracias a la comunidad. Si detectas un error, quieres sugerir un t\u00edtulo o simplemente quieres saludar, puedes encontrarnos en X.</p>',
+      '<div style="margin-bottom:1.25rem;padding:12px 14px;background:var(--surface2);border-radius:10px;border-left:2px solid var(--neon3)"><div style="font-size:10.5px;font-weight:700;color:var(--neon3);letter-spacing:.1em;margin-bottom:6px">SOBRE EL CONTENIDO</div><p style="font-size:12.5px;color:var(--muted);line-height:1.75;margin:0 0 .6rem"><strong style="color:var(--paper)">GL Panels no aloja, distribuye ni permite la descarga de ning\u00fan manga o manhwa.</strong> Es un cat\u00e1logo informativo que redirige a las plataformas oficiales de publicaci\u00f3n.</p><p style="font-size:12.5px;color:var(--muted);line-height:1.75;margin:0 0 .6rem">Las portadas y datos de cada t\u00edtulo (sinopsis, autor\u00eda, g\u00e9neros) se recopilan de fuentes p\u00fablicas y sitios informativos sobre manga y manhwa, con fines exclusivamente de catalogaci\u00f3n y descubrimiento \u2014 igual que har\u00eda cualquier directorio o base de datos de obras. Todo el contenido pertenece a sus respectivas autoras y editoriales.</p><p style="font-size:12.5px;color:var(--muted);line-height:1.75;margin:0">Si eres titular de derechos de alguna portada o dato y quieres que se corrija, actualice o retire, cont\u00e1ctanos y lo resolveremos de inmediato.</p></div>',
       '<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:1.25rem"><span style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--neon);color:var(--neon);font-weight:600;opacity:.85">&#10022; Hecho con amor</span><span style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--neon2);color:var(--neon2);font-weight:600;opacity:.85">&#127800; 100% GL &amp; Yuri</span><span style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--neon3);color:var(--neon3);font-weight:600;opacity:.85">&#128214; Manga &middot; Manhwa &middot; Manhua</span><span style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--neon);color:var(--neon);font-weight:600;opacity:.85">&#127757; T\u00edtulos de todo el mundo</span></div>'
     ]
   },
@@ -5341,6 +5369,33 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape' && document.getElementById('infoModalBg').style.display !== 'none') closeInfoModal();
 });
 
+})();
+</script>
+
+<script>
+(function() {
+  var DEFAULT_OFFICIAL_LINKS = [
+    { id: 'mangabaka', label: 'MangaBaka', url: 'https://mangabaka.org/' },
+    { id: 'mangaupdates', label: 'MangaUpdates', url: 'https://www.mangaupdates.com/' },
+    { id: 'anilist', label: 'AniList', url: 'https://anilist.co/' },
+    { id: 'myanimelist', label: 'MyAnimeList', url: 'https://myanimelist.net/' }
+  ];
+
+  function renderOfficialLinks(links) {
+    if (!links || !links.length) return;
+    var row = document.getElementById('officialLinksRow');
+    var zone = document.getElementById('officialLinksZone');
+    if (!row || !zone) return;
+    row.innerHTML = links.map(function(l) {
+      return '<a href="' + l.url + '" target="_blank" rel="noopener noreferrer" class="hv-footer-link">&#128279; ' + l.label + '</a>';
+    }).join('');
+    zone.style.display = 'block';
+  }
+
+  fetch('official_links.json')
+    .then(function(r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function(d) { renderOfficialLinks(Array.isArray(d) && d.length ? d : DEFAULT_OFFICIAL_LINKS); })
+    .catch(function() { renderOfficialLinks(DEFAULT_OFFICIAL_LINKS); });
 })();
 </script>
 </body>

@@ -498,12 +498,12 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
     </div>
   </div>
 
-  <!-- ENLACES OFICIALES ADMIN SECTION -->
+  <!-- FUENTES Y REFERENCIA ADMIN SECTION -->
   <div class="link-admin-section">
     <div class="link-admin-head">
       <div>
-        <div class="link-admin-title">🔗 ENLACES <span>OFICIALES</span></div>
-        <div class="link-admin-sub">Fuentes y plataformas de referencia · <span id="linkAdminCount">0</span> enlaces</div>
+        <div class="link-admin-title">🔗 FUENTES <span>Y REFERENCIA</span></div>
+        <div class="link-admin-sub">Bases de datos y plataformas de referencia · <span id="linkAdminCount">0</span> enlaces</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <label class="tb-btn" style="cursor:pointer">📂 Importar<input type="file" accept=".json" id="importLinksFile" style="display:none"></label>
@@ -517,7 +517,7 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
         <button class="tb-btn tb-pink" id="addLinkBtn">+ Añadir enlace</button>
       </div>
       <div class="link-list" id="linksList">
-        <div class="link-empty">Sin enlaces oficiales todavía.</div>
+        <div class="link-empty">Sin fuentes ni referencias todavía.</div>
       </div>
     </div>
   </div>
@@ -616,6 +616,18 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
           <div class="form-full fg">
             <label class="flbl">Descripción</label>
             <textarea id="fDesc" class="ftxt" placeholder="Sinopsis…"></textarea>
+          </div>
+          <div class="form-full fg">
+            <label class="flbl">📖 Dónde leer oficialmente</label>
+            <div class="fhint" style="margin-top:-2px;margin-bottom:8px">Plataformas donde esta historia se puede leer de forma oficial (ej: Ivrea, Tapas, MangaPlus…)</div>
+            <div class="link-add-row" style="margin-bottom:10px">
+              <input type="text" id="newLecturaLabel" class="link-inp" placeholder="Nombre (ej: Ivrea)">
+              <input type="url" id="newLecturaUrl" class="link-inp" placeholder="https://...">
+              <button type="button" class="tb-btn tb-pink" id="addLecturaBtn">+ Añadir enlace</button>
+            </div>
+            <div class="link-list" id="lecturaLinksList">
+              <div class="link-empty">Sin enlaces de lectura todavía.</div>
+            </div>
           </div>
           <div class="fg">
             <label class="flbl">Ubicación</label>
@@ -816,7 +828,7 @@ const DEFAULT_LINKS=[
 const ADULT_TAGS=new Set(['erotica','erotic','erótica']);
 const ECLS={Finalizado:'b-fin',Continúa:'b-cont',Hiatus:'b-hiatus',Cancelado:'b-cancel'};
 const EICO={Finalizado:'✓',Continúa:'▶',Hiatus:'⏸',Cancelado:'✗'};
-let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[],advertenciasList=[],subgenerosList=[],dinamicaList=[],identidadList=[],edadList=[],paisList=[];
+let allData=[],filtered=[],editingId=null,deletingId=null,page=1,perPage=25,tagsList=[],altList=[],autorList=[],tropesList=[],personajesList=[],advertenciasList=[],subgenerosList=[],dinamicaList=[],identidadList=[],edadList=[],paisList=[],lecturaLinksList=[];
 let officialLinks=[];
 
 /* ── LISTAS CANÓNICAS DE CATEGORÍAS (misma fuente que admin de libros) ── */
@@ -1190,12 +1202,13 @@ function openEdit(id){
   document.getElementById('fDemografico').value=e.demografico||'';
   const _autores=Array.isArray(e.autor)?e.autor:(e.autor?[e.autor]:[]);autorList=[..._autores];document.getElementById('autorInp').value='';renderAutorPills();
   const _alts=Array.isArray(e.titulos_alt)?e.titulos_alt:(e.titulos_alt?[e.titulos_alt]:[]);altList=[..._alts];document.getElementById('altInp').value='';renderAltPills();
+  lecturaLinksList=(e.enlaces_lectura||[]).map(l=>({id:l.id||uid(),label:l.label||'',url:l.url||''}));renderLecturaLinks();
   updateAdultLbl();updateCov(e.imagen||'');renderPills();renderSubgeneroPills();renderTropePills();renderPersonajePills();renderAdvertenciaPills();
   renderDinamicaPills();renderIdentidadPills();renderEdadPills();renderPaisPills();refreshAccCounts();setAccOpenState();openMod('editWrap');
 }
 function openAdd(){
   editingId=null;tagsList=[];tropesList=[];personajesList=[];advertenciasList=[];subgenerosList=[];
-  dinamicaList=[];identidadList=[];edadList=[];paisList=[];
+  dinamicaList=[];identidadList=[];edadList=[];paisList=[];lecturaLinksList=[];renderLecturaLinks();
   document.getElementById('mEditTitle').textContent='Nueva historia';
   document.getElementById('fTitulo').value='';document.getElementById('fImagen').value='';
   document.getElementById('fDesc').value='';document.getElementById('fBib').checked=false;
@@ -1274,6 +1287,7 @@ function saveEntry(){
   if(identidadList.length)entry.identidad_genero=[...identidadList]; else delete entry.identidad_genero;
   if(edadList.length)entry.edad_protagonistas=[...edadList]; else delete entry.edad_protagonistas;
   if(paisList.length)entry.pais_cultura=[...paisList]; else delete entry.pais_cultura;
+  if(lecturaLinksList.length)entry.enlaces_lectura=lecturaLinksList.map(l=>({id:l.id,label:l.label,url:l.url})); else delete entry.enlaces_lectura;
   if(estado==='Finalizado'&&capsVal>0)entry.capitulos_totales=capsVal;
   if(!inkClub){delete entry.ink_club;delete entry.ink_categories;}
   if(autorList.length)entry.autor=[...autorList]; else delete entry.autor;
@@ -1594,6 +1608,53 @@ function importLinksJSON(file){
   r.readAsText(file);
 }
 
+/* ── ENLACES DE LECTURA OFICIAL (por historia) ────────────── */
+function renderLecturaLinks(){
+  const list=document.getElementById('lecturaLinksList');
+  if(!list)return;
+  if(!lecturaLinksList.length){
+    list.innerHTML='<div class="link-empty">Sin enlaces de lectura todavía.</div>';
+    return;
+  }
+  list.innerHTML=lecturaLinksList.map(l=>`<div class="link-row" data-id="${esc(l.id)}">
+    <div class="link-row-info">
+      <span class="link-row-label">${esc(l.label)}</span>
+      <span class="link-row-url">${esc(l.url)}</span>
+    </div>
+    <div class="link-row-acts">
+      <button type="button" class="link-edit" onclick="editLecturaLink('${esc(l.id)}')" title="Editar">✎</button>
+      <button type="button" class="link-del" onclick="removeLecturaLink('${esc(l.id)}')" title="Eliminar">✕</button>
+    </div>
+  </div>`).join('');
+}
+function addLecturaLink(){
+  const labelInp=document.getElementById('newLecturaLabel'),urlInp=document.getElementById('newLecturaUrl');
+  const label=labelInp.value.trim(),url=urlInp.value.trim();
+  if(!label||!url){toast('Nombre y URL son obligatorios','err');return;}
+  let fullUrl=url;
+  if(!/^https?:\/\//i.test(fullUrl))fullUrl='https://'+fullUrl;
+  lecturaLinksList.push({id:uid(),label,url:fullUrl});
+  labelInp.value='';urlInp.value='';
+  renderLecturaLinks();
+}
+function removeLecturaLink(id){
+  lecturaLinksList=lecturaLinksList.filter(l=>l.id!==id);
+  renderLecturaLinks();
+}
+function editLecturaLink(id){
+  const l=lecturaLinksList.find(l=>l.id===id);
+  if(!l)return;
+  const newLabel=prompt('Nombre de la plataforma:',l.label);
+  if(newLabel===null)return;
+  const newUrl=prompt('URL de lectura:',l.url);
+  if(newUrl===null)return;
+  const label=newLabel.trim(),url=newUrl.trim();
+  if(!label||!url){toast('Nombre y URL son obligatorios','err');return;}
+  l.label=label;
+  l.url=/^https?:\/\//i.test(url)?url:'https://'+url;
+  renderLecturaLinks();
+}
+
 function renderInkAdmin(){
   const inkData=allData.filter(e=>e.ink_club);
   document.getElementById('inkAdminCount').textContent=inkData.length;
@@ -1643,6 +1704,9 @@ function bindEvents(){
   [document.getElementById('importFile'),document.getElementById('importFile2')].forEach(inp=>inp?.addEventListener('change',e=>{if(e.target.files[0])importJSON(e.target.files[0]);}));
   document.getElementById('addLinkBtn')?.addEventListener('click',addLink);
   document.getElementById('exportLinksBtn')?.addEventListener('click',exportLinksJSON);
+  document.getElementById('addLecturaBtn')?.addEventListener('click',addLecturaLink);
+  document.getElementById('newLecturaUrl')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addLecturaLink();}});
+  document.getElementById('newLecturaLabel')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('newLecturaUrl').focus();}});
   document.getElementById('importLinksFile')?.addEventListener('change',e=>{if(e.target.files[0])importLinksJSON(e.target.files[0]);});
   document.getElementById('newLinkUrl')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addLink();}});
   document.getElementById('newLinkLabel')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('newLinkUrl').focus();}});

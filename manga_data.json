@@ -49,6 +49,13 @@
     "titulos_alt": [
       "Durmiendo juntas"
     ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyg0ex4f99q",
+        "label": "Bilibili",
+        "url": "https://manga.bilibili.com/detail/mc41777?from=manga_homepage_discuss"
+      }
+    ],
     "anio_inicio": 2026,
     "content_rating": "safe"
   },
@@ -591,6 +598,18 @@
       "Mashou no Mero Onna ni Otosareru Yuri Anthology",
       "魔性のメロ女に堕とされる百合アンソロジー"
     ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyiopq6hl44",
+        "label": "ichijinsha",
+        "url": "https://www.ichijinsha.co.jp/yurihime/title/%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%AD%E3%82%B8%E3%83%BC/%E9%AD%94%E6%80%A7%E3%81%AE%E3%83%A1%E3%83%AD%E5%A5%B3%E3%81%AB%E5%A0%95%E3%81%A8%E3%81%95%E3%82%8C%E3%82%8B%E7%99%BE%E5%90%88%E3%82%A2%E3%83%B3%E3%82%BD%E3%83%AD%E3%82%B8%E3%83%BC/"
+      },
+      {
+        "id": "mrkyiz5hi2gos",
+        "label": "amazon",
+        "url": "https://www.amazon.co.jp/dp/B0H6HK38XC"
+      }
+    ],
     "capitulos_totales": 6,
     "autor": [
       "Chiruha Chinmi",
@@ -803,16 +822,23 @@
     "in_files": false,
     "adult": false,
     "subido": "",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Elisa & Marcela"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkykpamufxyl",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0gDnegi9"
+      }
     ],
     "autor": [
       "Xulia Vicente"
     ],
     "anio_inicio": 2020,
-    "content_rating": "safe",
-    "tropos": [],
-    "personajes": []
+    "content_rating": "safe"
   },
   {
     "id": "gl_1782471114670_nyu",
@@ -923,12 +949,19 @@
     "in_files": false,
     "adult": false,
     "subido": "",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyl3mwavsp3",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/06urUHIz"
+      }
+    ],
     "autor": [
       "Lucy Byron"
     ],
-    "anio_inicio": 2022,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2022
   },
   {
     "id": "gl_1778224312720_uim",
@@ -949,6 +982,13 @@
     "titulos_alt": [
       "The One Hundred Nights of Hero"
     ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyli6ucw3k9",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0immU4jV"
+      }
+    ],
     "autor": [
       "Isabel Greenberg"
     ],
@@ -968,12 +1008,19 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkzfth9zc1af",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/056WJrw7"
+      }
+    ],
     "autor": [
       "Raquel Riba Rossy"
     ],
-    "anio_inicio": 2017,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2017
   },
   {
     "id": "gl_1778222853679_fyj",
@@ -993,6 +1040,13 @@
     "personajes": [],
     "titulos_alt": [
       "Roaming"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkzf49xrm7a3",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/03Y0oNjq"
+      }
     ],
     "autor": [
       "Jillian Tamaki",
@@ -1042,13 +1096,20 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkze3lhnpucm",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/05oGF8uA"
+      }
+    ],
     "autor": [
       "Mariko Tamaki",
       "Jillian Tamaki"
     ],
-    "anio_inicio": 2014,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2014
   },
   {
     "id": "gl_1778185382876_vc4",
@@ -1064,13 +1125,20 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkzdxlk42778",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/00R2jAdA"
+      }
+    ],
     "autor": [
       "Mariko Tamaki",
       "Jillian Tamaki"
     ],
-    "anio_inicio": 2008,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2008
   },
   {
     "id": "gl_1778185350878_xwi",
@@ -12214,12 +12282,19 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkzcu08ne5uk",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/0bXfWdRI"
+      }
+    ],
     "autor": [
       "Tee Franklin"
     ],
-    "anio_inicio": 2018,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2018
   },
   {
     "id": "grito_nocturno__las_tres_noches__2__387",
@@ -12237,15 +12312,22 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Night Cry"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkzc63d1sa6c",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/0aisDlxd"
+      }
     ],
     "autor": [
       "Borja González"
     ],
-    "anio_inicio": 2021,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2021
   },
   {
     "id": "the_black_holes__las_tres_noches__1__388",
@@ -12263,12 +12345,19 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkzbl1xvyv7d",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/0hp5rbxb"
+      }
+    ],
     "autor": [
       "Borja González"
     ],
-    "anio_inicio": 2018,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2018
   },
   {
     "id": "el_p_jaro_y_la_serpiente__las_tres_noche_389",
@@ -12286,12 +12375,19 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkzb29texb6t",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/0ddDpf1s"
+      }
+    ],
     "autor": [
       "Borja González"
     ],
-    "anio_inicio": 2023,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2023
   },
   {
     "id": "capuccino_commotion_390",
@@ -12326,15 +12422,22 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "The Times I Knew I Was Gay"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkza8m4pxhvg",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/00AWnzN2"
+      }
     ],
     "autor": [
       "Eleanor Crewes"
     ],
-    "anio_inicio": 2020,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2020
   },
   {
     "id": "el_fuego_nunca_se_apaga_392",
@@ -12348,15 +12451,22 @@
     "in_files": false,
     "adult": false,
     "subido": "Subido biblioteca",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "The Fire Never Goes Out"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz8i6qj1em4",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/09vCNsrE"
+      }
     ],
     "autor": [
       "N.D. Stevenson"
     ],
-    "anio_inicio": 2020,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2020
   },
   {
     "id": "cuerpos_sonoros_393",
@@ -12372,15 +12482,22 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Body Music"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz827cxoceu",
+        "label": "amazon ES",
+        "url": "https://amzn.eu/d/0hz2pR2I"
+      }
     ],
     "autor": [
       "Jul Maroh"
     ],
-    "anio_inicio": 2017,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2017
   },
   {
     "id": "el_azul_es_un_color_c_lido_394",
@@ -12396,15 +12513,22 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Le bleu est une couleur chaude"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz7f9m1hgv8",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0aztdSFx"
+      }
     ],
     "autor": [
       "Jul Maroh"
     ],
-    "anio_inicio": 2010,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2010
   },
   {
     "id": "el_beso_n_mero_8_395",
@@ -12420,15 +12544,22 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "Kiss Number 8"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz72eyphqay",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0gTaDFgH"
+      }
     ],
     "autor": [
       "Colleen A.F. Venable"
     ],
-    "anio_inicio": 2019,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2019
   },
   {
     "id": "el_esp_ritu_del_bosque_396",
@@ -12445,12 +12576,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz6jdztosn7",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0aZaC8ZA"
+      }
+    ],
     "autor": [
       "Axelle Lenoir"
     ],
-    "anio_inicio": 2020,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2020
   },
   {
     "id": "el_par_s_de_los_dragones_397",
@@ -12476,6 +12614,13 @@
     "personajes": [
       "Sirena"
     ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz64vhw73r9",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/06oXsGhS"
+      }
+    ],
     "autor": [
       "Joann Sfar",
       "Tony Sandoval"
@@ -12496,12 +12641,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz5lj0ie56u",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0cii03Tc"
+      }
+    ],
     "autor": [
       "Clara Cortés"
     ],
-    "anio_inicio": 2024,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2024
   },
   {
     "id": "en_un_rayo_de_sol_399",
@@ -12519,12 +12671,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz50coooet7",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0dbrgTUl"
+      }
+    ],
     "autor": [
       "Tillie Walden"
     ],
-    "anio_inicio": 2021,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2021
   },
   {
     "id": "_rase_una_vez_dos_princesas_400",
@@ -12541,12 +12700,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkz495piyixq",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0hPcIEIY"
+      }
+    ],
     "autor": [
       "K. O'Neill"
     ],
-    "anio_inicio": 2014,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2014
   },
   {
     "id": "fun_home__una_familia_tragic_mica_401",
@@ -12562,12 +12728,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyx2kf8ez0l",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/00t29Ae6"
+      }
+    ],
     "autor": [
       "Alison Bechdel"
     ],
-    "anio_inicio": 2006,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2006
   },
   {
     "id": "heathen_402",
@@ -12583,12 +12756,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkywkfnoba1r",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0cAGaC1z"
+      }
+    ],
     "autor": [
       "Natasha Alterici"
     ],
-    "anio_inicio": 2017,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2017
   },
   {
     "id": "just_friends_403",
@@ -12613,6 +12793,13 @@
       "Friends to Lovers"
     ],
     "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyw03dqwzxr",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0gRO3poD"
+      }
+    ],
     "autor": [
       "Ana Oncina"
     ],
@@ -12633,14 +12820,21 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkym0r81esmq",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/07PoIXch"
+      }
+    ],
     "autor": [
       "Simon Spurrier",
       "Jeff Stokely",
       "Andre May"
     ],
-    "anio_inicio": 2016,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2016
   },
   {
     "id": "la_casa_de_las_magnolias_405",
@@ -12667,6 +12861,13 @@
     "titulos_alt": [
       "La Casa de las Magnolias"
     ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkymi413hdaz",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/05zc3Ecp"
+      }
+    ],
     "autor": [
       "Flavia Biondi"
     ],
@@ -12685,15 +12886,22 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
     "titulos_alt": [
       "The Girl from the Sea"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkymwo8dcagm",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0b3C0hkf"
+      }
     ],
     "autor": [
       "Lee Knox Ostertag"
     ],
-    "anio_inicio": 2021,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2021
   },
   {
     "id": "la_noche_que_llegu__al_castillo_407",
@@ -12710,12 +12918,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyvesjb8wzf",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0hFJ8Met"
+      }
+    ],
     "autor": [
       "E.M. Carroll"
     ],
-    "anio_inicio": 2019,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2019
   },
   {
     "id": "la_tierra_yerma_408",
@@ -12731,12 +12946,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyv0vc9i6w2",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/01zsDUK5"
+      }
+    ],
     "autor": [
       "Carla Berrocal"
     ],
-    "anio_inicio": 2025,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2025
   },
   {
     "id": "las_alas_de_la_cris_lida_409",
@@ -12758,13 +12980,24 @@
       "2026",
       "Novela Gráfica"
     ],
+    "tropos": [],
+    "personajes": [],
+    "advertencias": [
+      "Guerra / Conflicto Armado"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyulc7ia08c",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0j300Ovm"
+      }
+    ],
     "autor": [
       "Meik",
       "Rafael Jiménez"
     ],
     "anio_inicio": 2025,
-    "tropos": [],
-    "personajes": []
+    "content_rating": "sugestiva"
   },
   {
     "id": "laura_dean_me_ha_vuelto_a_dejar_410",
@@ -12785,12 +13018,20 @@
       "2025",
       "Novela Gráfica"
     ],
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkytvrhpkc1d",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0fRueh8L"
+      }
+    ],
     "autor": [
       "Mariko Tamaki"
     ],
     "anio_inicio": 2019,
-    "tropos": [],
-    "personajes": []
+    "content_rating": "safe"
   },
   {
     "id": "llevame_contigo_411",
@@ -12806,12 +13047,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyti8l32qnz",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0di9LNLZ"
+      }
+    ],
     "autor": [
       "Anneli Furmark"
     ],
-    "anio_inicio": 2020,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2020
   },
   {
     "id": "_me_estas_escuchando__412",
@@ -12827,12 +13075,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyt58w6mzni",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/07v3fiB3"
+      }
+    ],
     "autor": [
       "Tillie Walden"
     ],
-    "anio_inicio": 2019,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2019
   },
   {
     "id": "no_te_vayas_sin_m__413",
@@ -12848,12 +13103,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkysp9irgep4",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0fzZKZWs"
+      }
+    ],
     "autor": [
       "Rosemary Valero-O'Connell"
     ],
-    "anio_inicio": 2019,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2019
   },
   {
     "id": "piruetas_414",
@@ -12869,12 +13131,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkys791einm1",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0cfW1FuU"
+      }
+    ],
     "autor": [
       "Tillie Walden"
     ],
-    "anio_inicio": 2017,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2017
   },
   {
     "id": "planeta_415",
@@ -12890,12 +13159,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyreqrobvgg",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0aA2HjJp"
+      }
+    ],
     "autor": [
       "Ana Ocina"
     ],
-    "anio_inicio": 2025,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2025
   },
   {
     "id": "snapdragon_416",
@@ -12911,12 +13187,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyqxvekt5s6",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/011f1BeI"
+      }
+    ],
     "autor": [
       "Kat Leyh"
     ],
-    "anio_inicio": 2020,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2020
   },
   {
     "id": "sola_en_el_espacio_417",
@@ -12932,12 +13215,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyq3wauug7z",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/08kqra79"
+      }
+    ],
     "autor": [
       "Tillie Walden"
     ],
-    "anio_inicio": 2021,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2021
   },
   {
     "id": "strangers_in_paradise_1_418",
@@ -12953,12 +13243,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkypns7dlerb",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/07QrJnwv"
+      }
+    ],
     "autor": [
       "Terry Moore"
     ],
-    "anio_inicio": 2004,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2004
   },
   {
     "id": "the_tea_dragon_society__tea_dragon__1__419",
@@ -12975,12 +13272,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyow4vxip1q",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0eCmlP1k"
+      }
+    ],
     "autor": [
       "K. O'Neill"
     ],
-    "anio_inicio": 2017,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2017
   },
   {
     "id": "the_tea_dragon_festival__tea_dragon__2__420",
@@ -12997,12 +13301,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyonxpxm80w",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/05pXCpLn"
+      }
+    ],
     "autor": [
       "K. O'Neill"
     ],
-    "anio_inicio": 2019,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2019
   },
   {
     "id": "the_tea_dragon_tapestry__tea_dragon__3__421",
@@ -13019,12 +13330,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkyo9awsrnvq",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0cqU1fvd"
+      }
+    ],
     "autor": [
       "K. O'Neill"
     ],
-    "anio_inicio": 2021,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2021
   },
   {
     "id": "una_invitada_en_casa_422",
@@ -13041,12 +13359,19 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkynpr84scg6",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/0cOJmC3x"
+      }
+    ],
     "autor": [
       "E.M. Carroll"
     ],
-    "anio_inicio": 2023,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2023
   },
   {
     "id": "yo_no_soy_starfire_423",
@@ -13063,11 +13388,18 @@
     "in_files": true,
     "adult": false,
     "subido": "Subido biblioteca, Subido FILES",
+    "tropos": [],
+    "personajes": [],
+    "enlaces_lectura": [
+      {
+        "id": "mrkynb98oqhwx",
+        "label": "amazon",
+        "url": "https://amzn.eu/d/02dPMDGt"
+      }
+    ],
     "autor": [
       "Mariko Tamaki"
     ],
-    "anio_inicio": 2021,
-    "tropos": [],
-    "personajes": []
+    "anio_inicio": 2021
   }
 ]

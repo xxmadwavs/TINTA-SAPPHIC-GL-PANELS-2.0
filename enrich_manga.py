@@ -66,6 +66,36 @@ DEMOGRAFICO_MAP = {
     "josei": "josei",
 }
 
+# Tipos de "links" de MangaDex que SI son sitios donde leer/comprar la obra
+# oficialmente. Se excluye a proposito "amz" (Amazon), como pediste, y
+# tambien las bases de datos/trackers (al, ap, kt, mal, mu) que no son
+# sitios de lectura.
+MANGADEX_LINK_LABELS = {
+    "engtl": "Traduccion oficial (EN)",
+    "raw": "Raw oficial",
+    "bw": "BookWalker",
+    "cdj": "CDJapan",
+    "ebj": "eBookJapan",
+}
+
+
+def build_mangadex_link_url(key, value):
+    if not value:
+        return None
+    if value.startswith("http://") or value.startswith("https://"):
+        return value
+    if key == "bw":
+        return f"https://bookwalker.jp/{value}"
+    return None
+
+
+def gen_link_id():
+    import random
+    import string
+    base = format(int(time.time() * 1000), "x")
+    rand = "".join(random.choices(string.ascii_lowercase + string.digits, k=5))
+    return f"gl_{base}{rand}"
+
 # Tally global para el resumen final (diagnostico de por que fallo algo)
 STATS = {
     "mangadex": {"ok": 0, "sin_match": 0, "error": {}},
@@ -206,6 +236,14 @@ def query_mangadex(title):
         titulos_alt_all.extend([v for v in alt.values() if v])
     titulos_alt_all = list(dict.fromkeys([t for t in titulos_alt_all if similar(title, t) < 0.99]))
 
+    # Enlaces oficiales de lectura/compra (sin Amazon, sin bases de datos).
+    links = attrs.get("links", {}) or {}
+    enlaces_candidatos = []
+    for key, label in MANGADEX_LINK_LABELS.items():
+        url = build_mangadex_link_url(key, links.get(key))
+        if url:
+            enlaces_candidatos.append({"label": label, "url": url})
+
     return {
         "match_score": best_score,
         "autor": autores,
@@ -216,6 +254,7 @@ def query_mangadex(title):
         "titulos_alt": titulos_alt_all[:6],
         "capitulos_totales": capitulos,
         "content_rating_raw": content_rating,
+        "enlaces_candidatos": enlaces_candidatos,
     }, None
 
 
@@ -404,6 +443,19 @@ def enrich_entry(entry, logfile):
         caps = first_truthy((mdx or {}).get("capitulos_totales"), (jik or {}).get("capitulos_totales"), (ani or {}).get("capitulos_totales"))
         if caps:
             changes["capitulos_totales"] = caps
+
+    # --- enlaces_lectura: se inserta DIRECTO en el json, fusionando con lo
+    #     que ya tenga la entrada (no se salta si ya tiene alguno; solo
+    #     evita duplicar por url) ---
+    candidatos = (mdx or {}).get("enlaces_candidatos") or []
+    if candidatos:
+        existentes = entry.get("enlaces_lectura") or []
+        urls_existentes = {l.get("url") for l in existentes if isinstance(l, dict)}
+        nuevos = [c for c in candidatos if c["url"] not in urls_existentes]
+        if nuevos:
+            for n in nuevos:
+                n["id"] = gen_link_id()
+            changes["enlaces_lectura"] = existentes + nuevos
 
     # --- SUGERENCIAS (nunca se escriben directo, siempre a revisar) ---
     generos_ingles = list(dict.fromkeys(

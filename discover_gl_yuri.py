@@ -262,7 +262,7 @@ ANILIST_DISCOVER_QUERY = """
 query ($page: Int) {
   Page(page: $page, perPage: 50) {
     pageInfo { hasNextPage total }
-    media(genre: "Girls Love", type: MANGA, sort: POPULARITY_DESC) {
+    media(tag: "Girls Love", type: MANGA, sort: POPULARITY_DESC) {
       id
       title { romaji english native }
       synonyms
@@ -342,7 +342,8 @@ def resolve_mangadex_tag_id(logfile):
     for t in data.get("data", []):
         attrs = t.get("attributes", {}) or {}
         name_en = (attrs.get("name") or {}).get("en", "")
-        if name_en.strip().lower() in ("girls love", "yuri") and attrs.get("group") == "genre":
+        name_norm = name_en.strip().lower().replace("'", "").replace("\u2019", "")
+        if name_norm in ("girls love", "yuri") and attrs.get("group") == "genre":
             return t["id"]
     return None
 
@@ -447,14 +448,18 @@ def fetch_mangadex_gl(max_pages, logfile):
 # ---------------------------------------------------------------------------
 
 def resolve_jikan_genre_id(logfile):
-    data, err = http_get_json(f"{JIKAN_BASE}/genres/manga", source="jikan")
-    time.sleep(JIKAN_DELAY)
-    if err or not data:
-        log(f"[Jikan] no se pudo resolver el genero Girls Love: {err}", logfile)
-        return None
-    for g in data.get("data", []):
-        if g.get("name", "").strip().lower() in ("girls love", "shoujo ai"):
-            return g.get("mal_id")
+    for attempt in range(1, MAX_RETRIES_429 + 2):
+        data, err = http_get_json(f"{JIKAN_BASE}/genres/manga", source="jikan")
+        if data:
+            for g in data.get("data", []):
+                if g.get("name", "").strip().lower() in ("girls love", "shoujo ai"):
+                    return g.get("mal_id")
+            return None
+        log(f"[Jikan] intento {attempt} para resolver el genero Girls Love fallo: {err}", logfile)
+        if attempt <= MAX_RETRIES_429:
+            time.sleep(BACKOFF_SECONDS[min(attempt - 1, len(BACKOFF_SECONDS) - 1)])
+        time.sleep(JIKAN_DELAY)
+    log("[Jikan] no se pudo resolver el genero Girls Love tras varios intentos.", logfile)
     return None
 
 

@@ -1,0 +1,48 @@
+name: Descubrir titulos GL/Yuri nuevos
+
+on:
+  workflow_dispatch:
+    inputs:
+      ruta_json:
+        description: "Ruta del manga_data.json dentro del repo (tu catalogo actual)"
+        required: false
+        default: "manga_data.json"
+      max_pages_anilist:
+        description: "Paginas maximas a recorrer en AniList (50 obras por pagina)"
+        required: false
+        default: "40"
+      max_pages_mangadex:
+        description: "Paginas maximas a recorrer en MangaDex (100 obras por pagina)"
+        required: false
+        default: "40"
+      max_pages_jikan:
+        description: "Paginas maximas a recorrer en Jikan/MAL (25 obras por pagina)"
+        required: false
+        default: "40"
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Ejecutar script de descubrimiento
+        run: >
+          python3 discover_gl_yuri.py "${{ github.event.inputs.ruta_json }}"
+          --max-pages-anilist "${{ github.event.inputs.max_pages_anilist }}"
+          --max-pages-mangadex "${{ github.event.inputs.max_pages_mangadex }}"
+          --max-pages-jikan "${{ github.event.inputs.max_pages_jikan }}"
+
+      - name: Subir resultados como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: descubrimiento-gl-yuri
+          path: |
+            discoveries_gl_yuri.json
+            discover_log.txt

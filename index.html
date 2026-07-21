@@ -1845,6 +1845,14 @@ body.shelf-active .topbar-center { display: none; }
   color: var(--neon3); cursor: pointer; text-decoration: underline;
   background: none; border: none; font-family: inherit; font-size: inherit;
 }
+.auth-forgot-m { font-size: 12px; color: var(--dim); margin-top: 8px; text-align: center; }
+.auth-forgot-m a {
+  color: var(--neon3); cursor: pointer; text-decoration: underline;
+  background: none; border: none; font-family: inherit; font-size: inherit;
+}
+.auth-fields input#resetOtpM {
+  letter-spacing: .3em; font-size: 1.1rem; text-align: center;
+}
 
 /* ── RATING BLOCK IN MODAL ────────────────────────────── */
 .rating-block {
@@ -2523,6 +2531,44 @@ body.home-active .topbar-center { display: none; }
       </div>
       <div class="auth-error-m" id="authErrorM"></div>
       <p class="auth-toggle-m" id="authToggleM">¿No tienes cuenta? <a onclick="toggleAuthMode()">Regístrate aquí</a></p>
+      <p class="auth-forgot-m" id="authForgotWrapM"><a onclick="handleForgotPassword()">¿Olvidaste tu contraseña?</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="auth-modal-wrap" id="resetModalWrap" onclick="handleResetBgClick(event)">
+  <div class="auth-modal">
+    <button class="auth-modal-x" onclick="closeResetModal()">✕</button>
+    <div class="auth-modal-inner">
+      <div class="auth-logo-m">Tinta Sapphic</div>
+      <div class="auth-brand-m">GL PANELS</div>
+
+      <!-- Paso 1: pedir email -->
+      <div id="resetStep1M">
+        <div class="auth-title-m">RECUPERAR</div>
+        <p class="auth-sub-m">Te enviaremos un código de 8 dígitos a tu email.</p>
+        <div class="auth-fields">
+          <input type="email" id="resetEmailM" placeholder="Tu email" autocomplete="email" onkeydown="if(event.key==='Enter')handleSendOtpM()">
+          <button class="btn-auth-submit" id="resetSendBtnM" onclick="handleSendOtpM()">ENVIAR CÓDIGO</button>
+        </div>
+        <div class="auth-error-m" id="resetError1M"></div>
+      </div>
+
+      <!-- Paso 2: código + nueva contraseña -->
+      <div id="resetStep2M" style="display:none">
+        <div class="auth-title-m">NUEVA CLAVE</div>
+        <p class="auth-sub-m" id="resetStep2SubM">Introduce el código que te hemos enviado y elige una nueva contraseña.</p>
+        <div class="auth-fields">
+          <input type="text" id="resetOtpM" placeholder="Código de 8 dígitos" autocomplete="one-time-code" maxlength="8" inputmode="numeric" onkeydown="if(event.key==='Enter')handleResetPasswordM()">
+          <input type="password" id="resetPassM" placeholder="Nueva contraseña (mín. 6 caracteres)" autocomplete="new-password" onkeydown="if(event.key==='Enter')handleResetPasswordM()">
+          <input type="password" id="resetPass2M" placeholder="Repite la contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')handleResetPasswordM()">
+          <button class="btn-auth-submit" id="resetBtnM" onclick="handleResetPasswordM()">GUARDAR CONTRASEÑA</button>
+        </div>
+        <div class="auth-error-m" id="resetErrorM"></div>
+        <p class="auth-toggle-m" style="margin-top:8px"><a onclick="showResetStep1M()">← Volver</a></p>
+      </div>
+
     </div>
   </div>
 </div>
@@ -2989,6 +3035,7 @@ function toggleAuthMode() {
     ? '¿Ya tienes cuenta? <a onclick="toggleAuthMode()">Inicia sesión</a>'
     : '¿No tienes cuenta? <a onclick="toggleAuthMode()">Regístrate aquí</a>';
   document.getElementById('telegramWrap').style.display = isReg ? 'block' : 'none';
+  document.getElementById('authForgotWrapM').style.display = isReg ? 'none' : 'block';
   document.getElementById('authErrorM').textContent = '';
 }
 async function handleAuth() {
@@ -3015,6 +3062,95 @@ async function handleAuth() {
   closeAuthModal();
 }
 async function signOut() { if (SB_READY) await sb.auth.signOut(); }
+
+// ── RECUPERAR CONTRASEÑA (OTP) ─────────────────────────────
+function handleForgotPassword() {
+  closeAuthModal();
+  showResetStep1M();
+  document.getElementById('resetModalWrap').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function openResetModal() {
+  showResetStep1M();
+  document.getElementById('resetModalWrap').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeResetModal() {
+  document.getElementById('resetModalWrap').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleResetBgClick(e) {
+  if (e.target === document.getElementById('resetModalWrap')) closeResetModal();
+}
+function showResetStep1M() {
+  document.getElementById('resetStep1M').style.display = '';
+  document.getElementById('resetStep2M').style.display = 'none';
+  document.getElementById('resetError1M').textContent = '';
+  setTimeout(() => document.getElementById('resetEmailM').focus(), 100);
+}
+async function handleSendOtpM() {
+  if (!SB_READY) return;
+  const email = document.getElementById('resetEmailM').value.trim();
+  const btn = document.getElementById('resetSendBtnM');
+  const err = document.getElementById('resetError1M');
+  if (!email) { err.textContent = 'Escribe tu email.'; return; }
+  btn.disabled = true; btn.textContent = 'ENVIANDO…';
+  const { error } = await sb.auth.resetPasswordForEmail(email);
+  btn.disabled = false; btn.textContent = 'ENVIAR CÓDIGO';
+  if (error) { err.textContent = error.message; return; }
+  document.getElementById('resetStep2SubM').textContent = 'Código enviado a ' + email + '. Revisa tu bandeja de entrada.';
+  document.getElementById('resetStep1M').style.display = 'none';
+  document.getElementById('resetStep2M').style.display = '';
+  document.getElementById('resetOtpM').value = '';
+  document.getElementById('resetPassM').value = '';
+  document.getElementById('resetPass2M').value = '';
+  document.getElementById('resetErrorM').textContent = '';
+  setTimeout(() => document.getElementById('resetOtpM').focus(), 100);
+  window._resetEmailM = email;
+}
+async function handleResetPasswordM() {
+  if (!SB_READY) return;
+  const otp = document.getElementById('resetOtpM').value.trim();
+  const pass = document.getElementById('resetPassM').value;
+  const pass2 = document.getElementById('resetPass2M').value;
+  const btn = document.getElementById('resetBtnM');
+  const err = document.getElementById('resetErrorM');
+  if (!otp || otp.length < 8) { err.textContent = 'Introduce el código de 8 dígitos.'; return; }
+  if (!pass || pass.length < 6) { err.textContent = 'Mínimo 6 caracteres.'; return; }
+  if (pass !== pass2) { err.textContent = 'Las contraseñas no coinciden.'; return; }
+  btn.disabled = true; btn.textContent = 'GUARDANDO…';
+  err.textContent = 'Verificando código…';
+  let otpData, otpErr;
+  ({ data: otpData, error: otpErr } = await sb.auth.verifyOtp({ email: window._resetEmailM, token: otp, type: 'recovery' }));
+  if (otpErr) {
+    ({ data: otpData, error: otpErr } = await sb.auth.verifyOtp({ email: window._resetEmailM, token: otp, type: 'email' }));
+  }
+  if (otpErr) {
+    err.textContent = 'Error: ' + otpErr.message;
+    btn.disabled = false; btn.textContent = 'GUARDAR CONTRASEÑA';
+    return;
+  }
+  if (otpData?.session) {
+    const { error: sessErr } = await sb.auth.setSession({ access_token: otpData.session.access_token, refresh_token: otpData.session.refresh_token });
+    if (sessErr) { err.textContent = 'Error sesión: ' + sessErr.message; btn.disabled = false; btn.textContent = 'GUARDAR CONTRASEÑA'; return; }
+  }
+  err.textContent = 'Guardando contraseña…';
+  let updateError = null;
+  try {
+    const updatePromise = sb.auth.updateUser({ password: pass });
+    const timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('Tiempo agotado (10s).')), 10000));
+    const { error } = await Promise.race([updatePromise, timeoutPromise]);
+    updateError = error;
+  } catch (e) { updateError = e; }
+  if (updateError) {
+    err.textContent = 'Error al guardar: ' + (updateError.message || JSON.stringify(updateError));
+    btn.disabled = false; btn.textContent = 'GUARDAR CONTRASEÑA';
+  } else {
+    err.textContent = '';
+    closeResetModal();
+    btn.disabled = false; btn.textContent = 'GUARDAR CONTRASEÑA';
+  }
+}
 
 // ── RATINGS ───────────────────────────────────────────────
 async function loadRatings() {
@@ -3052,7 +3188,6 @@ function buildVoteSectionHTML(e) {
     <p class="vote-prompt-m">${myScore ? 'Tu valoración actual: ' + '★'.repeat(myScore) : 'Tu valoración:'}</p>
     <div class="stars-row-m" id="starsRowM">${stars}</div>
     <div class="vote-btns-m">
-      <button class="btn-vote-submit" id="voteSubmitBtn" onclick="submitVote()" ${pendingStar === 0 ? 'disabled' : ''}>${myScore ? 'ACTUALIZAR' : 'VOTAR'}</button>
       ${myScore ? '<button class="btn-vote-del" id="voteDelBtn" onclick="deleteVote()">Eliminar</button>' : ''}
     </div>
     <div class="vote-feedback-m" id="voteFeedbackM"></div>`;
@@ -3068,15 +3203,13 @@ function lightStars(n) {
 }
 function selectStar(n) {
   pendingStar = n; lightStars(n);
-  const btn = document.getElementById('voteSubmitBtn');
-  if (btn) btn.disabled = false;
+  submitVote();
 }
 async function submitVote() {
   if (!SB_READY || !currentUser || pendingStar === 0 || !activeModalItem) return;
-  const submitBtn = document.getElementById('voteSubmitBtn');
-  const delBtn    = document.getElementById('voteDelBtn');
-  if (submitBtn) submitBtn.disabled = true;
-  if (delBtn)    delBtn.disabled    = true;
+  document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = true);
+  const delBtn = document.getElementById('voteDelBtn');
+  if (delBtn) delBtn.disabled = true;
   const existing = myRatings[activeModalItem.id];
   const { error } = existing
     ? await sb.from('ratings').update({ score: pendingStar }).eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id)
@@ -3084,8 +3217,8 @@ async function submitVote() {
   if (error) {
     const fb = document.getElementById('voteFeedbackM');
     if (fb) fb.textContent = 'Error al guardar.';
-    if (submitBtn) submitBtn.disabled = false;
-    if (delBtn)    delBtn.disabled    = false;
+    document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = false);
+    if (delBtn) delBtn.disabled = false;
     return;
   }
   const r = ratingsMap[activeModalItem.id] || { avg: 0, count: 0 };
@@ -3103,12 +3236,11 @@ async function submitVote() {
 }
 async function deleteVote() {
   if (!SB_READY || !currentUser || !myRatings[activeModalItem.id]) return;
-  const submitBtn = document.getElementById('voteSubmitBtn');
-  const delBtn    = document.getElementById('voteDelBtn');
-  if (submitBtn) submitBtn.disabled = true;
-  if (delBtn)    delBtn.disabled    = true;
+  const delBtn = document.getElementById('voteDelBtn');
+  if (delBtn) delBtn.disabled = true;
+  document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = true);
   const { error } = await sb.from('ratings').delete().eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id);
-  if (error) { if (submitBtn) submitBtn.disabled = false; if (delBtn) delBtn.disabled = false; return; }
+  if (error) { if (delBtn) delBtn.disabled = false; document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = false); return; }
   const r        = ratingsMap[activeModalItem.id];
   const oldScore = myRatings[activeModalItem.id];
   if (r.count <= 1) delete ratingsMap[activeModalItem.id];
@@ -3507,6 +3639,7 @@ async function init() {
     const { data: { session } } = await sb.auth.getSession();
     if (session) currentUser = session.user;
     sb.auth.onAuthStateChange((_e, session) => {
+      if (_e === 'PASSWORD_RECOVERY') { openResetModal(); return; }
       currentUser = session?.user || null;
       renderAuthArea();
       updateAuthGatedUI();

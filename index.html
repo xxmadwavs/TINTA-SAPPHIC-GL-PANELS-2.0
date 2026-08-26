@@ -922,6 +922,21 @@ div.search-box:focus { outline: none; }
 }
 .modal-x:hover { border-color: var(--neon2); color: var(--neon2); }
 
+.modal-share-btn {
+  position: absolute; top: 14px; right: 50px;
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: all .15s; z-index: 1;
+}
+.modal-share-btn:hover { border-color: var(--neon3); color: var(--neon3); }
+.modal-share-btn.copied { border-color: #6bff9e; color: #6bff9e; }
+
 .modal-body { padding: 20px 24px 28px; }
 
 .modal-top {
@@ -990,6 +1005,32 @@ div.search-box:focus { outline: none; }
 .mb-cr-safe { background: rgba(71,255,140,0.1); color: #47ff8c; border: 1px solid rgba(71,255,140,0.22); }
 .mb-cr-sugestiva { background: rgba(255,200,71,0.1); color: #ffc847; border: 1px solid rgba(255,200,71,0.22); }
 .mb-cr-erotica { background: rgba(255,71,113,0.12); color: #ff4771; border: 1px solid rgba(255,71,113,0.25); }
+.mb-adapt { background: rgba(180,71,255,0.1); color: #b447ff; border: 1px solid rgba(180,71,255,0.22); }
+
+/* ── HISTORIAS SIMILARES ─────────────────────────────────── */
+.similar-block { margin: 18px 0; }
+.similar-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: .5px;
+  color: var(--muted); margin-bottom: 10px;
+}
+.similar-row {
+  display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: thin; scrollbar-color: rgba(245,240,232,0.15) transparent;
+}
+.similar-card {
+  flex-shrink: 0; width: 96px; cursor: pointer;
+}
+.similar-cover {
+  width: 96px; height: 138px; border-radius: 2px; overflow: hidden;
+  background: var(--surface2); position: relative;
+}
+.similar-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.similar-noimg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; opacity: .4; }
+.similar-card-title {
+  font-size: 10.5px; color: var(--muted); margin-top: 5px; line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.similar-card:hover .similar-card-title { color: var(--paper); }
 
 .modal-adult-warn {
   display: flex; align-items: center; gap: 8px;
@@ -1160,6 +1201,10 @@ div.search-box:focus { outline: none; }
   /* ── Adult btn — icon only ── */
   .adult-btn { padding: 5px 8px; }
   #adultLbl { display: none; }
+
+  /* ── Home/Ruleta nav btns — icon only, so topbar-right fits ── */
+  .home-nav-btn, .ruleta-nav-btn { padding: 5px 8px; }
+  #homeNavLbl, #ruletaNavLbl { display: none; }
 
   /* ── Hero — much smaller ── */
   .hero { padding: 60px 12px 0; }
@@ -2007,6 +2052,19 @@ body.shelf-active .topbar-center { display: none; }
 .shelf-btn.cs-reading.active { background: rgba(232,255,71,0.16); border-color: var(--neon); color: var(--neon); }
 .shelf-btn.cs-read.active { background: rgba(107,255,158,0.16); border-color: #6bff9e; color: #6bff9e; }
 .shelf-remove-btn { margin-top: 2px; }
+.shelf-dates-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; }
+.shelf-date-label {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 10.5px; color: var(--dim);
+}
+.shelf-date-input {
+  padding: 6px 8px; border-radius: 2px;
+  border: 1px solid var(--border2);
+  background: var(--surface); color: var(--paper);
+  font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+  outline: none; color-scheme: dark;
+}
+.shelf-date-input:focus { border-color: var(--neon3); }
 
 /* shelf status badge on card */
 .card-shelf-badge {
@@ -2511,8 +2569,8 @@ body.home-active .topbar-center { display: none; }
   </div>
   <div class="topbar-right">
     <div id="authArea"></div>
-    <button class="home-nav-btn" id="homeNavBtn" onclick="showHome()">⌂ Inicio</button>
-    <button class="ruleta-nav-btn" id="ruletaNavBtn" onclick="openRuletaModal()">🎲 Ruleta</button>
+    <button class="home-nav-btn" id="homeNavBtn" onclick="showHome()">⌂ <span id="homeNavLbl">Inicio</span></button>
+    <button class="ruleta-nav-btn" id="ruletaNavBtn" onclick="openRuletaModal()">🎲 <span id="ruletaNavLbl">Ruleta</span></button>
     <button class="adult-btn" id="adultBtn">
       <span class="pill"></span>
       <span id="adultLbl">+18 visible</span>
@@ -3219,6 +3277,7 @@ body.home-active .topbar-center { display: none; }
   <div class="modal" id="modal">
     <div class="modal-drag-handle" id="modalDragHandle"></div>
     <button class="modal-x" id="modalX">✕</button>
+    <button class="modal-share-btn" id="modalShareBtn" onclick="shareBook()" title="Compartir ficha">⇪</button>
     <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
@@ -3751,12 +3810,17 @@ const SHELF_INFO = {
   read:    { label: 'Terminado',   icon: '✓',  cls: 'cs-read' }
 };
 let myReadingStatus = {}; // { manga_id: 'want' | 'reading' | 'read' }
+let myReadingDates   = {}; // { manga_id: { start_date, end_date } }
 
 async function loadMyReadingStatus() {
   if (!SB_READY || !currentUser) return;
-  const { data } = await sb.from('reading_status').select('book_id,status').eq('user_id', currentUser.id);
+  const { data } = await sb.from('reading_status').select('book_id,status,start_date,end_date').eq('user_id', currentUser.id);
   myReadingStatus = {};
-  if (data) data.forEach(r => myReadingStatus[r.book_id] = r.status);
+  myReadingDates = {};
+  if (data) data.forEach(r => {
+    myReadingStatus[r.book_id] = r.status;
+    if (r.start_date || r.end_date) myReadingDates[r.book_id] = { start_date: r.start_date, end_date: r.end_date };
+  });
 }
 
 function buildShelfSectionHTML(e) {
@@ -3766,11 +3830,24 @@ function buildShelfSectionHTML(e) {
         <p>Tu estantería personal es solo para personas registradas.<br><a onclick="closeModal();openAuthModal()">Inicia sesión</a> para guardar tu progreso.</p>
       </div>`;
   const cur = myReadingStatus[e.id];
+  const dates = myReadingDates[e.id] || {};
+  const today = new Date().toISOString().slice(0, 10);
   const btns = Object.entries(SHELF_INFO).map(([key, info]) =>
     `<button class="shelf-btn ${info.cls}${cur === key ? ' active' : ''}" onclick="setReadingStatus('${key}')">${info.icon} ${info.label}</button>`
   ).join('');
+  const dateFields = (cur === 'reading' || cur === 'read') ? `
+    <div class="shelf-dates-row">
+      <label class="shelf-date-label">Empecé el
+        <input type="date" class="shelf-date-input" max="${today}" value="${dates.start_date || ''}" onchange="setReadingDate('start_date', this.value)">
+      </label>
+      ${cur === 'read' ? `
+      <label class="shelf-date-label">Terminé el
+        <input type="date" class="shelf-date-input" min="${dates.start_date || ''}" max="${today}" value="${dates.end_date || ''}" onchange="setReadingDate('end_date', this.value)">
+      </label>` : ''}
+    </div>` : '';
   return `
     <div class="shelf-btns-row">${btns}</div>
+    ${dateFields}
     ${cur ? `<button class="btn-vote-del shelf-remove-btn" onclick="removeReadingStatus()">Quitar de mi lista</button>` : ''}`;
 }
 
@@ -3783,17 +3860,41 @@ async function setReadingStatus(status) {
   if (!SB_READY || !currentUser || !activeModalItem) return;
   const id = activeModalItem.id;
   const prev = myReadingStatus[id];
+  const prevDates = myReadingDates[id] ? { ...myReadingDates[id] } : {};
   myReadingStatus[id] = status; // optimista
+  const today = new Date().toISOString().slice(0, 10);
+  const dates = { ...prevDates };
+  if (status === 'reading' && !dates.start_date) dates.start_date = today;
+  if (status === 'read') {
+    if (!dates.start_date) dates.start_date = today;
+    if (!dates.end_date) dates.end_date = today;
+  }
+  myReadingDates[id] = dates;
   refreshShelfSection();
   refreshShelfBadge(id);
   const { error } = await sb.from('reading_status')
-    .upsert({ user_id: currentUser.id, book_id: id, status }, { onConflict: 'user_id,book_id' });
+    .upsert({ user_id: currentUser.id, book_id: id, status, start_date: dates.start_date || null, end_date: dates.end_date || null }, { onConflict: 'user_id,book_id' });
   if (error) {
     if (prev) myReadingStatus[id] = prev; else delete myReadingStatus[id];
+    myReadingDates[id] = prevDates;
     refreshShelfSection();
     refreshShelfBadge(id);
   } else if (fShelf !== 'all') {
     renderSections(false);
+  }
+}
+async function setReadingDate(field, value) {
+  if (!SB_READY || !currentUser || !activeModalItem) return;
+  const id = activeModalItem.id;
+  const prevDates = myReadingDates[id] ? { ...myReadingDates[id] } : {};
+  myReadingDates[id] = { ...prevDates, [field]: value || null };
+  refreshShelfSection();
+  const { error } = await sb.from('reading_status')
+    .update({ [field]: value || null })
+    .eq('user_id', currentUser.id).eq('book_id', id);
+  if (error) {
+    myReadingDates[id] = prevDates;
+    refreshShelfSection();
   }
 }
 
@@ -3801,12 +3902,15 @@ async function removeReadingStatus() {
   if (!SB_READY || !currentUser || !activeModalItem) return;
   const id = activeModalItem.id;
   const prev = myReadingStatus[id];
+  const prevDates = myReadingDates[id] ? { ...myReadingDates[id] } : undefined;
   delete myReadingStatus[id];
+  delete myReadingDates[id];
   refreshShelfSection();
   refreshShelfBadge(id);
   const { error } = await sb.from('reading_status').delete().eq('user_id', currentUser.id).eq('book_id', id);
   if (error) {
     if (prev) myReadingStatus[id] = prev;
+    if (prevDates) myReadingDates[id] = prevDates;
     refreshShelfSection();
     refreshShelfBadge(id);
   } else if (fShelf !== 'all') {
@@ -4123,7 +4227,7 @@ async function init() {
       renderAuthArea();
       updateAuthGatedUI();
       if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]).then(() => { renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); });
-      else { myRatings = {}; myReadingStatus = {}; mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
+      else { myRatings = {}; myReadingStatus = {}; myReadingDates = {}; mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
     });
   }
   renderAuthArea();
@@ -5138,6 +5242,25 @@ function buildCard(e, bgColor) {
 
 /* ── MODAL ──────────────────────────────────────────────── */
 let _preModalUrl = null;
+function getSimilarBooks(e, limit) {
+  limit = limit || 10;
+  const myTags = new Set(e.tags || []);
+  const myAutores = new Set((Array.isArray(e.autor) ? e.autor : (e.autor ? [e.autor] : [])).map(a => a.toLowerCase()));
+  const scored = [];
+  allData.forEach(o => {
+    if (o.id === e.id) return;
+    if (hideAdult && o.adult) return;
+    const oTags = o.tags || [];
+    const sharedTags = oTags.filter(t => myTags.has(t)).length;
+    const oAutores = (Array.isArray(o.autor) ? o.autor : (o.autor ? [o.autor] : [])).map(a => a.toLowerCase());
+    const sameAutor = oAutores.some(a => myAutores.has(a));
+    const sameSeccion = o.seccion === e.seccion;
+    let score = sharedTags * 3 + (sameAutor ? 5 : 0) + (sameSeccion ? 1 : 0);
+    if (score > 0) scored.push({ item: o, score });
+  });
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map(s => s.item);
+}
 function openModal(e, isRefresh) {
   activeModalItem = e;
   pendingStar = myRatings[e.id] || 0;
@@ -5174,6 +5297,7 @@ function openModal(e, isRefresh) {
           ${e.in_files ? '<span class="mbadge mb-files">📁 FILES</span>' : ''}
           ${e.adult ? '<span class="mbadge mb-adult">+18</span>' : ''}
           ${crBadgeData ? `<span class="mbadge mb-cr mb-cr-${esc(e.content_rating)}">${crBadgeData.icon} ${crBadgeData.label}</span>` : ''}
+          ${e.adaptacion ? `<span class="mbadge mb-adapt">🎬 ${esc(typeof e.adaptacion === 'string' ? e.adaptacion : 'Tiene adaptación')}</span>` : ''}
         </div>
       </div>
     </div>
@@ -5198,6 +5322,15 @@ function openModal(e, isRefresh) {
         <div class="modal-extra-locked">🔒 Tropes y personajes solo para personas registradas. <a onclick="closeModal();openAuthModal()">Inicia sesión</a></div>
       `}
     </div>` : ''}
+    ${(() => { const sim = getSimilarBooks(e); return sim.length ? `
+    <div class="similar-block">
+      <div class="similar-title">Historias similares</div>
+      <div class="similar-row">${sim.map(s => `
+        <div class="similar-card" onclick="ruletaOpenBook(${JSON.stringify(s.id)})">
+          <div class="similar-cover">${s.imagen ? `<img src="${esc(s.imagen)}" alt="${esc(s.titulo)}" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=similar-noimg>📖</div>'">` : '<div class="similar-noimg">📖</div>'}</div>
+          <div class="similar-card-title">${esc(s.titulo)}</div>
+        </div>`).join('')}</div>
+    </div>` : ''; })()}
     <div class="rating-block shelf-block">
       <div class="rating-block-title">📚 Mi estantería</div>
       <div id="shelfSection">${buildShelfSectionHTML(e)}</div>
@@ -5247,6 +5380,32 @@ function closeModal() {
     _preModalUrl = null;
   }
   document.title = 'GL PANELS — カタログ';
+}
+async function shareBook() {
+  if (!activeModalItem) return;
+  const params = new URLSearchParams(location.search);
+  params.set('manga', activeModalItem.id);
+  const url = location.origin + location.pathname + '?' + params.toString();
+  const btn = document.getElementById('modalShareBtn');
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: activeModalItem.titulo + ' — GL PANELS', url });
+    } catch (err) {
+      // usuario canceló el share sheet, no hacemos nada
+    }
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    if (btn) {
+      const prevContent = btn.innerHTML;
+      btn.innerHTML = '✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = prevContent; btn.classList.remove('copied'); }, 1600);
+    }
+  } catch (err) {
+    console.error('No se pudo copiar el enlace:', err);
+  }
 }
 
 /* ── FILTERS ────────────────────────────────────────────── */

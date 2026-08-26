@@ -155,6 +155,11 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
 .act-broken.on{background:rgba(255,60,60,.2);border-color:#ff5050;color:#ff6060}
 .act-incomplete{background:rgba(71,160,255,.08);border-color:rgba(71,160,255,.3);color:#47a0ff;font-family:"Space Mono",monospace;font-size:8px;letter-spacing:.5px}
 .act-incomplete.on{background:rgba(71,160,255,.22);border-color:#47a0ff;color:#6fb5ff}
+.act-dup{background:rgba(180,71,255,.08);border-color:rgba(180,71,255,.3);color:#b447ff;font-family:"Space Mono",monospace;font-size:8px;letter-spacing:.5px}
+.act-dup.on{background:rgba(180,71,255,.22);border-color:#b447ff;color:#c976ff}
+tr.row-dup{background:rgba(180,71,255,.04)}
+tr.row-dup:hover{background:rgba(180,71,255,.08)}
+.dup-badge{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.5px;padding:2px 6px;background:rgba(180,71,255,.15);color:#c976ff;border:1px solid rgba(180,71,255,.35);margin-top:3px;display:inline-block;cursor:default}
 
 
 
@@ -416,6 +421,7 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
     <button class="theme-btn" id="themeBtn" title="Cambiar tema">☀︎</button>
     
     <a href="index.html" class="tb-btn">← Catálogo</a>
+    <label class="tb-btn" style="cursor:pointer" title="Añade las historias del archivo a tu catálogo actual, sin borrar nada">📂➕ Combinar<input type="file" accept=".json" id="combineFile" style="display:none"></label>
     <label class="tb-btn" style="cursor:pointer">📂 Importar<input type="file" accept=".json" id="importFile" style="display:none"></label>
     <button class="tb-btn tb-neon" id="exportBtn">💾 Exportar JSON</button>
     <button class="tb-btn tb-pink" id="addBtn">+ Nueva historia</button>
@@ -429,6 +435,7 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
   <div class="export-bar">
     <div><div class="export-t">Gestión de datos</div><div class="export-s">Cambios en memoria · Exporta el JSON para GitHub</div></div>
     <div class="export-acts">
+      <label class="tb-btn" style="cursor:pointer" title="Añade las historias del archivo a tu catálogo actual, sin borrar nada">📂➕ Combinar JSON<input type="file" accept=".json" id="combineFile2" style="display:none"></label>
       <label class="tb-btn" style="cursor:pointer">📂 Importar JSON<input type="file" accept=".json" id="importFile2" style="display:none"></label>
       <button class="tb-btn tb-neon" id="exportBtn2">💾 Exportar manga_data.json</button>
     </div>
@@ -461,6 +468,7 @@ tr.row-img-broken:hover{background:rgba(255,60,60,.08)}
     <span class="tb-count" id="tbCount"></span>
     <button class="act act-broken" id="btnBroken" onclick="toggleBrokenFilter()" title="Mostrar solo imágenes rotas">⚠ IMG ROTAS <span id="brokenCount" style="font-size:9px;opacity:.7"></span></button>
     <button class="act act-incomplete" id="btnIncomplete" onclick="toggleIncompleteFilter()" title="Mostrar historias con datos incompletos">✎ INCOMPLETAS <span id="incompleteCount" style="font-size:9px;opacity:.7"></span></button>
+    <button class="act act-dup" id="btnDup" onclick="toggleDupFilter()" title="Mostrar posibles fichas duplicadas (título o autor muy parecidos)">⧉ DUPLICADOS <span id="dupCount" style="font-size:9px;opacity:.7"></span></button>
     </div>
 
   <div class="table-wrap">
@@ -1071,7 +1079,7 @@ async function initApp(){
   catch{officialLinks=DEFAULT_LINKS.slice();}
   normalizeAllTags();
   await Promise.all([loadRatingsCount(), loadShelfCount()]);
-  buildStats();updateIncompleteCount();applyFilters();renderInkAdmin();renderLinksAdmin();bindEvents();
+  buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();renderLinksAdmin();bindEvents();
 }
 
 // Boot: auth first, app second
@@ -1111,6 +1119,7 @@ function renderTable(){
   let src=filtered;
   if(brokenFilter)src=src.filter(e=>brokenIds.has(e.id));
   if(incompleteFilter)src=src.filter(isIncomplete);
+  if(dupFilter){src=src.filter(e=>dupInfo[e.id]);src=src.slice().sort((a,b)=>(dupInfo[a.id].group-dupInfo[b.id].group)||a.titulo.localeCompare(b.titulo));}
   const start=(page-1)*perPage,rows=src.slice(start,start+perPage);
   document.getElementById('adminTable').innerHTML=rows.map(e=>{
     const ec=ECLS[e.estado]||'b-fin',ei=EICO[e.estado]||'';
@@ -1126,9 +1135,11 @@ function renderTable(){
     const demoBadge=demoInfo?`<span class="badge" style="background:${demoInfo.bg};color:${demoInfo.col};border:1px solid ${demoInfo.bd}">${demoInfo.icon} ${demoInfo.label}</span>`:'';
     const brokenBadge=e.imagen?`<span class="img-broken img-broken-badge" style="display:none">⚠ IMG ROTA</span>`:'';
     const cwBadge=(e.advertencias&&e.advertencias.length)?`<span class="badge" style="background:rgba(255,200,71,.12);color:#ffc847;border:1px solid rgba(255,200,71,.4)" title="${esc(e.advertencias.join(', '))}">⚠️ ${e.advertencias.length}</span>`:'';
-    return `<tr>
+    const dup=dupInfo[e.id];
+    const dupBadge=dupFilter&&dup&&dup.best?`<span class="dup-badge" title="${esc(dup.best.otherTitulo)}">⧉ ${Math.round(dup.best.score*100)}% con «${esc(dup.best.otherTitulo.length>28?dup.best.otherTitulo.slice(0,28)+'…':dup.best.otherTitulo)}»${dup.best.authorMatch?' · mismo autor':''}</span>`:'';
+    return `<tr${dupFilter&&dup?' class="row-dup"':''}>
       <td class="td-cov">${cov}</td>
-      <td class="td-tit"><div class="td-titulo">${esc(e.titulo)}</div>${e.adult?'<span class="adult-flag">+18</span>':''}${inkBadge}${crBadge}${demoBadge}${cwBadge}${brokenBadge}${incompleteFilter&&(!e.titulos_alt||!e.titulos_alt.length)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(71,160,255,.15);color:#47a0ff;border-color:rgba(71,160,255,.4)">✎ SIN ALT</span>':''}${incompleteFilter&&e.estado==='Finalizado'&&(!e.capitulos_totales||e.capitulos_totales<=0)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,200,71,.12);color:#ffc847;border-color:rgba(255,200,71,.4)">✎ SIN CAPS</span>':''}${incompleteFilter&&(!e.autor||(Array.isArray(e.autor)?e.autor.length===0:false))?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN AUTOR</span>':''}${incompleteFilter&&!e.anio_inicio?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(140,200,255,.12);color:#8cc8ff;border-color:rgba(140,200,255,.4)">✎ SIN AÑO</span>':''}${incompleteFilter&&!e.content_rating?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,140,200,.12);color:#ff8cc8;border-color:rgba(255,140,200,.4)">✎ SIN RATING</span>':''}${incompleteFilter&&e.seccion==='Manga'&&!e.demografico?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN DEMOGRÁFICO</span>':''}</td>
+      <td class="td-tit"><div class="td-titulo">${esc(e.titulo)}</div>${e.adult?'<span class="adult-flag">+18</span>':''}${inkBadge}${crBadge}${demoBadge}${cwBadge}${brokenBadge}${dupBadge}${incompleteFilter&&(!e.titulos_alt||!e.titulos_alt.length)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(71,160,255,.15);color:#47a0ff;border-color:rgba(71,160,255,.4)">✎ SIN ALT</span>':''}${incompleteFilter&&e.estado==='Finalizado'&&(!e.capitulos_totales||e.capitulos_totales<=0)?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,200,71,.12);color:#ffc847;border-color:rgba(255,200,71,.4)">✎ SIN CAPS</span>':''}${incompleteFilter&&(!e.autor||(Array.isArray(e.autor)?e.autor.length===0:false))?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN AUTOR</span>':''}${incompleteFilter&&!e.anio_inicio?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(140,200,255,.12);color:#8cc8ff;border-color:rgba(140,200,255,.4)">✎ SIN AÑO</span>':''}${incompleteFilter&&!e.content_rating?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(255,140,200,.12);color:#ff8cc8;border-color:rgba(255,140,200,.4)">✎ SIN RATING</span>':''}${incompleteFilter&&e.seccion==='Manga'&&!e.demografico?'<span class="img-broken img-broken-badge" style="display:inline-block;background:rgba(180,140,255,.12);color:#b48cff;border-color:rgba(180,140,255,.4)">✎ SIN DEMOGRÁFICO</span>':''}</td>
       <td class="td-sec">${esc(e.seccion)}</td>
       <td class="td-tags"><div class="tag-row">${tags}</div></td>
       <td><span class="badge ${ec}">${ei} ${esc(e.estado)}</span></td>
@@ -1304,7 +1315,7 @@ function saveEntry(){
     if(entry.imagen)brokenIds.delete(editingId);
   }
   else allData.unshift(entry);
-  const _savedPage=page; closeMod('editWrap'); buildStats(); updateIncompleteCount(); applyFilters(); renderInkAdmin(); page=_savedPage; renderTable();
+  const _savedPage=page; closeMod('editWrap'); buildStats(); updateIncompleteCount(); updateDupCount(); applyFilters(); renderInkAdmin(); page=_savedPage; renderTable();
   toast(editingId?'Historia actualizada ✓':'Historia añadida ✓','ok');
 }
 function openDel(id){
@@ -1312,7 +1323,7 @@ function openDel(id){
   document.getElementById('delTitle').textContent=`"${e?.titulo||id}"`;openMod('delWrap');
 }
 function confirmDelete(){
-  allData=allData.filter(x=>x.id!==deletingId);const _p2=page;closeMod('delWrap');buildStats();updateIncompleteCount();applyFilters();renderInkAdmin();page=Math.min(_p2,Math.ceil(filtered.length/perPage)||1);renderTable();toast('Eliminada','ok');
+  allData=allData.filter(x=>x.id!==deletingId);const _p2=page;closeMod('delWrap');buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();page=Math.min(_p2,Math.ceil(filtered.length/perPage)||1);renderTable();toast('Eliminada','ok');
 }
 
 function renderPills(){
@@ -1535,6 +1546,69 @@ function toggleBrokenFilter(){
   page=1;renderTable();
 }
 
+// ── DETECCIÓN DE DUPLICADOS ──────────────────────────────────
+let dupFilter=false;
+let dupInfo={}; // { id: { group, best:{otherTitulo,pct,authorMatch} } }
+const DUP_THRESHOLD=0.8;
+function dupNormalize(str){
+  if(!str)return'';
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s]/g,' ').replace(/\b(the|a|an|el|la|los|las|un|una)\b/g,'').replace(/\s+/g,' ').trim();
+}
+function dupLevenshtein(a,b){
+  const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
+  let prev=Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){const cur=[i];for(let j=1;j<=n;j++){cur[j]=a[i-1]===b[j-1]?prev[j-1]:1+Math.min(prev[j-1],prev[j],cur[j-1]);}prev=cur;}
+  return prev[n];
+}
+function dupSimilarity(a,b){
+  a=dupNormalize(a);b=dupNormalize(b);if(!a||!b)return 0;if(a===b)return 1;
+  const dist=dupLevenshtein(a,b);return 1-dist/Math.max(a.length,b.length);
+}
+function dupAllTitles(e){const t=[e.titulo].concat(e.titulos_alt||[]).filter(Boolean);return t.length?t:[''];}
+function dupAuthors(e){return Array.isArray(e.autor)?e.autor:(e.autor?[e.autor]:[]);}
+function dupSameAuthor(a,b){const A=dupAuthors(a).map(dupNormalize),B=dupAuthors(b).map(dupNormalize);return A.some(x=>x&&B.includes(x));}
+function computeDuplicates(){
+  dupInfo={};
+  const n=allData.length;
+  const parent=Array.from({length:n},(_,i)=>i);
+  function find(x){while(parent[x]!==x){parent[x]=parent[parent[x]];x=parent[x];}return x;}
+  function union(x,y){const rx=find(x),ry=find(y);if(rx!==ry)parent[rx]=ry;}
+  const edges=[];
+  for(let i=0;i<n;i++){
+    for(let j=i+1;j<n;j++){
+      const a=allData[i],b=allData[j];
+      let best=0;
+      dupAllTitles(a).forEach(ta=>dupAllTitles(b).forEach(tb=>{best=Math.max(best,dupSimilarity(ta,tb));}));
+      const authorMatch=dupSameAuthor(a,b);
+      const thresh=authorMatch?Math.max(DUP_THRESHOLD-0.12,0.55):DUP_THRESHOLD;
+      if(best>=thresh){union(i,j);edges.push({i,j,score:best,authorMatch});}
+    }
+  }
+  const clusters={};
+  for(let i=0;i<n;i++){const root=find(i);(clusters[root]=clusters[root]||[]).push(i);}
+  Object.values(clusters).filter(g=>g.length>1).forEach((idxs,gi)=>{
+    idxs.forEach(i=>{
+      let best=null;
+      edges.forEach(e=>{
+        if(e.i!==i&&e.j!==i)return;
+        const otherIdx=e.i===i?e.j:e.i;
+        if(idxs.includes(otherIdx)&&(!best||e.score>best.score))best={score:e.score,authorMatch:e.authorMatch,otherTitulo:allData[otherIdx].titulo};
+      });
+      dupInfo[allData[i].id]={group:gi,best};
+    });
+  });
+}
+function updateDupCount(){
+  computeDuplicates();
+  const n=Object.keys(dupInfo).length;
+  document.getElementById('dupCount').textContent=n?'('+n+')':'';
+}
+function toggleDupFilter(){
+  dupFilter=!dupFilter;
+  document.getElementById('btnDup').classList.toggle('on',dupFilter);
+  page=1;renderTable();
+}
+
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function exportJSON(){
@@ -1544,7 +1618,47 @@ function exportJSON(){
 }
 function importJSON(file){
   const r=new FileReader();
-  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!Array.isArray(d))throw 0;allData=d;normalizeAllTags();buildStats();applyFilters();renderInkAdmin();toast(`${d.length} entradas importadas ✓`,'ok');}catch{toast('JSON inválido','err');}};
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!Array.isArray(d))throw 0;allData=d;normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();toast(`${d.length} entradas importadas ✓`,'ok');}catch{toast('JSON inválido','err');}};
+  r.readAsText(file);
+}
+
+function _normTitulo(t){
+  return (t||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+}
+
+function combineJSON(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    let d;
+    try{
+      d=JSON.parse(e.target.result);
+      if(!Array.isArray(d))throw 0;
+    }catch{toast('JSON inválido','err');return;}
+
+    const existingIds=new Set(allData.map(x=>x.id));
+    const existingTitulos=new Set(allData.map(x=>_normTitulo(x.titulo)));
+
+    let added=0, skippedId=0;
+    const possibleDupes=[];
+
+    d.forEach(entry=>{
+      if(entry.id && existingIds.has(entry.id)){ skippedId++; return; } // ya existe literalmente (mismo id)
+      if(_normTitulo(entry.titulo) && existingTitulos.has(_normTitulo(entry.titulo))){
+        possibleDupes.push(entry.titulo); // se añade igual, pero se avisa por si es duplicado real
+      }
+      allData.push(entry);
+      if(entry.id) existingIds.add(entry.id);
+      existingTitulos.add(_normTitulo(entry.titulo));
+      added++;
+    });
+
+    normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();
+
+    let msg=`${added} entradas combinadas ✓ (catálogo total: ${allData.length})`;
+    if(skippedId) msg+=` · ${skippedId} omitidas por id repetido`;
+    if(possibleDupes.length) msg+=` · ⚠ ${possibleDupes.length} título(s) parecen repetidos, revísalos: ${possibleDupes.slice(0,5).join(', ')}${possibleDupes.length>5?'…':''}`;
+    toast(msg, possibleDupes.length?'err':'ok');
+  };
   r.readAsText(file);
 }
 
@@ -1702,6 +1816,7 @@ function bindEvents(){
   document.getElementById('confirmDel').addEventListener('click',confirmDelete);
   [document.getElementById('exportBtn'),document.getElementById('exportBtn2')].forEach(b=>b?.addEventListener('click',exportJSON));
   [document.getElementById('importFile'),document.getElementById('importFile2')].forEach(inp=>inp?.addEventListener('change',e=>{if(e.target.files[0])importJSON(e.target.files[0]);}));
+  [document.getElementById('combineFile'),document.getElementById('combineFile2')].forEach(inp=>inp?.addEventListener('change',e=>{if(e.target.files[0])combineJSON(e.target.files[0]);e.target.value='';}));
   document.getElementById('addLinkBtn')?.addEventListener('click',addLink);
   document.getElementById('exportLinksBtn')?.addEventListener('click',exportLinksJSON);
   document.getElementById('addLecturaBtn')?.addEventListener('click',addLecturaLink);

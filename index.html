@@ -1766,6 +1766,92 @@ body.shelf-active .topbar-center { display: none; }
   .shelf-main { padding: 20px 16px 60px; }
 }
 
+/* ── MODAL "MIS LOGROS" ───────────────────────────────── */
+.logros-modal-wrap {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,.87);
+  backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.logros-modal-wrap.open { display: flex; }
+.logros-modal {
+  background: #13131e;
+  border: 1px solid rgba(232,255,71,0.2);
+  border-radius: 2px;
+  max-width: 640px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(232,255,71,0.2) transparent;
+  position: relative;
+}
+.logros-modal::before {
+  content: '';
+  position: sticky; top: 0;
+  display: block; height: 2px;
+  background: linear-gradient(90deg, var(--neon), var(--neon2), var(--neon3));
+  z-index: 1;
+}
+.logros-modal-x {
+  position: absolute; top: 14px; right: 14px;
+  width: 28px; height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  transition: all .15s; z-index: 2;
+}
+.logros-modal-x:hover { border-color: var(--neon2); color: var(--neon2); }
+.logros-modal-body { padding: 24px 24px 28px; }
+.logros-modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px; letter-spacing: 1px;
+  color: var(--white); margin-bottom: 6px;
+}
+.logros-modal-sub {
+  font-size: 12.5px; color: var(--muted);
+  line-height: 1.6; max-width: 52ch; margin-bottom: 22px;
+}
+.logros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+.logros-badge {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  text-align: center;
+  padding: 16px 10px 13px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  transition: transform .15s, border-color .15s;
+}
+.logros-badge:hover { transform: translateY(-2px); border-color: rgba(232,255,71,0.4); }
+.logros-badge-imgbox {
+  width: 60px; height: 60px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 28px;
+}
+.logros-badge-imgbox img {
+  max-width: 100%; max-height: 100%; width: auto; height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.5));
+}
+.logros-badge-name {
+  font-size: 11px; font-weight: 500; color: var(--paper); line-height: 1.35;
+}
+.logros-badge.locked { opacity: .5; }
+.logros-badge.locked .logros-badge-imgbox { filter: grayscale(1); opacity: .5; }
+.logros-badge.locked .logros-badge-name { color: var(--muted); }
+.logros-empty { padding: 2rem 0; text-align: center; color: var(--muted); font-size: 12.5px; grid-column: 1/-1; }
+@media (max-width: 600px) {
+  .logros-modal-body { padding: 18px 16px 22px; }
+  .logros-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+}
+
 /* ── AUTH MODAL ───────────────────────────────────────── */
 .auth-modal-wrap {
   position: fixed; inset: 0; z-index: 500;
@@ -1944,6 +2030,140 @@ body.shelf-active .topbar-center { display: none; }
   box-shadow: 0 1px 8px rgba(0,0,0,0.6);
 }
 .card-avg .cstar { font-size: 9px; }
+
+/* ── SPICY VOTE (nivel spicy comunitario, Supabase) ──────── */
+.spicy-community-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.avg-chiles-m { display: flex; gap: 1px; margin-bottom: 2px; font-size: 13px; }
+.cm.on { filter: none; opacity: 1; }
+.cm.off { filter: grayscale(1); opacity: .18; }
+.chiles-row-m { display: flex; gap: 2px; margin-bottom: 8px; flex-wrap: wrap; }
+.schile {
+  background: transparent; border: none; cursor: pointer;
+  font-size: 1.45rem; opacity: .18; filter: grayscale(1);
+  transition: opacity .1s, filter .1s; padding: 2px 3px; line-height: 1;
+}
+.schile.lit { opacity: 1; filter: none; }
+.schile.zero {
+  font-size: 1rem; opacity: .35; border: 1px solid var(--border2); border-radius: 2px;
+  padding: 3px 8px; margin-right: 4px; color: var(--muted); font-family: 'DM Sans', sans-serif;
+}
+.schile.zero.lit { opacity: 1; border-color: var(--neon2); color: var(--neon2); }
+.spicy-unknown-note { font-size: 10.5px; color: var(--dim); margin-top: 2px; }
+
+/* spicy badge on card */
+.card-spicy {
+  position: absolute; bottom: 7px; right: 7px; z-index: 10;
+  background: var(--neon2);
+  border-radius: 2px; padding: 2px 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  color: #1a0410; display: flex; align-items: center; gap: 3px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.6);
+}
+
+/* ── RULETA ──────────────────────────────────────────────── */
+.ruleta-nav-btn {
+  padding: 5px 12px; border-radius: 2px;
+  border: 1px solid var(--border);
+  background: transparent; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: .3px;
+  cursor: pointer; transition: all .18s;
+}
+.ruleta-nav-btn:hover { border-color: var(--neon3); color: var(--neon3); }
+@media (max-width: 600px) { .ruleta-nav-btn { padding: 5px 8px; font-size: 10px; } }
+
+.ruleta-modal-wrap {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,.87);
+  backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.ruleta-modal-wrap.open { display: flex; }
+.ruleta-modal {
+  background: #13131e;
+  border: 1px solid rgba(255,71,163,0.25);
+  border-radius: 2px;
+  max-width: 460px; width: 100%;
+  max-height: 88vh; overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,71,163,0.25) transparent;
+  position: relative;
+}
+.ruleta-modal::before {
+  content: '';
+  position: sticky; top: 0;
+  display: block; height: 2px;
+  background: linear-gradient(90deg, var(--neon2), var(--neon), var(--neon3));
+  z-index: 1;
+}
+.ruleta-modal-body { padding: 24px 24px 28px; }
+.ruleta-filtros-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+.ruleta-select {
+  padding: 7px 10px; border-radius: 2px;
+  border: 1px solid var(--border2);
+  background: var(--surface); color: var(--paper);
+  font-family: 'DM Sans', sans-serif; font-size: 11.5px;
+  cursor: pointer; outline: none; flex: 1; min-width: 140px;
+}
+.ruleta-toggle-btn {
+  padding: 7px 12px; border-radius: 2px;
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+  cursor: pointer; transition: all .18s; white-space: nowrap;
+}
+.ruleta-toggle-btn:hover { border-color: rgba(245,240,232,0.35); color: var(--paper); }
+.ruleta-toggle-btn.active { background: rgba(232,255,71,0.14); border-color: var(--neon); color: var(--neon); }
+.ruleta-count { font-size: 11px; color: var(--dim); letter-spacing: .3px; margin-bottom: 14px; }
+.ruleta-stage {
+  min-height: 210px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 12px 0 18px; text-align: center;
+}
+.ruleta-die { font-size: 3.2rem; line-height: 1; }
+.ruleta-die.spinning { animation: ruletaSpinAnim .55s ease infinite; }
+@keyframes ruletaSpinAnim {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(200deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.ruleta-hint { font-size: 12px; color: var(--muted); max-width: 32ch; }
+.ruleta-btn-row { display: flex; justify-content: center; }
+.ruleta-spin-btn { padding: 9px 30px; font-size: 1.15rem; }
+.ruleta-result-card {
+  width: 100%; display: flex; gap: 14px; align-items: flex-start;
+  text-align: left; padding: 4px 0;
+}
+.ruleta-result-cover {
+  width: 78px; height: 112px; flex-shrink: 0; border-radius: 2px; overflow: hidden;
+  background: var(--surface2);
+}
+.ruleta-result-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ruleta-result-info { flex: 1; min-width: 0; }
+.ruleta-result-sec { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
+.ruleta-result-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; line-height: 1.1;
+  color: var(--white); margin-bottom: 6px;
+}
+.ruleta-result-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.ruleta-result-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.ruleta-again-btn {
+  padding: 6px 14px; border-radius: 2px;
+  border: 1px solid rgba(255,71,163,0.35);
+  background: transparent; color: var(--neon2);
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+  cursor: pointer; transition: all .18s;
+}
+.ruleta-again-btn:hover { background: rgba(255,71,163,0.1); border-color: var(--neon2); }
+.ruleta-empty { font-size: 12.5px; color: var(--muted); text-align: center; padding: 1rem 0; }
+@media (max-width: 600px) {
+  .ruleta-modal-body { padding: 18px 16px 22px; }
+  .ruleta-select { min-width: 120px; }
+}
 
 /* ── HOME VIEW ───────────────────────────────────────────── */
 #homeView {
@@ -2292,6 +2512,7 @@ body.home-active .topbar-center { display: none; }
   <div class="topbar-right">
     <div id="authArea"></div>
     <button class="home-nav-btn" id="homeNavBtn" onclick="showHome()">⌂ Inicio</button>
+    <button class="ruleta-nav-btn" id="ruletaNavBtn" onclick="openRuletaModal()">🎲 Ruleta</button>
     <button class="adult-btn" id="adultBtn">
       <span class="pill"></span>
       <span id="adultLbl">+18 visible</span>
@@ -2569,6 +2790,60 @@ body.home-active .topbar-center { display: none; }
         <p class="auth-toggle-m" style="margin-top:8px"><a onclick="showResetStep1M()">← Volver</a></p>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MIS LOGROS -->
+<div class="logros-modal-wrap" id="logrosModalWrap" onclick="handleLogrosBgClick(event)">
+  <div class="logros-modal">
+    <button class="logros-modal-x" onclick="closeLogrosModal()">✕</button>
+    <div class="logros-modal-body">
+      <div class="logros-modal-title">MIS LOGROS</div>
+      <p class="logros-modal-sub">Insignias que vas desbloqueando por tu actividad en la comunidad: valoraciones, votos, participación y más.</p>
+      <div class="logros-grid" id="logrosGrid"><div class="logros-empty">Cargando…</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RULETA -->
+<div class="ruleta-modal-wrap" id="ruletaModalWrap" onclick="handleRuletaBgClick(event)">
+  <div class="ruleta-modal">
+    <button class="logros-modal-x" onclick="closeRuletaModal()">✕</button>
+    <div class="ruleta-modal-body">
+      <div class="logros-modal-title">🎲 RULETA</div>
+      <p class="logros-modal-sub">Gira y deja que el azar elija tu próxima lectura. Ajusta los filtros para acotar el catálogo antes de girar.</p>
+
+      <div class="ruleta-filtros-row" id="ruletaFiltrosRow">
+        <select class="ruleta-select" id="ruletaSecSelect" onchange="ruletaFilterChanged()">
+          <option value="all">Todas las categorías</option>
+          <option value="Manhwa">🇰🇷 Manhwa</option>
+          <option value="Manga">🇯🇵 Manga</option>
+          <option value="Manhua">🇨🇳 Manhua</option>
+          <option value="Webtoon">📱 Webtoon</option>
+          <option value="Cómic">💥 Cómic</option>
+          <option value="Novela Gráfica">📗 Novela Gráfica</option>
+        </select>
+        <select class="ruleta-select" id="ruletaEstadoSelect" onchange="ruletaFilterChanged()">
+          <option value="all">Cualquier estado</option>
+          <option value="Finalizado">✓ Finalizado</option>
+          <option value="Continúa">▶ Continúa</option>
+          <option value="Hiatus">⏸ Hiatus</option>
+        </select>
+        <button class="ruleta-toggle-btn" id="ruletaWantBtn" onclick="ruletaToggleWant()">📌 Solo «Quiero leer»</button>
+        <button class="ruleta-toggle-btn" id="ruletaUnratedBtn" onclick="ruletaToggleUnrated()">⭐ Solo sin valorar</button>
+      </div>
+
+      <div class="ruleta-count" id="ruletaCount"></div>
+
+      <div class="ruleta-stage" id="ruletaStage">
+        <div class="ruleta-die" id="ruletaDie">🎲</div>
+        <p class="ruleta-hint">Pulsa girar para descubrir tu próxima historia.</p>
+      </div>
+
+      <div class="ruleta-btn-row">
+        <button class="btn-vote-submit ruleta-spin-btn" id="ruletaSpinBtn" onclick="ruletaSpin()">GIRAR</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2973,6 +3248,12 @@ let pendingStar   = 0;
 let activeModalItem = null;
 let authModeState = 'login';
 
+// ── SPICY (nivel spicy votado por la comunidad) ────────────
+const SPICY_LABELS = ['0/5 Sin Steam','1/5 Mini Steam','2/5 Soft Steam','3/5 Spicy Light','4/5 Spicy','5/5 Infernal 🔥'];
+let spicyMap     = {};   // { manga_id: { avg, count } }
+let mySpicyVotes = {};   // { manga_id: score }
+let pendingSpicy = -1;
+
 // ── AUTH ──────────────────────────────────────────────────
 function renderAuthArea() {
   const area = document.getElementById('authArea');
@@ -2991,6 +3272,7 @@ function renderAuthArea() {
           </div>
           <div class="user-dropdown-div"></div>
           <button class="user-dropdown-item" onclick="event.stopPropagation();openShelf('all')">📚 Mi estantería</button>
+          <button class="user-dropdown-item" onclick="event.stopPropagation();openLogrosModal()">🏅 Mis logros</button>
           <button class="user-dropdown-item danger" onclick="event.stopPropagation();signOut()">Cerrar sesión</button>
         </div>
       </div>`;
@@ -3022,6 +3304,75 @@ function closeAuthModal() {
 }
 function handleAuthBgClick(e) {
   if (e.target === document.getElementById('authModalWrap')) closeAuthModal();
+}
+
+// ── LOGROS (insignias) ─────────────────────────────────────
+let logrosCatalog = [];
+let userLogros    = [];
+
+async function loadLogrosCatalog() {
+  if (!sb) { logrosCatalog = []; return; }
+  try {
+    const { data, error } = await sb.from('logros').select('*').order('created_at');
+    if (error) throw error;
+    const permitidos = ['bienvenida', 'primera valoracion', 'primera valoración'];
+    logrosCatalog = (data || []).filter(l => {
+      const n = (l.nombre || '').toLowerCase();
+      const s = (l.slug || l.codigo || '').toLowerCase();
+      return permitidos.some(p => n.includes(p) || s.includes(p));
+    });
+  } catch (e) {
+    logrosCatalog = [];
+  }
+}
+
+async function loadUserLogros() {
+  if (!sb || !currentUser) { userLogros = []; return; }
+  try {
+    const { data, error } = await sb.from('user_logros').select('logro_id,awarded_at').eq('user_id', currentUser.id);
+    if (error) throw error;
+    userLogros = data || [];
+  } catch (e) {
+    userLogros = [];
+  }
+}
+
+function renderLogrosGrid() {
+  const grid = document.getElementById('logrosGrid');
+  if (!grid) return;
+  if (!logrosCatalog.length) {
+    grid.innerHTML = '<div class="logros-empty">Todavía no hay insignias disponibles.</div>';
+    return;
+  }
+  grid.innerHTML = logrosCatalog.map(l => {
+    const got = userLogros.some(ul => ul.logro_id === l.id);
+    const tip = got ? (l.descripcion || l.nombre) : 'Aún no conseguido';
+    const iconHtml = l.icono
+      ? `<img src="assets/logros/${esc(l.icono)}" alt="${esc(l.nombre)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🏅'}))">`
+      : '🏅';
+    return `<div class="logros-badge ${got ? '' : 'locked'}" title="${esc(tip)}">
+      <div class="logros-badge-imgbox">${iconHtml}</div>
+      <div class="logros-badge-name">${esc(l.nombre)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function openLogrosModal() {
+  if (!currentUser) { openAuthModal(); return; }
+  document.getElementById('logrosModalWrap').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('logrosGrid').innerHTML = '<div class="logros-empty">Cargando…</div>';
+  await Promise.all([loadLogrosCatalog(), loadUserLogros()]);
+  renderLogrosGrid();
+}
+
+function closeLogrosModal() {
+  document.getElementById('logrosModalWrap').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleLogrosBgClick(e) {
+  if (e.target === document.getElementById('logrosModalWrap')) closeLogrosModal();
 }
 function toggleAuthMode() {
   authModeState = authModeState === 'login' ? 'register' : 'login';
@@ -3188,6 +3539,7 @@ function buildVoteSectionHTML(e) {
     <p class="vote-prompt-m">${myScore ? 'Tu valoración actual: ' + '★'.repeat(myScore) : 'Tu valoración:'}</p>
     <div class="stars-row-m" id="starsRowM">${stars}</div>
     <div class="vote-btns-m">
+      <button class="btn-vote-submit" id="voteSubmitBtn" onclick="submitVote()" ${pendingStar === 0 ? 'disabled' : ''}>${myScore ? 'ACTUALIZAR' : 'VOTAR'}</button>
       ${myScore ? '<button class="btn-vote-del" id="voteDelBtn" onclick="deleteVote()">Eliminar</button>' : ''}
     </div>
     <div class="vote-feedback-m" id="voteFeedbackM"></div>`;
@@ -3203,13 +3555,15 @@ function lightStars(n) {
 }
 function selectStar(n) {
   pendingStar = n; lightStars(n);
-  submitVote();
+  const btn = document.getElementById('voteSubmitBtn');
+  if (btn) btn.disabled = false;
 }
 async function submitVote() {
   if (!SB_READY || !currentUser || pendingStar === 0 || !activeModalItem) return;
-  document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = true);
-  const delBtn = document.getElementById('voteDelBtn');
-  if (delBtn) delBtn.disabled = true;
+  const submitBtn = document.getElementById('voteSubmitBtn');
+  const delBtn    = document.getElementById('voteDelBtn');
+  if (submitBtn) submitBtn.disabled = true;
+  if (delBtn)    delBtn.disabled    = true;
   const existing = myRatings[activeModalItem.id];
   const { error } = existing
     ? await sb.from('ratings').update({ score: pendingStar }).eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id)
@@ -3217,8 +3571,8 @@ async function submitVote() {
   if (error) {
     const fb = document.getElementById('voteFeedbackM');
     if (fb) fb.textContent = 'Error al guardar.';
-    document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = false);
-    if (delBtn) delBtn.disabled = false;
+    if (submitBtn) submitBtn.disabled = false;
+    if (delBtn)    delBtn.disabled    = false;
     return;
   }
   const r = ratingsMap[activeModalItem.id] || { avg: 0, count: 0 };
@@ -3236,11 +3590,12 @@ async function submitVote() {
 }
 async function deleteVote() {
   if (!SB_READY || !currentUser || !myRatings[activeModalItem.id]) return;
-  const delBtn = document.getElementById('voteDelBtn');
-  if (delBtn) delBtn.disabled = true;
-  document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = true);
+  const submitBtn = document.getElementById('voteSubmitBtn');
+  const delBtn    = document.getElementById('voteDelBtn');
+  if (submitBtn) submitBtn.disabled = true;
+  if (delBtn)    delBtn.disabled    = true;
   const { error } = await sb.from('ratings').delete().eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id);
-  if (error) { if (delBtn) delBtn.disabled = false; document.querySelectorAll('#starsRowM .sstar').forEach(b => b.disabled = false); return; }
+  if (error) { if (submitBtn) submitBtn.disabled = false; if (delBtn) delBtn.disabled = false; return; }
   const r        = ratingsMap[activeModalItem.id];
   const oldScore = myRatings[activeModalItem.id];
   if (r.count <= 1) delete ratingsMap[activeModalItem.id];
@@ -3261,6 +3616,130 @@ function refreshCardBadge(id) {
   document.querySelectorAll(`.card[data-id="${id}"] .card-avg`).forEach(el => {
     const r = ratingsMap[id];
     if (r) el.innerHTML = `<span class="cstar">★</span>${r.avg}`;
+    else el.remove();
+  });
+}
+
+// ── SPICY VOTES (Supabase) ─────────────────────────────────
+async function loadSpicy() {
+  if (!SB_READY) return;
+  const { data } = await sb.from('spicy_votes').select('manga_id,score');
+  spicyMap = {};
+  if (!data) return;
+  const grouped = {};
+  data.forEach(r => { (grouped[r.manga_id] = grouped[r.manga_id] || []).push(r.score); });
+  Object.entries(grouped).forEach(([id, scores]) => {
+    spicyMap[id] = {
+      avg:   Math.round(scores.reduce((a, b) => a + b, 0) / scores.length * 10) / 10,
+      count: scores.length
+    };
+  });
+}
+async function loadMySpicy() {
+  if (!SB_READY || !currentUser) return;
+  const { data } = await sb.from('spicy_votes').select('manga_id,score').eq('user_id', currentUser.id);
+  mySpicyVotes = {};
+  if (data) data.forEach(r => mySpicyVotes[r.manga_id] = r.score);
+}
+function buildSpicyCommunityRowHTML(e) {
+  const r = spicyMap[e.id] || { avg: 0, count: 0 };
+  if (!r.count) return `<div style="font-size:12px;color:var(--dim);font-style:italic;padding:4px 0">Sin votos de nivel spicy aún. ¡Sé la primera!</div>`;
+  const rounded = Math.round(r.avg);
+  const chiles = rounded === 0
+    ? `<span class="cm on" style="opacity:.5">🚫</span>`
+    : [1,2,3,4,5].map(i => `<span class="cm ${i <= rounded ? 'on' : 'off'}">🌶</span>`).join('');
+  return `<div class="avg-big-m">${r.avg}</div><div><div class="avg-chiles-m">${chiles}</div><div class="avg-votes-m">${r.count} voto${r.count !== 1 ? 's' : ''}</div></div>`;
+}
+function buildSpicyVoteSectionHTML(e) {
+  if (!currentUser) return `<p class="login-prompt-m">Para votar el nivel spicy, <a onclick="closeModal();openAuthModal()">inicia sesión</a>.</p>`;
+  const myScore = mySpicyVotes.hasOwnProperty(e.id) ? mySpicyVotes[e.id] : null;
+  const zeroBtn = `<button class="schile zero${pendingSpicy === 0 ? ' lit' : ''}" data-s="0" title="${SPICY_LABELS[0]}" onclick="selectSpicy(0)">🚫 Sin steam</button>`;
+  const chiles = [1,2,3,4,5].map(n => `<button class="schile${n <= pendingSpicy ? ' lit' : ''}" data-s="${n}" title="${SPICY_LABELS[n]}" onclick="selectSpicy(${n})">🌶</button>`).join('');
+  return `
+    <p class="vote-prompt-m">${myScore !== null ? 'Tu voto actual: ' + SPICY_LABELS[myScore] : 'Tu voto de nivel spicy:'}</p>
+    <div class="chiles-row-m" id="chilesRowM">${zeroBtn}${chiles}</div>
+    <div class="spicy-unknown-note">0 = sin contenido sexual · 5 = muy explícito</div>
+    <div class="vote-btns-m" style="margin-top:8px">
+      <button class="btn-vote-submit" id="spicySubmitBtn" onclick="submitSpicyVote()" ${pendingSpicy < 0 ? 'disabled' : ''}>${myScore !== null ? 'ACTUALIZAR' : 'VOTAR'}</button>
+      ${myScore !== null ? '<button class="btn-vote-del" id="spicyDelBtn" onclick="deleteSpicyVote()">Eliminar</button>' : ''}
+    </div>
+    <div class="vote-feedback-m" id="spicyFeedbackM"></div>`;
+}
+function attachSpicyEvents() {
+  document.querySelectorAll('#chilesRowM .schile').forEach(btn => {
+    btn.addEventListener('mouseenter', () => _paintChiles(+btn.dataset.s));
+    btn.addEventListener('mouseleave', () => _paintChiles(pendingSpicy));
+  });
+}
+function _paintChiles(n) {
+  document.querySelectorAll('#chilesRowM .schile').forEach(b => {
+    const v = +b.dataset.s;
+    b.classList.toggle('lit', v === 0 ? n === 0 : (v <= n && n > 0));
+  });
+}
+function selectSpicy(n) {
+  pendingSpicy = n; _paintChiles(n);
+  const btn = document.getElementById('spicySubmitBtn');
+  if (btn) btn.disabled = false;
+}
+async function submitSpicyVote() {
+  if (!SB_READY || !currentUser || pendingSpicy < 0 || !activeModalItem) return;
+  const submitBtn = document.getElementById('spicySubmitBtn');
+  const delBtn    = document.getElementById('spicyDelBtn');
+  if (submitBtn) submitBtn.disabled = true;
+  if (delBtn)    delBtn.disabled    = true;
+  const existing = mySpicyVotes.hasOwnProperty(activeModalItem.id) ? mySpicyVotes[activeModalItem.id] : undefined;
+  const { error } = existing !== undefined
+    ? await sb.from('spicy_votes').update({ score: pendingSpicy }).eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id)
+    : await sb.from('spicy_votes').insert({ user_id: currentUser.id, manga_id: activeModalItem.id, score: pendingSpicy });
+  if (error) {
+    const fb = document.getElementById('spicyFeedbackM');
+    if (fb) fb.textContent = 'Error al guardar.';
+    if (submitBtn) submitBtn.disabled = false;
+    if (delBtn)    delBtn.disabled    = false;
+    return;
+  }
+  const r = spicyMap[activeModalItem.id] || { avg: 0, count: 0 };
+  const oldScore = existing !== undefined ? existing : 0;
+  const newCount = existing !== undefined ? r.count : r.count + 1;
+  const newAvg   = existing !== undefined
+    ? (r.avg * r.count - oldScore + pendingSpicy) / newCount
+    : (r.avg * r.count + pendingSpicy) / newCount;
+  spicyMap[activeModalItem.id] = { avg: Math.round(newAvg * 10) / 10, count: newCount };
+  mySpicyVotes[activeModalItem.id] = pendingSpicy;
+  refreshCardSpicyBadge(activeModalItem.id);
+  const fb = document.getElementById('spicyFeedbackM');
+  if (fb) fb.textContent = '✓ Voto guardado';
+  setTimeout(refreshSpicySection, 400);
+}
+async function deleteSpicyVote() {
+  if (!SB_READY || !currentUser || !activeModalItem || !mySpicyVotes.hasOwnProperty(activeModalItem.id)) return;
+  const submitBtn = document.getElementById('spicySubmitBtn');
+  const delBtn    = document.getElementById('spicyDelBtn');
+  if (submitBtn) submitBtn.disabled = true;
+  if (delBtn)    delBtn.disabled    = true;
+  const { error } = await sb.from('spicy_votes').delete().eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id);
+  if (error) { if (submitBtn) submitBtn.disabled = false; if (delBtn) delBtn.disabled = false; return; }
+  const r        = spicyMap[activeModalItem.id];
+  const oldScore = mySpicyVotes[activeModalItem.id];
+  if (!r || r.count <= 1) delete spicyMap[activeModalItem.id];
+  else spicyMap[activeModalItem.id] = { avg: Math.round((r.avg * r.count - oldScore) / (r.count - 1) * 10) / 10, count: r.count - 1 };
+  delete mySpicyVotes[activeModalItem.id];
+  pendingSpicy = -1;
+  refreshCardSpicyBadge(activeModalItem.id);
+  setTimeout(refreshSpicySection, 300);
+}
+function refreshSpicySection() {
+  const cr = document.getElementById('spicyCommunityRow');
+  const vs = document.getElementById('spicyVoteSection');
+  if (cr && activeModalItem) cr.innerHTML = buildSpicyCommunityRowHTML(activeModalItem);
+  if (vs && activeModalItem) vs.innerHTML = buildSpicyVoteSectionHTML(activeModalItem);
+  attachSpicyEvents();
+}
+function refreshCardSpicyBadge(id) {
+  document.querySelectorAll(`.card[data-id="${id}"] .card-spicy`).forEach(el => {
+    const r = spicyMap[id];
+    if (r && r.avg > 0) el.innerHTML = `🌶 ${r.avg}`;
     else el.remove();
   });
 }
@@ -3643,15 +4122,15 @@ async function init() {
       currentUser = session?.user || null;
       renderAuthArea();
       updateAuthGatedUI();
-      if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus()]).then(() => { renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); });
-      else { myRatings = {}; myReadingStatus = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
+      if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]).then(() => { renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); });
+      else { myRatings = {}; myReadingStatus = {}; mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
     });
   }
   renderAuthArea();
 
   try {
     const fetches = [fetch(DATA)];
-    if (SB_READY) fetches.push(loadRatings());
+    if (SB_READY) fetches.push(loadRatings(), loadSpicy());
     const [dataResp] = await Promise.all(fetches);
     allData = await dataResp.json();
     normalizeAllTags();
@@ -3659,7 +4138,7 @@ async function init() {
     console.warn('No se pudo cargar manga_data.json:', e.message);
     allData = [];
   }
-  if (SB_READY && currentUser) await Promise.all([loadMyRatings(), loadMyReadingStatus()]);
+  if (SB_READY && currentUser) await Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]);
 
   buildStats();
   buildCatTabs();
@@ -4650,7 +5129,8 @@ function buildCard(e, bgColor) {
       ${e.in_biblioteca ? '<span class="sbadge sbib">BIB</span>' : ''}
       ${e.in_files ? '<span class="sbadge sfiles">FILE</span>' : ''}
     </div>
-    ${ratingsMap[e.id] ? `<div class="card-avg"><span class="cstar">★</span>${ratingsMap[e.id].avg}</div>` : ''}`;
+    ${ratingsMap[e.id] ? `<div class="card-avg"><span class="cstar">★</span>${ratingsMap[e.id].avg}</div>` : ''}
+    ${spicyMap[e.id] && spicyMap[e.id].avg > 0 ? `<div class="card-spicy">🌶 ${spicyMap[e.id].avg}</div>` : ''}`;
 
   d.addEventListener('click', () => openModal(e));
   return d;
@@ -4661,6 +5141,7 @@ let _preModalUrl = null;
 function openModal(e, isRefresh) {
   activeModalItem = e;
   pendingStar = myRatings[e.id] || 0;
+  pendingSpicy = mySpicyVotes.hasOwnProperty(e.id) ? mySpicyVotes[e.id] : -1;
 
   const mc = ESTADO_MCLS[e.estado] || 'mb-fin';
   const ei = ESTADO_ICONS[e.estado] || '';
@@ -4730,11 +5211,22 @@ function openModal(e, isRefresh) {
         <div class="rlb-icon">🔒</div>
         <p>Las valoraciones son solo para personas registradas.<br><a onclick="closeModal();openAuthModal()">Inicia sesión</a> para verlas y votar.</p>
       </div>`}
+    </div>
+    <div class="rating-block">
+      <div class="rating-block-title">🌶️ Nivel Spicy (comunidad)</div>
+      ${currentUser ? `
+      <div class="spicy-community-row" id="spicyCommunityRow">${buildSpicyCommunityRowHTML(e)}</div>
+      <div id="spicyVoteSection">${buildSpicyVoteSectionHTML(e)}</div>` : `
+      <div class="rating-locked-box">
+        <div class="rlb-icon">🔒</div>
+        <p>El nivel spicy es solo para personas registradas.<br><a onclick="closeModal();openAuthModal()">Inicia sesión</a> para verlo y votar.</p>
+      </div>`}
     </div>`;
 
   document.getElementById('modalWrap').classList.add('open');
   document.body.style.overflow = 'hidden';
   attachStarEvents();
+  attachSpicyEvents();
 
   if (isRefresh) return;
 
@@ -5454,6 +5946,102 @@ function bindModalSwipe() {
   handle.addEventListener('touchstart', onStart, { passive: true });
   document.addEventListener('touchmove', e => { if (dragging) onMove(e); }, { passive: true });
   document.addEventListener('touchend', e => { if (dragging) onEnd(e); });
+}
+
+// ── RULETA ──────────────────────────────────────────────────
+let ruletaSec     = 'all';
+let ruletaEstado  = 'all';
+let ruletaWant    = false;
+let ruletaUnrated = false;
+
+function openRuletaModal() {
+  document.getElementById('ruletaModalWrap').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  ruletaResetStage();
+  ruletaUpdateCount();
+}
+function closeRuletaModal() {
+  document.getElementById('ruletaModalWrap').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleRuletaBgClick(e) {
+  if (e.target === document.getElementById('ruletaModalWrap')) closeRuletaModal();
+}
+function ruletaResetStage() {
+  document.getElementById('ruletaStage').innerHTML = `
+    <div class="ruleta-die" id="ruletaDie">🎲</div>
+    <p class="ruleta-hint">Pulsa girar para descubrir tu próxima historia.</p>`;
+}
+function ruletaFilterChanged() {
+  ruletaSec    = document.getElementById('ruletaSecSelect').value;
+  ruletaEstado = document.getElementById('ruletaEstadoSelect').value;
+  ruletaUpdateCount();
+}
+function ruletaToggleWant() {
+  if (!currentUser) { closeRuletaModal(); openAuthModal(); return; }
+  ruletaWant = !ruletaWant;
+  document.getElementById('ruletaWantBtn').classList.toggle('active', ruletaWant);
+  ruletaUpdateCount();
+}
+function ruletaToggleUnrated() {
+  if (!currentUser) { closeRuletaModal(); openAuthModal(); return; }
+  ruletaUnrated = !ruletaUnrated;
+  document.getElementById('ruletaUnratedBtn').classList.toggle('active', ruletaUnrated);
+  ruletaUpdateCount();
+}
+function ruletaGetPool() {
+  return allData.filter(e => {
+    if (hideAdult && e.adult) return false;
+    if (ruletaSec !== 'all' && e.seccion !== ruletaSec) return false;
+    if (ruletaEstado !== 'all' && e.estado !== ruletaEstado) return false;
+    if (ruletaWant && (!currentUser || myReadingStatus[e.id] !== 'want')) return false;
+    if (ruletaUnrated && (!currentUser || myRatings[e.id])) return false;
+    return true;
+  });
+}
+function ruletaUpdateCount() {
+  const n = ruletaGetPool().length;
+  const el = document.getElementById('ruletaCount');
+  if (el) el.textContent = n === 0
+    ? 'Ninguna historia coincide con estos filtros.'
+    : `${n} historia${n !== 1 ? 's' : ''} disponible${n !== 1 ? 's' : ''} para girar.`;
+  const spinBtn = document.getElementById('ruletaSpinBtn');
+  if (spinBtn) spinBtn.disabled = n === 0;
+}
+function ruletaSpin() {
+  const pool = ruletaGetPool();
+  if (!pool.length) { ruletaUpdateCount(); return; }
+  const die = document.getElementById('ruletaDie');
+  if (die) die.classList.add('spinning');
+  setTimeout(() => {
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    ruletaShowResult(pick);
+  }, 550);
+}
+function ruletaShowResult(e) {
+  const coverHtml = e.imagen
+    ? `<img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" referrerpolicy="no-referrer">`
+    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem">📖</div>`;
+  const tags = (e.tags||[]).slice(0,3).map(t => `<span class="ctag">${esc(tagLabel(t))}</span>`).join('');
+  document.getElementById('ruletaStage').innerHTML = `
+    <div class="ruleta-result-card">
+      <div class="ruleta-result-cover">${coverHtml}</div>
+      <div class="ruleta-result-info">
+        <div class="ruleta-result-sec">${esc(e.seccion || '')}</div>
+        <div class="ruleta-result-title">${esc(e.titulo)}</div>
+        <div class="ruleta-result-tags">${tags}</div>
+        <div class="ruleta-result-btns">
+          <button class="btn-vote-submit" style="font-size:.9rem;padding:6px 14px" onclick="ruletaOpenBook(${JSON.stringify(e.id)})">Ver ficha</button>
+          <button class="ruleta-again-btn" onclick="ruletaSpin()">🎲 Girar otra vez</button>
+        </div>
+      </div>
+    </div>`;
+}
+function ruletaOpenBook(id) {
+  const item = allData.find(x => x.id === id);
+  if (!item) return;
+  closeRuletaModal();
+  openModal(item);
 }
 
 init();</script>

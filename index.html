@@ -2057,14 +2057,18 @@ body.shelf-active .topbar-center { display: none; }
   display: flex; flex-direction: column; gap: 4px;
   font-size: 10.5px; color: var(--dim);
 }
-.shelf-date-input {
-  padding: 6px 8px; border-radius: 2px;
+.shelf-date-selects { display: flex; gap: 4px; }
+.shelf-date-select {
+  padding: 6px 4px; border-radius: 2px;
   border: 1px solid var(--border2);
   background: var(--surface); color: var(--paper);
   font-family: 'DM Sans', sans-serif; font-size: 11.5px;
   outline: none; color-scheme: dark;
 }
-.shelf-date-input:focus { border-color: var(--neon3); }
+.shelf-date-select:focus { border-color: var(--neon3); }
+.shelf-date-select.sd-day   { width: 52px; }
+.shelf-date-select.sd-month { width: 92px; }
+.shelf-date-select.sd-year  { width: 70px; }
 
 /* shelf status badge on card */
 .card-shelf-badge {
@@ -3809,6 +3813,54 @@ const SHELF_INFO = {
   reading: { label: 'Leyendo',     icon: '📖', cls: 'cs-reading' },
   read:    { label: 'Terminado',   icon: '✓',  cls: 'cs-read' }
 };
+const MESES_CORTOS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function daysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
+function buildDateSelectsHTML(field, isoValue) {
+  const [y, m, d] = isoValue ? isoValue.split('-').map(Number) : [null, null, null];
+  const nowYear = new Date().getFullYear();
+  const minYear = nowYear - 15;
+  const dCount = (y && m) ? daysInMonth(y, m) : 31;
+  const dayOpts = ['<option value="">--</option>'].concat(
+    Array.from({ length: dCount }, (_, i) => i + 1).map(n => `<option value="${n}"${n === d ? ' selected' : ''}>${n}</option>`)
+  ).join('');
+  const monthOpts = ['<option value="">--</option>'].concat(
+    MESES_CORTOS.map((label, i) => `<option value="${i + 1}"${(i + 1) === m ? ' selected' : ''}>${label}</option>`)
+  ).join('');
+  const yearOpts = ['<option value="">----</option>'].concat(
+    Array.from({ length: nowYear - minYear + 1 }, (_, i) => nowYear - i).map(n => `<option value="${n}"${n === y ? ' selected' : ''}>${n}</option>`)
+  ).join('');
+  return `
+    <div class="shelf-date-selects" data-field="${field}">
+      <select class="shelf-date-select sd-day" onchange="handleShelfDatePart('${field}')">${dayOpts}</select>
+      <select class="shelf-date-select sd-month" onchange="handleShelfDatePart('${field}')">${monthOpts}</select>
+      <select class="shelf-date-select sd-year" onchange="handleShelfDatePart('${field}')">${yearOpts}</select>
+    </div>`;
+}
+function handleShelfDatePart(field) {
+  const container = document.querySelector(`.shelf-date-selects[data-field="${field}"]`);
+  if (!container) return;
+  const daySel = container.querySelector('.sd-day');
+  const monthSel = container.querySelector('.sd-month');
+  const yearSel = container.querySelector('.sd-year');
+  let d = daySel.value, m = monthSel.value, y = yearSel.value;
+
+  // Recalcular los días válidos si cambia el mes/año (p.ej. no dejar 31 de febrero)
+  if (m && y) {
+    const maxDay = daysInMonth(+y, +m);
+    if (daySel.options.length - 1 !== maxDay) {
+      const keep = d && +d <= maxDay ? d : '';
+      daySel.innerHTML = ['<option value="">--</option>'].concat(
+        Array.from({ length: maxDay }, (_, i) => i + 1).map(n => `<option value="${n}"${String(n) === keep ? ' selected' : ''}>${n}</option>`)
+      ).join('');
+      d = keep;
+    }
+  }
+
+  if (!d && !m && !y) { setReadingDate(field, null); return; }
+  if (!d || !m || !y) return; // aún incompleto, esperamos a que se rellenen los 3
+  const iso = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  setReadingDate(field, iso);
+}
 let myReadingStatus = {}; // { manga_id: 'want' | 'reading' | 'read' }
 let myReadingDates   = {}; // { manga_id: { start_date, end_date } }
 
@@ -3831,18 +3883,17 @@ function buildShelfSectionHTML(e) {
       </div>`;
   const cur = myReadingStatus[e.id];
   const dates = myReadingDates[e.id] || {};
-  const today = new Date().toISOString().slice(0, 10);
   const btns = Object.entries(SHELF_INFO).map(([key, info]) =>
     `<button class="shelf-btn ${info.cls}${cur === key ? ' active' : ''}" onclick="setReadingStatus('${key}')">${info.icon} ${info.label}</button>`
   ).join('');
   const dateFields = (cur === 'reading' || cur === 'read') ? `
     <div class="shelf-dates-row">
       <label class="shelf-date-label">Empecé el
-        <input type="date" class="shelf-date-input" max="${today}" value="${dates.start_date || ''}" onchange="setReadingDate('start_date', this.value)">
+        ${buildDateSelectsHTML('start_date', dates.start_date)}
       </label>
       ${cur === 'read' ? `
       <label class="shelf-date-label">Terminé el
-        <input type="date" class="shelf-date-input" min="${dates.start_date || ''}" max="${today}" value="${dates.end_date || ''}" onchange="setReadingDate('end_date', this.value)">
+        ${buildDateSelectsHTML('end_date', dates.end_date)}
       </label>` : ''}
     </div>` : '';
   return `

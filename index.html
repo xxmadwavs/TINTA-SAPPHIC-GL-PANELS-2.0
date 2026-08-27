@@ -1204,7 +1204,7 @@ div.search-box:focus { outline: none; }
 
   /* ── Home/Ruleta nav btns — icon only, so topbar-right fits ── */
   .home-nav-btn, .ruleta-nav-btn { padding: 5px 8px; }
-  #homeNavLbl, #ruletaNavLbl { display: none; }
+  #homeNavLbl, #ruletaNavLbl, #calendarNavLbl { display: none; }
 
   /* ── Hero — much smaller ── */
   .hero { padding: 60px 12px 0; }
@@ -2227,6 +2227,63 @@ body.shelf-active .topbar-center { display: none; }
   .ruleta-select { min-width: 120px; }
 }
 
+/* ── CALENDARIO DE LECTURA ───────────────────────────────── */
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
+.cal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: .5px; color: var(--white); text-transform: capitalize; }
+.cal-nav { display: flex; align-items: center; gap: 8px; }
+.cal-nav-btn {
+  width: 28px; height: 28px; border-radius: 2px;
+  border: 1px solid var(--border2); background: var(--surface2); color: var(--paper);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; transition: all .15s;
+}
+.cal-nav-btn:hover { border-color: var(--neon3); color: var(--neon3); }
+.cal-today-btn {
+  padding: 6px 12px; border-radius: 2px; border: 1px solid var(--border2);
+  background: var(--surface2); color: var(--muted); font-size: 11px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all .15s;
+}
+.cal-today-btn:hover { color: var(--paper); border-color: var(--neon3); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-weekday { text-align: center; font-size: 9.5px; color: var(--dim); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding-bottom: 4px; }
+.cal-day {
+  min-height: 68px; border-radius: 2px; border: 1px solid var(--border); background: var(--surface2);
+  padding: 4px; cursor: default; display: flex; flex-direction: column; gap: 3px; transition: all .15s;
+}
+.cal-day.has-books { cursor: pointer; border-color: rgba(71,255,224,0.22); }
+.cal-day.has-books:hover { border-color: var(--neon3); background: var(--surface); }
+.cal-day.is-today { border-color: var(--neon); box-shadow: 0 0 0 1px rgba(232,255,71,.25) inset; }
+.cal-day.is-selected { border-color: var(--neon2); background: rgba(255,71,163,.08); }
+.cal-day.empty-cell { background: transparent; border: none; }
+.cal-day-num { font-size: 10px; color: var(--dim); font-weight: 500; }
+.cal-day.is-today .cal-day-num { color: var(--neon); font-weight: 700; }
+.cal-day-covers { display: flex; flex-wrap: wrap; gap: 2px; align-items: flex-end; flex: 1; }
+.cal-cover-thumb { width: 20px; height: 28px; border-radius: 2px; object-fit: cover; flex-shrink: 0; border: 2px solid transparent; display: block; background: var(--surface); }
+.cal-cover-thumb.dot-reading { border-color: var(--neon); }
+.cal-cover-thumb.dot-read { border-color: #6bff9e; }
+.cal-cover-ph { width: 20px; height: 28px; border-radius: 2px; flex-shrink: 0; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 9px; border: 2px solid transparent; }
+.cal-cover-ph.dot-reading { border-color: var(--neon); }
+.cal-cover-ph.dot-read { border-color: #6bff9e; }
+.cal-day-more { font-size: 8px; color: var(--dim); align-self: flex-end; padding-bottom: 1px; }
+.cal-legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 12px 0 16px; font-size: 10.5px; color: var(--muted); }
+.cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.cal-legend .cal-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.cal-legend .cal-dot.dot-reading { background: var(--neon); }
+.cal-legend .cal-dot.dot-read { background: #6bff9e; }
+.cal-day-panel { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+.cal-day-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--white); margin-bottom: 8px; text-transform: capitalize; }
+.cal-panel-book { display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 2px; cursor: pointer; transition: background .15s; }
+.cal-panel-book:hover { background: var(--surface2); }
+.cal-panel-cover { width: 32px; height: 46px; border-radius: 2px; object-fit: cover; flex-shrink: 0; background: var(--surface); }
+.cal-panel-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cal-panel-title { font-size: 12px; color: var(--paper); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-panel-range { font-size: 10.5px; color: var(--muted); }
+.cal-empty-msg { text-align: center; color: var(--muted); padding: 28px 0; font-size: 12px; }
+@media (max-width: 600px) {
+  .cal-day { min-height: 52px; }
+  .cal-cover-thumb, .cal-cover-ph { width: 15px; height: 21px; }
+}
+
 /* ── HOME VIEW ───────────────────────────────────────────── */
 #homeView {
   display: none;
@@ -2575,6 +2632,7 @@ body.home-active .topbar-center { display: none; }
     <div id="authArea"></div>
     <button class="home-nav-btn" id="homeNavBtn" onclick="showHome()">⌂ <span id="homeNavLbl">Inicio</span></button>
     <button class="ruleta-nav-btn" id="ruletaNavBtn" onclick="openRuletaModal()">🎲 <span id="ruletaNavLbl">Ruleta</span></button>
+    <button class="ruleta-nav-btn" id="calendarNavBtn" onclick="openCalendarModal()">📅 <span id="calendarNavLbl">Calendario</span></button>
     <button class="adult-btn" id="adultBtn">
       <span class="pill"></span>
       <span id="adultLbl">+18 visible</span>
@@ -2906,6 +2964,18 @@ body.home-active .topbar-center { display: none; }
       <div class="ruleta-btn-row">
         <button class="btn-vote-submit ruleta-spin-btn" id="ruletaSpinBtn" onclick="ruletaSpin()">GIRAR</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CALENDARIO DE LECTURA -->
+<div class="ruleta-modal-wrap" id="calendarModalWrap" onclick="handleCalendarBgClick(event)">
+  <div class="ruleta-modal" style="max-width:520px">
+    <button class="logros-modal-x" onclick="closeCalendarModal()">✕</button>
+    <div class="ruleta-modal-body">
+      <div class="logros-modal-title">📅 CALENDARIO DE LECTURA</div>
+      <p class="logros-modal-sub">Qué estabas leyendo cada día, según las fechas que guardas en cada ficha.</p>
+      <div id="readingCalendarContainer"></div>
     </div>
   </div>
 </div>
@@ -6158,12 +6228,16 @@ function bindModalSwipe() {
   document.addEventListener('touchend', e => { if (dragging) onEnd(e); });
 }
 
+// ── CALENDARIO DE LECTURA ──────────────────────────────────────
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth(); // 0-11
+let calSelectedDay = null; // 'YYYY-MM-DD'
+
 // ── RULETA ──────────────────────────────────────────────────
 let ruletaSec     = 'all';
 let ruletaEstado  = 'all';
 let ruletaWant    = false;
 let ruletaUnrated = false;
-
 function openRuletaModal() {
   document.getElementById('ruletaModalWrap').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -6251,7 +6325,143 @@ function ruletaOpenBook(id) {
   const item = allData.find(x => x.id === id);
   if (!item) return;
   closeRuletaModal();
+  closeCalendarModal();
   openModal(item);
+}
+
+// ── CALENDARIO DE LECTURA ──────────────────────────────────
+// Construye los "periodos de lectura" a partir de myReadingStatus + myReadingDates.
+// Si la lectura sigue en curso (estado 'reading' sin fecha de fin), el tramo se extiende hasta hoy.
+function buildReadingPeriods() {
+  const periods = [];
+  const todayISO = new Date().toISOString().slice(0, 10);
+  Object.keys(myReadingStatus).forEach(id => {
+    const status = myReadingStatus[id];
+    if (status !== 'reading' && status !== 'read') return;
+    const book = allData.find(b => b.id === id);
+    if (!book) return;
+    const dates = myReadingDates[id] || {};
+    const start = dates.start_date;
+    if (!start) return; // sin fecha de inicio, no se puede ubicar en el calendario
+    const ongoing = status === 'reading';
+    const end = ongoing ? todayISO : (dates.end_date || start);
+    periods.push({ bookId: id, title: book.titulo, cover: book.imagen, start, end, ongoing });
+  });
+  return periods;
+}
+function _calCoverThumbHTML(p) {
+  const cls = p.ongoing ? 'dot-reading' : 'dot-read';
+  const t = esc(p.title);
+  return p.cover
+    ? `<img class="cal-cover-thumb ${cls}" src="${esc(p.cover)}" alt="" title="${t}" loading="lazy" referrerpolicy="no-referrer">`
+    : `<div class="cal-cover-ph ${cls}" title="${t}">📖</div>`;
+}
+function renderReadingCalendar() {
+  const container = document.getElementById('readingCalendarContainer');
+  if (!container) return;
+  if (!currentUser) {
+    container.innerHTML = `
+      <div class="rating-locked-box">
+        <div class="rlb-icon">🔒</div>
+        <p>El calendario de lectura es solo para personas registradas.<br><a onclick="closeCalendarModal();openAuthModal()">Inicia sesión</a> para verlo.</p>
+      </div>`;
+    return;
+  }
+  const periods = buildReadingPeriods();
+  const monthNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const first = new Date(calYear, calMonth, 1);
+  const startWeekday = (first.getDay() + 6) % 7; // lunes = 0
+  const daysInMonthCal = new Date(calYear, calMonth + 1, 0).getDate();
+  const todayISO = new Date().toISOString().slice(0, 10);
+
+  let cells = '';
+  for (let i = 0; i < startWeekday; i++) cells += `<div class="cal-day empty-cell"></div>`;
+  for (let d = 1; d <= daysInMonthCal; d++) {
+    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const active = periods.filter(p => p.start <= dateStr && dateStr <= p.end);
+    const isToday = dateStr === todayISO;
+    const isSelected = dateStr === calSelectedDay;
+    const covers = active.slice(0, 3).map(p => _calCoverThumbHTML(p)).join('');
+    const more = active.length > 3 ? `<span class="cal-day-more">+${active.length - 3}</span>` : '';
+    cells += `<div class="cal-day${active.length ? ' has-books' : ''}${isToday ? ' is-today' : ''}${isSelected ? ' is-selected' : ''}" ${active.length ? `onclick="calSelectDay('${dateStr}')"` : ''}>
+      <span class="cal-day-num">${d}</span>
+      <div class="cal-day-covers">${covers}${more}</div>
+    </div>`;
+  }
+
+  const monthLabel = `${monthNames[calMonth]} ${calYear}`;
+  let panelHtml = '';
+  if (calSelectedDay) {
+    const active = periods.filter(p => p.start <= calSelectedDay && calSelectedDay <= p.end);
+    if (active.length) {
+      const dStr = new Date(calSelectedDay + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+      panelHtml = `<div class="cal-day-panel">
+        <div class="cal-day-panel-title">${dStr}</div>
+        ${active.map(p => {
+          const rangeStr = `${new Date(p.start + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })} → ${p.ongoing ? 'ahora' : new Date(p.end + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`;
+          const cov = p.cover ? `<img class="cal-panel-cover" src="${esc(p.cover)}" alt="" referrerpolicy="no-referrer">` : `<div class="cal-panel-cover" style="display:flex;align-items:center;justify-content:center">📖</div>`;
+          return `<div class="cal-panel-book" onclick="ruletaOpenBook(${JSON.stringify(p.bookId)})">
+            ${cov}
+            <div class="cal-panel-info">
+              <div class="cal-panel-title">${esc(p.title)}</div>
+              <div class="cal-panel-range">${rangeStr}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+  }
+
+  container.innerHTML = `
+    <div class="cal-header">
+      <div class="cal-title">${monthLabel}</div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calChangeMonth(-1)">‹</button>
+        <button class="cal-today-btn" onclick="calGoToday()">Hoy</button>
+        <button class="cal-nav-btn" onclick="calChangeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-legend">
+      <span><span class="cal-dot dot-reading"></span> Leyendo</span>
+      <span><span class="cal-dot dot-read"></span> Terminado</span>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-weekday">L</div><div class="cal-weekday">M</div><div class="cal-weekday">X</div><div class="cal-weekday">J</div><div class="cal-weekday">V</div><div class="cal-weekday">S</div><div class="cal-weekday">D</div>
+      ${cells}
+    </div>
+    ${panelHtml}
+    ${periods.length === 0 ? `<p class="cal-empty-msg">Aún no hay lecturas registradas. Marca un título como «Leyendo» o «Terminado» y ponle fecha de inicio para verlo aquí 📖</p>` : ''}
+  `;
+}
+function calChangeMonth(delta) {
+  calMonth += delta;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  calSelectedDay = null;
+  renderReadingCalendar();
+}
+function calGoToday() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+  calSelectedDay = now.toISOString().slice(0, 10);
+  renderReadingCalendar();
+}
+function calSelectDay(dateStr) {
+  calSelectedDay = (calSelectedDay === dateStr) ? null : dateStr;
+  renderReadingCalendar();
+}
+function openCalendarModal() {
+  document.getElementById('calendarModalWrap').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderReadingCalendar();
+}
+function closeCalendarModal() {
+  document.getElementById('calendarModalWrap').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleCalendarBgClick(e) {
+  if (e.target === document.getElementById('calendarModalWrap')) closeCalendarModal();
 }
 
 init();</script>

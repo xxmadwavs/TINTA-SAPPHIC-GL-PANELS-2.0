@@ -553,6 +553,15 @@ tr.row-dup:hover{background:rgba(180,71,255,.08)}
     <div class="m-body m-split">
       <div class="m-left" id="secBasicos">
         <div class="form-grid">
+          <div class="form-full fg" id="mdSearchBox" style="background:var(--surface2);border:1px solid var(--border);padding:12px 14px">
+            <label class="flbl" style="color:var(--neon3)">🔎 Buscar en MangaDex</label>
+            <div class="link-add-row" style="margin-bottom:0;padding:0;background:transparent;border:none">
+              <input type="text" id="mdQuery" class="link-inp" placeholder="Título (inglés o romanizado funciona mejor)" onkeydown="if(event.key==='Enter'){event.preventDefault();searchMangaDex();}">
+              <button type="button" class="tb-btn tb-neon" onclick="searchMangaDex()">Buscar</button>
+            </div>
+            <div class="fhint" id="mdStatus" style="margin-top:6px"></div>
+            <div id="mdResults" style="display:none;flex-direction:column;gap:6px;margin-top:8px"></div>
+          </div>
           <input type="hidden" id="fId">
           <div class="form-full fg">
             <label class="flbl">Título <span class="req">*</span></label>
@@ -893,6 +902,210 @@ function chipClick(kind,val){
   renderChipGroup(kind);
 }
 
+// ── BUSCADOR MANGADEX ─────────────────────────────────────
+let mdLastResults=[];
+const MD_LANG_TO_PAIS={ja:'Japón',ko:'Corea del Sur',zh:'China','zh-hk':'Taiwán',en:'Estados Unidos',th:'Tailandia',fr:'Francia',es:'España',de:'Alemania',it:'Italia',vi:'Vietnam','pt-br':'Brasil'};
+const MD_STATUS_TO_ESTADO={ongoing:'Continúa',completed:'Finalizado',hiatus:'Hiatus',cancelled:'Cancelado'};
+const MD_RATING_TO_CONTENT={safe:'safe',suggestive:'sugestiva',erotica:'erotica',pornographic:'erotica'};
+const MD_DEMO_MAP={shounen:'shounen',shoujo:'shoujo',josei:'josei',seinen:'seinen'};
+/* Sección (tipo de obra) según el idioma original en MangaDex */
+const MD_LANG_TO_SECCION={ja:'Manga',ko:'Manhwa',zh:'Manhua','zh-hk':'Manhua',en:'Cómic',fr:'Cómic',es:'Cómic','es-la':'Cómic',de:'Cómic',it:'Cómic',ru:'Cómic','pt-br':'Cómic'};
+
+/* Capítulos totales: primero attributes.lastChapter; si viene vacío, se mira el mayor nº de capítulo en /aggregate */
+function parseChapterCountMD(v){
+  const n=parseFloat(v);
+  return (isFinite(n)&&n>0)?Math.floor(n):0;
+}
+async function fetchChapterCountMD(mangaId){
+  try{
+    const res=await fetch('https://api.mangadex.org/manga/'+mangaId+'/aggregate');
+    const data=await res.json();
+    let max=0;
+    Object.values(data.volumes||{}).forEach(v=>{
+      Object.keys((v&&v.chapters)||{}).forEach(k=>{
+        const n=parseFloat(k);
+        if(isFinite(n)&&n>max)max=n;
+      });
+    });
+    return Math.floor(max);
+  }catch(err){return 0;}
+}
+
+function cleanStrMD(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]/g,'').toLowerCase();}
+function matchTagsFromTextMD(text,list){
+  const ct=cleanStrMD(text);
+  const found=[];
+  list.forEach(item=>{
+    const ci=cleanStrMD(item);
+    if(ci.length>=4 && ct.indexOf(ci)>=0) found.push(item);
+  });
+  return found;
+}
+
+async function searchMangaDex(){
+  const status=document.getElementById('mdStatus');
+  const resultsWrap=document.getElementById('mdResults');
+  const q=(document.getElementById('mdQuery').value||'').trim();
+  if(!q){status.style.color='var(--neon2)';status.textContent='Escribe un título para buscar.';return;}
+
+  status.style.color='var(--dim)';status.textContent='Buscando…';
+  resultsWrap.style.display='none';resultsWrap.innerHTML='';
+
+  try{
+    const url='https://api.mangadex.org/manga?title='+encodeURIComponent(q)+'&limit=5&includes[]=cover_art&includes[]=author&includes[]=artist&order[relevance]=desc';
+    const res=await fetch(url);
+    const data=await res.json();
+    mdLastResults=data.data||[];
+
+    if(!mdLastResults.length){
+      status.style.color='var(--neon2)';
+      status.textContent='Sin resultados. Prueba con el título en inglés o romanizado.';
+      return;
+    }
+
+    resultsWrap.innerHTML=mdLastResults.map((m,i)=>{
+      const at=m.attributes||{};
+      const titleObj=at.title||{};
+      const title=titleObj.en||titleObj['ja-ro']||titleObj.ja||Object.values(titleObj)[0]||'(sin título)';
+      const cover=(m.relationships||[]).find(r=>r.type==='cover_art');
+      const fileName=cover&&cover.attributes?cover.attributes.fileName:null;
+      const thumb=fileName?`https://uploads.mangadex.org/covers/${m.id}/${fileName}.256.jpg`:'';
+      const meta=[at.year,at.status].filter(Boolean).join(' · ');
+      return `<div style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:var(--surface3);border:1px solid var(--border);cursor:pointer" onclick="applyMangaDexResult(${i})">
+        ${thumb?`<img src="${esc(thumb)}" style="width:34px;height:50px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)">`:`<div style="width:34px;height:50px;display:flex;align-items:center;justify-content:center;background:var(--surface2);flex-shrink:0">📕</div>`}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(title)}</div>
+          <div style="font-size:10.5px;color:var(--dim)">${esc(meta)}</div>
+        </div>
+      </div>`;
+    }).join('');
+    resultsWrap.style.display='flex';
+    status.style.color='var(--neon3)';
+    status.textContent='Elige un resultado para rellenar el formulario.';
+  }catch(err){
+    status.style.color='var(--neon2)';
+    status.textContent='Error al buscar. Revisa tu conexión.';
+  }
+}
+
+async function applyMangaDexResult(i){
+  const m=mdLastResults[i];
+  if(!m) return;
+  const at=m.attributes||{};
+  let filled=0;
+  let seccionMsg='',capsMsg='';
+  document.getElementById('mdResults').style.display='none';
+
+  const titleObj=at.title||{};
+  const mainTitle=titleObj.en||titleObj['ja-ro']||titleObj.ja||Object.values(titleObj)[0]||'';
+  const fTitulo=document.getElementById('fTitulo');
+  if(mainTitle && !fTitulo.value.trim()){fTitulo.value=mainTitle;filled++;}
+
+  /* Títulos alternativos (hasta 4, sin repetir el principal) */
+  if(altList.length===0 && Array.isArray(at.altTitles)){
+    const seen=new Set([mainTitle]);
+    at.altTitles.forEach(obj=>{
+      Object.values(obj).forEach(v=>{
+        if(v && !seen.has(v) && altList.length<4){addAlt(v);seen.add(v);filled++;}
+      });
+    });
+  }
+
+  /* Autor/a y artista (vienen expandidos por includes[]=author,artist) */
+  if(autorList.length===0){
+    (m.relationships||[]).filter(r=>r.type==='author'||r.type==='artist').forEach(r=>{
+      const name=r.attributes?r.attributes.name:null;
+      if(name){const before=autorList.length;addAutor(name);if(autorList.length>before)filled++;}
+    });
+  }
+
+  const fAnioInicio=document.getElementById('fAnioInicio');
+  if(at.year && !fAnioInicio.value){fAnioInicio.value=at.year;filled++;}
+
+  const estadoMapeado=MD_STATUS_TO_ESTADO[at.status];
+  if(estadoMapeado){
+    const fEstado=document.getElementById('fEstado');
+    fEstado.value=estadoMapeado;
+    fEstado.dispatchEvent(new Event('change'));
+    filled++;
+  }
+
+  /* Sección (Manga / Manhwa / Manhua…) según el idioma original.
+     No pisa la sección de una historia ya clasificada que estés editando. */
+  const fSeccion=document.getElementById('fSeccion');
+  const seccionMapeada=MD_LANG_TO_SECCION[at.originalLanguage]||'Sin Clasificación';
+  if(!editingId || fSeccion.value==='Sin Clasificación'){
+    fSeccion.value=seccionMapeada;
+    seccionMsg=' Sección: '+seccionMapeada+'.';
+    filled++;
+  }
+
+  /* Capítulos totales (solo aplica a Finalizado, que es cuando el campo se guarda) */
+  const fCaps=document.getElementById('fCaps');
+  if(document.getElementById('fEstado').value==='Finalizado' && !fCaps.value){
+    const status0=document.getElementById('mdStatus');
+    status0.style.color='var(--dim)';status0.textContent='Buscando capítulos totales…';
+    let totalCaps=parseChapterCountMD(at.lastChapter);
+    if(!totalCaps) totalCaps=await fetchChapterCountMD(m.id);
+    if(totalCaps>0){
+      fCaps.value=totalCaps;
+      capsMsg=' Capítulos: '+totalCaps+'.';
+      filled++;
+    }else{
+      capsMsg=' MangaDex no tiene el nº de capítulos: ponlo a mano.';
+    }
+  }
+
+  const fContentRating=document.getElementById('fContentRating');
+  const ratingMapeado=MD_RATING_TO_CONTENT[at.contentRating];
+  if(ratingMapeado && !fContentRating.value){fContentRating.value=ratingMapeado;filled++;}
+
+  const fDemografico=document.getElementById('fDemografico');
+  const demoMapeado=MD_DEMO_MAP[at.publicationDemographic];
+  if(demoMapeado && !fDemografico.value){fDemografico.value=demoMapeado;filled++;}
+
+  const fImagen=document.getElementById('fImagen');
+  if(!fImagen.value.trim()){
+    const cover=(m.relationships||[]).find(r=>r.type==='cover_art');
+    const fileName=cover&&cover.attributes?cover.attributes.fileName:null;
+    if(fileName){
+      const coverUrl=`https://uploads.mangadex.org/covers/${m.id}/${fileName}`;
+      fImagen.value=coverUrl;
+      updateCov(coverUrl);
+      filled++;
+    }
+  }
+
+  const descObj=at.description||{};
+  const desc=descObj.es||descObj.en||Object.values(descObj)[0]||'';
+  const fDesc=document.getElementById('fDesc');
+  if(desc && !fDesc.value.trim()){fDesc.value=desc;filled++;}
+
+  /* País y cultura, a partir del idioma original de la obra */
+  const paisMapeado=MD_LANG_TO_PAIS[at.originalLanguage];
+  if(paisMapeado && paisList.length===0){addPais(paisMapeado);filled++;}
+
+  /* Tags de MangaDex -> intentar casar contra géneros/subgéneros/tropos/personajes/identidad/advertencias */
+  const tagNames=(at.tags||[]).map(t=>t.attributes&&t.attributes.name?t.attributes.name.en||'':'').filter(Boolean);
+  const freeText=[tagNames.join(' '), desc].join(' ');
+  if(freeText.trim()){
+    let chipsMatched=0;
+    matchTagsFromTextMD(freeText,GENERO_OPTS).forEach(v=>{const b=tagsList.length;addTag(v);if(tagsList.length>b)chipsMatched++;});
+    matchTagsFromTextMD(freeText,SUBGENERO_OPTS).forEach(v=>{const b=subgenerosList.length;addSubgenero(v);if(subgenerosList.length>b)chipsMatched++;});
+    matchTagsFromTextMD(freeText,TROPE_OPTS).forEach(v=>{const b=tropesList.length;addTrope(v);if(tropesList.length>b)chipsMatched++;});
+    matchTagsFromTextMD(freeText,PERSONAJE_OPTS).forEach(v=>{const b=personajesList.length;addPersonaje(v);if(personajesList.length>b)chipsMatched++;});
+    matchTagsFromTextMD(freeText,IDENTIDAD_OPTS).forEach(v=>{const b=identidadList.length;addIdentidad(v);if(identidadList.length>b)chipsMatched++;});
+    matchTagsFromTextMD(freeText,ADVERTENCIA_OPTS).forEach(v=>{const b=advertenciasList.length;addAdvertencia(v);if(advertenciasList.length>b)chipsMatched++;});
+    filled+=chipsMatched;
+  }
+
+  document.getElementById('mdResults').style.display='none';
+  document.getElementById('mdQuery').value='';
+  const status=document.getElementById('mdStatus');
+  status.style.color='var(--neon3)';
+  status.textContent='Rellenados '+filled+' campo(s) desde MangaDex.'+seccionMsg+capsMsg+' Revisa el estado, el país y las categorías (a veces vienen en inglés).';
+}
+
 // ── TAG NORMALIZATION ─────────────────────────────────────
 const TAG_NORMALIZE_MAP = {
   'slice of life':'Slice of Life','slice_of_life':'Slice of Life','slice of like':'Slice of Life',
@@ -1124,7 +1337,7 @@ function renderTable(){
   document.getElementById('adminTable').innerHTML=rows.map(e=>{
     const ec=ECLS[e.estado]||'b-fin',ei=EICO[e.estado]||'';
     const tags=(e.tags||[]).slice(0,4).map(t=>`<span class="ttag${t.toLowerCase()==='erotica'?' adult':''}">${esc(t)}</span>`).join('');
-    const brokenHandler="var tr=this.closest('tr');if(tr){tr.classList.add('row-img-broken');var b=tr.querySelector('.img-broken-badge');if(b)b.style.display='inline-block';}markBroken('"+(e.id)+"');this.outerHTML='<div class=no-cov>📖</div>'";
+    const brokenHandler="var tr=this.closest('tr');if(tr){tr.classList.add('row-img-broken');var b=tr.querySelector('.img-broken-badge');if(b)b.style.display='inline-block';}markBroken("+(jsArg(e.id))+");this.outerHTML='<div class=no-cov>📖</div>'";
     const cov=e.imagen?`<img src="${esc(e.imagen)}" loading="lazy" onerror="${brokenHandler}">`:'<div class="no-cov">📖</div>';
     const inkBadge=e.ink_club?`<span class="badge" style="background:rgba(255,71,163,.15);color:var(--neon2);border:1px solid rgba(255,71,163,.3)">📖 INK</span>`:'';
     const CR_BADGE={safe:{icon:'🟢',label:'SAFE',bg:'rgba(71,255,140,.12)',col:'#47ff8c',bd:'rgba(71,255,140,.35)'},sugestiva:{icon:'🟡',label:'SUGESTIVA',bg:'rgba(255,200,71,.12)',col:'#ffc847',bd:'rgba(255,200,71,.4)'},erotica:{icon:'🔴',label:'ERÓTICA',bg:'rgba(255,71,113,.12)',col:'#ff4771',bd:'rgba(255,71,113,.4)'}};
@@ -1145,8 +1358,8 @@ function renderTable(){
       <td><span class="badge ${ec}">${ei} ${esc(e.estado)}</span></td>
       <td class="td-sub">${e.in_biblioteca?'<span class="badge b-bib">📚</span>':''}${e.in_files?'<span class="badge b-files">📁</span>':''}</td>
       <td class="td-acts">
-        <button class="act act-edit" onclick="openEdit('${e.id}')">✏️</button>
-        <button class="act act-del" onclick="openDel('${e.id}')">🗑</button>
+        <button class="act act-edit" onclick="openEdit(${jsArg(e.id)})">✏️</button>
+        <button class="act act-del" onclick="openDel(${jsArg(e.id)})">🗑</button>
       </td>
     </tr>`;
   }).join('');
@@ -1332,7 +1545,7 @@ function renderPills(){
   tagsList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill'+(ADULT_TAGS.has(t.toLowerCase())?' adult-p':'');
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeTag('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeTag(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('genero');
@@ -1350,7 +1563,7 @@ function renderSubgeneroPills(){
   subgenerosList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeSubgenero('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeSubgenero(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('subgenero');
@@ -1366,7 +1579,7 @@ function renderDinamicaPills(){
   dinamicaList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeDinamica('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeDinamica(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('dinamica');
@@ -1382,7 +1595,7 @@ function renderIdentidadPills(){
   identidadList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeIdentidad('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeIdentidad(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('identidad');
@@ -1398,7 +1611,7 @@ function renderEdadPills(){
   edadList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeEdad('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeEdad(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('edad');
@@ -1414,7 +1627,7 @@ function renderPaisPills(){
   paisList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removePais('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removePais(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('pais');
@@ -1430,7 +1643,7 @@ function renderTropePills(){
   tropesList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeTrope('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeTrope(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('trope');
@@ -1446,7 +1659,7 @@ function renderPersonajePills(){
   personajesList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removePersonaje('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removePersonaje(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('personaje');
@@ -1463,7 +1676,7 @@ function renderAdvertenciaPills(){
     const p=document.createElement('div');
     p.className='tpill';
     p.style.cssText='border-color:rgba(255,200,71,0.35);color:#ffc847';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAdvertencia('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAdvertencia(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
   refreshAccCounts();renderChipGroup('advertencia');
@@ -1479,7 +1692,7 @@ function renderAltPills(){
   altList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAlt('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAlt(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
 }
@@ -1491,7 +1704,7 @@ function renderAutorPills(){
   autorList.forEach(t=>{
     const p=document.createElement('div');
     p.className='tpill';
-    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAutor('${esc(t)}')">×</button>`;
+    p.innerHTML=`${esc(t)}<button type="button" onclick="removeAutor(${jsArg(t)})">×</button>`;
     wrap.insertBefore(p,inp);
   });
 }
@@ -1610,15 +1823,177 @@ function toggleDupFilter(){
 }
 
 
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function jsArg(s){return esc(JSON.stringify(String(s??'')));}
 function exportJSON(){
   const blob=new Blob([JSON.stringify(allData,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='manga_data.json';a.click();
   toast('JSON exportado ✓','ok');
 }
+function _mangaJSONType(v){
+  if(v===null)return'null';
+  if(Array.isArray(v))return'array';
+  return typeof v;
+}
+
+function _mangaJSONIsPlainObject(v){
+  return v!==null && typeof v==='object' && !Array.isArray(v);
+}
+
+const MANGA_JSON_REQUIRED_FIELDS={
+  id:'string',
+  titulo:'string',
+  seccion:'string',
+  estado:'string',
+  imagen:'string',
+  desc:'string',
+  tags:'string[]',
+  in_biblioteca:'boolean',
+  in_files:'boolean',
+  adult:'boolean',
+  subido:'string',
+  tropos:'string[]',
+  personajes:'string[]'
+};
+
+const MANGA_JSON_OPTIONAL_FIELDS={
+  titulos_alt:'string[]',
+  identidad_genero:'string[]',
+  pais_cultura:'string[]',
+  capitulos_totales:'integer',
+  autor:'string[]',
+  anio_inicio:'integer',
+  content_rating:'string|null',
+  enlaces_lectura:'object[]',
+  subgeneros:'string[]',
+  demografico:'string',
+  edad_protagonistas:'string[]',
+  advertencias:'string[]',
+  dinamica_pareja:'string[]',
+  ink_club:'boolean',
+  ink_categories:'string[]'
+};
+
+function _mangaJSONMatchesType(value, expected){
+  if(expected==='string')return typeof value==='string';
+  if(expected==='boolean')return typeof value==='boolean';
+  if(expected==='integer')return typeof value==='number'&&Number.isInteger(value);
+  if(expected==='string[]')return Array.isArray(value)&&value.every(v=>typeof v==='string');
+  if(expected==='object[]')return Array.isArray(value)&&value.every(v=>_mangaJSONIsPlainObject(v)&&typeof v.id==='string'&&typeof v.label==='string'&&typeof v.url==='string');
+  if(expected==='string|null')return value===null||typeof value==='string';
+  return true;
+}
+
+function validateMangaJSON(data){
+  const result={errors:[],warnings:[],recordCount:Array.isArray(data)?data.length:0};
+  if(!Array.isArray(data)){
+    result.errors.push('El archivo no contiene un array válido.');
+    return result;
+  }
+
+  if(data.length===0){
+    result.warnings.push('El archivo contiene 0 registros; si lo importas, el catálogo quedará vacío.');
+  }
+
+  const ids=new Map();
+  const unknownFields=new Map();
+  const typeProblems=[];
+  let missingId=0;
+
+  data.forEach((entry,index)=>{
+    const n=index+1;
+    if(!_mangaJSONIsPlainObject(entry)){
+      result.errors.push(`El registro ${n} no es un objeto válido.`);
+      return;
+    }
+
+    const id=entry.id;
+    if(!('id' in entry) || (typeof id==='string' && !id.trim())){
+      missingId++;
+    }else if(typeof id!=='string'){
+      typeProblems.push(`registro ${n}: id (${_mangaJSONType(id)}, esperado string)`);
+    }else{
+      if(ids.has(id))ids.get(id).push(n);
+      else ids.set(id,[n]);
+    }
+
+    Object.entries(MANGA_JSON_REQUIRED_FIELDS).forEach(([field,expected])=>{
+      if(!(field in entry)){
+        if(field!=='id')result.errors.push(`El registro ${n} no contiene el campo obligatorio "${field}".`);
+      }else if(field!=='id'&&!_mangaJSONMatchesType(entry[field],expected)){
+        typeProblems.push(`registro ${n}: ${field} (${_mangaJSONType(entry[field])}, esperado ${expected})`);
+      }
+    });
+
+    Object.entries(MANGA_JSON_OPTIONAL_FIELDS).forEach(([field,expected])=>{
+      if(field in entry&&!_mangaJSONMatchesType(entry[field],expected)){
+        typeProblems.push(`registro ${n}: ${field} (${_mangaJSONType(entry[field])}, esperado ${expected})`);
+      }
+    });
+
+    Object.keys(entry).forEach(field=>{
+      if(!(field in MANGA_JSON_REQUIRED_FIELDS)&&!(field in MANGA_JSON_OPTIONAL_FIELDS)){
+        if(!unknownFields.has(field))unknownFields.set(field,[]);
+        unknownFields.get(field).push(n);
+      }
+    });
+  });
+
+  if(missingId)result.errors.push(`Se encontraron ${missingId} registros sin ID válido.`);
+  const duplicateIds=[...ids.entries()].filter(([,positions])=>positions.length>1).map(([id])=>id);
+  if(duplicateIds.length){
+    const shown=duplicateIds.slice(0,10).join(', ');
+    result.errors.push(`Se encontraron IDs duplicados: ${shown}${duplicateIds.length>10?'…':''}.`);
+  }
+  if(typeProblems.length){
+    const shown=typeProblems.slice(0,5).join(' · ');
+    result.errors.push(`Se encontraron ${typeProblems.length} campos con tipo incorrecto. ${shown}${typeProblems.length>5?' · …':''}`);
+  }
+  if(unknownFields.size){
+    const names=[...unknownFields.keys()].slice(0,8).join(', ');
+    result.warnings.push(`Hay campos no reconocidos que se conservarán: ${names}${unknownFields.size>8?'…':''}.`);
+  }
+
+  return result;
+}
+
+function _mangaJSONValidationToast(result){
+  if(result.errors.length){
+    toast(`❌ ${result.errors[0]}${result.errors.length>1?` · +${result.errors.length-1} error(es)`:''}`,'err');
+    return false;
+  }
+  if(result.warnings.length){
+    toast(`⚠️ ${result.warnings[0]}${result.warnings.length>1?` · +${result.warnings.length-1} aviso(s)`:''}`,'ok');
+  }
+  return true;
+}
+
 function importJSON(file){
   const r=new FileReader();
-  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!Array.isArray(d))throw 0;allData=d;normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();toast(`${d.length} entradas importadas ✓`,'ok');}catch{toast('JSON inválido','err');}};
+  r.onload=e=>{
+    let d;
+    try{
+      d=JSON.parse(e.target.result);
+    }catch{
+      toast('❌ El archivo no contiene un JSON válido.','err');
+      return;
+    }
+
+    const validation=validateMangaJSON(d);
+    if(!_mangaJSONValidationToast(validation))return;
+
+    const previousData=allData;
+    try{
+      allData=d;
+      normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();
+      toast(`${d.length} entradas importadas ✓`,'ok');
+    }catch(error){
+      allData=previousData;
+      normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();
+      console.error('Error al aplicar la importación:',error);
+      toast('❌ No se pudo aplicar la importación; los datos actuales se han conservado.','err');
+    }
+  };
   r.readAsText(file);
 }
 
@@ -1632,32 +2007,47 @@ function combineJSON(file){
     let d;
     try{
       d=JSON.parse(e.target.result);
-      if(!Array.isArray(d))throw 0;
-    }catch{toast('JSON inválido','err');return;}
+    }catch{
+      toast('❌ El archivo no contiene un JSON válido.','err');
+      return;
+    }
+
+    const validation=validateMangaJSON(d);
+    if(!_mangaJSONValidationToast(validation))return;
 
     const existingIds=new Set(allData.map(x=>x.id));
     const existingTitulos=new Set(allData.map(x=>_normTitulo(x.titulo)));
 
     let added=0, skippedId=0;
     const possibleDupes=[];
+    const toAdd=[];
 
     d.forEach(entry=>{
-      if(entry.id && existingIds.has(entry.id)){ skippedId++; return; } // ya existe literalmente (mismo id)
+      if(existingIds.has(entry.id)){ skippedId++; return; } // ya existe literalmente (mismo id)
       if(_normTitulo(entry.titulo) && existingTitulos.has(_normTitulo(entry.titulo))){
         possibleDupes.push(entry.titulo); // se añade igual, pero se avisa por si es duplicado real
       }
-      allData.push(entry);
-      if(entry.id) existingIds.add(entry.id);
+      toAdd.push(entry);
+      existingIds.add(entry.id);
       existingTitulos.add(_normTitulo(entry.titulo));
       added++;
     });
 
-    normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();
+    const previousData=allData;
+    try{
+      allData=allData.concat(toAdd);
+      normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();
 
-    let msg=`${added} entradas combinadas ✓ (catálogo total: ${allData.length})`;
-    if(skippedId) msg+=` · ${skippedId} omitidas por id repetido`;
-    if(possibleDupes.length) msg+=` · ⚠ ${possibleDupes.length} título(s) parecen repetidos, revísalos: ${possibleDupes.slice(0,5).join(', ')}${possibleDupes.length>5?'…':''}`;
-    toast(msg, possibleDupes.length?'err':'ok');
+      let msg=`${added} entradas combinadas ✓ (catálogo total: ${allData.length})`;
+      if(skippedId) msg+=` · ${skippedId} omitidas por id repetido`;
+      if(possibleDupes.length) msg+=` · ⚠ ${possibleDupes.length} título(s) parecen repetidos, revísalos: ${possibleDupes.slice(0,5).join(', ')}${possibleDupes.length>5?'…':''}`;
+      toast(msg, possibleDupes.length?'err':'ok');
+    }catch(error){
+      allData=previousData;
+      normalizeAllTags();buildStats();updateIncompleteCount();updateDupCount();applyFilters();renderInkAdmin();
+      console.error('Error al aplicar la combinación:',error);
+      toast('❌ No se pudo aplicar la combinación; los datos actuales se han conservado.','err');
+    }
   };
   r.readAsText(file);
 }
@@ -1676,8 +2066,8 @@ function renderLinksAdmin(){
       <span class="link-row-url">${esc(l.url)}</span>
     </div>
     <div class="link-row-acts">
-      <button class="link-edit" onclick="editLink('${esc(l.id)}')" title="Editar">✎</button>
-      <button class="link-del" onclick="removeLink('${esc(l.id)}')" title="Eliminar">✕</button>
+      <button class="link-edit" onclick="editLink(${jsArg(l.id)})" title="Editar">✎</button>
+      <button class="link-del" onclick="removeLink(${jsArg(l.id)})" title="Eliminar">✕</button>
     </div>
   </div>`).join('');
 }
@@ -1736,8 +2126,8 @@ function renderLecturaLinks(){
       <span class="link-row-url">${esc(l.url)}</span>
     </div>
     <div class="link-row-acts">
-      <button type="button" class="link-edit" onclick="editLecturaLink('${esc(l.id)}')" title="Editar">✎</button>
-      <button type="button" class="link-del" onclick="removeLecturaLink('${esc(l.id)}')" title="Eliminar">✕</button>
+      <button type="button" class="link-edit" onclick="editLecturaLink(${jsArg(l.id)})" title="Editar">✎</button>
+      <button type="button" class="link-del" onclick="removeLecturaLink(${jsArg(l.id)})" title="Eliminar">✕</button>
     </div>
   </div>`).join('');
 }
@@ -1791,7 +2181,7 @@ function renderInkAdmin(){
           <div class="ink-item-title" title="${esc(e.titulo)}">${esc(e.titulo)}</div>
           <div class="ink-item-sec">${esc(e.seccion)}</div>
         </div>
-        <button class="ink-item-remove" onclick="removeFromInk('${e.id}')" title="Quitar del INK CLUB">✕</button>
+        <button class="ink-item-remove" onclick="removeFromInk(${jsArg(e.id)})" title="Quitar del INK CLUB">✕</button>
       </div>`;
     }).join('');
     return `<div class="ink-cat-group">

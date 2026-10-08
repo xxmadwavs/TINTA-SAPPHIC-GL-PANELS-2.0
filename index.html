@@ -140,6 +140,7 @@ body::after {
   border-color: var(--neon);
   background: rgba(232,255,71,0.04);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .search-box:focus{background:rgba(var(--neon-rgb),0.04)}
 .search-box::placeholder { color: var(--dim); font-size: 11px; letter-spacing: .5px; }
 /* contenteditable search box */
 div.search-box {
@@ -181,6 +182,7 @@ div.search-box:focus { outline: none; }
   border-color: rgba(255,71,163,0.5);
   color: var(--neon2);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .adult-btn.active{background:rgba(var(--neon2-rgb),0.12);border-color:rgba(var(--neon2-rgb),0.5)}
 .adult-btn .pill {
   width: 20px; height: 10px; border-radius: 10px;
   background: var(--dim); position: relative; transition: background .2s;
@@ -214,6 +216,15 @@ div.search-box:focus { outline: none; }
   );
   pointer-events: none;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hero-bg{background:conic-gradient(
+    from 270deg at 50% 120%,
+    transparent 0deg,
+    rgba(var(--neon-rgb),0.02) 1deg,
+    transparent 2deg,
+    transparent 4deg,
+    rgba(var(--neon-rgb),0.015) 5deg,
+    transparent 6deg
+  )}
 
 .hero-inner {
   max-width: 1400px; margin: 0 auto;
@@ -279,6 +290,7 @@ div.search-box:focus { outline: none; }
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .filter-strip{background:rgba(var(--screen-rgb),0.97)}
 
 /* Right fade hint - not needed with wrap */
 .cat-tabs-wrap {
@@ -297,7 +309,9 @@ div.search-box:focus { outline: none; }
   align-items: center;
 }
 .cat-tabs::-webkit-scrollbar { display: none; }
-.cat-tabs { scrollbar-width: none; -ms-overflow-style: none; }
+.cat-tabs { scrollbar-width: none; -ms-overflow-style: none; cursor: grab; }
+.cat-tabs.dragging { cursor: grabbing; user-select: none; }
+.cat-tabs.dragging .ctab { pointer-events: none; }
 
 /* Edge fade hints so it reads as "scroll for more" */
 .cat-tabs-wrap::before,
@@ -308,9 +322,11 @@ div.search-box:focus { outline: none; }
 .cat-tabs-wrap::before {
   left: 0; background: linear-gradient(90deg, rgba(17,17,24,0.97), transparent);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .cat-tabs-wrap::before{background:linear-gradient(90deg, rgba(var(--screen-rgb),0.97), transparent)}
 .cat-tabs-wrap::after {
   right: 0; background: linear-gradient(270deg, rgba(17,17,24,0.97), transparent);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .cat-tabs-wrap::after{background:linear-gradient(270deg, rgba(var(--screen-rgb),0.97), transparent)}
 
 .ctab {
   display: inline-flex; align-items: center; gap: 7px;
@@ -324,6 +340,7 @@ div.search-box:focus { outline: none; }
 }
 .ctab:hover { color: var(--paper); border-color: rgba(245,240,232,0.3); background: rgba(245,240,232,0.05); }
 .ctab.on { background: rgba(232,255,71,0.12); border-color: rgba(232,255,71,0.5); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ctab.on{background:rgba(var(--neon-rgb),0.12);border-color:rgba(var(--neon-rgb),0.5)}
 .ctab .ctab-icon { font-size: 13px; }
 .ctab .ctab-count {
   font-family: 'Space Mono', monospace; font-size: 9px;
@@ -331,6 +348,7 @@ div.search-box:focus { outline: none; }
   padding: 1px 7px; color: var(--dim); font-weight: 400;
 }
 .ctab.on .ctab-count { background: rgba(232,255,71,0.2); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ctab.on .ctab-count{background:rgba(var(--neon-rgb),0.2)}
 
 /* ROW 2 — filter dropdowns in one line */
 .filter-row {
@@ -360,8 +378,11 @@ div.search-box:focus { outline: none; }
 }
 .fdrop:hover { color: var(--paper); border-color: rgba(245,240,232,0.3); }
 .fdrop.on { background: rgba(232,255,71,0.1); border-color: rgba(232,255,71,0.45); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .fdrop.on{background:rgba(var(--neon-rgb),0.1);border-color:rgba(var(--neon-rgb),0.45)}
 .fdrop.on-teal { background: rgba(71,255,224,0.08); border-color: rgba(71,255,224,0.4); color: var(--neon3); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .fdrop.on-teal{background:rgba(var(--neon3-rgb),0.08);border-color:rgba(var(--neon3-rgb),0.4)}
 .fdrop.on-pink { background: rgba(255,71,163,0.1); border-color: rgba(255,71,163,0.45); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .fdrop.on-pink{background:rgba(var(--neon2-rgb),0.1);border-color:rgba(var(--neon2-rgb),0.45)}
 .fdrop .arrow { font-size: 8px; opacity: .5; transition: transform .15s; display: inline-block; }
 .fdrop.open .arrow { transform: rotate(180deg); }
 .fdrop .fval { max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
@@ -382,6 +403,7 @@ div.search-box:focus { outline: none; }
   display: none; min-width: 170px; z-index: 600;
   box-shadow: 0 8px 32px rgba(0,0,0,.6);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .drop-panel{background:var(--surface2)}
 .fdrop.open .drop-panel { display: block; }
 
 .dopt {
@@ -393,8 +415,11 @@ div.search-box:focus { outline: none; }
 }
 .dopt:hover { background: rgba(245,240,232,0.07); color: var(--paper); }
 .dopt.on { color: var(--neon); background: rgba(232,255,71,0.08); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .dopt.on{background:rgba(var(--neon-rgb),0.08)}
 .dopt.on-teal { color: var(--neon3); background: rgba(71,255,224,0.06); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .dopt.on-teal{background:rgba(var(--neon3-rgb),0.06)}
 .dopt.on-pink { color: var(--neon2); background: rgba(255,71,163,0.07); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .dopt.on-pink{background:rgba(var(--neon2-rgb),0.07)}
 .dopt .dopt-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
 /* +18 toggle pill */
@@ -407,7 +432,9 @@ div.search-box:focus { outline: none; }
   cursor: pointer; white-space: nowrap; transition: all .18s; flex-shrink: 0;
 }
 .adult-pill-btn:hover { border-color: rgba(255,71,163,.4); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .adult-pill-btn:hover{border-color:rgba(var(--neon2-rgb),.4)}
 .adult-pill-btn.on { background: rgba(255,71,163,0.12); border-color: rgba(255,71,163,0.5); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .adult-pill-btn.on{background:rgba(var(--neon2-rgb),0.12);border-color:rgba(var(--neon2-rgb),0.5)}
 .adult-pill-btn .tog {
   width: 22px; height: 12px; border-radius: 100px;
   background: rgba(245,240,232,0.15); position: relative; transition: background .2s; flex-shrink: 0;
@@ -437,6 +464,7 @@ div.search-box:focus { outline: none; }
 }
 .filters-trigger:hover { color: var(--paper); border-color: rgba(245,240,232,0.3); }
 .filters-trigger.has-active { background: rgba(232,255,71,0.1); border-color: rgba(232,255,71,0.45); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .filters-trigger.has-active{background:rgba(var(--neon-rgb),0.1);border-color:rgba(var(--neon-rgb),0.45)}
 .filters-trigger .ft-icon { font-size: 13px; }
 .filters-trigger .ft-arrow { font-size: 8px; opacity: .5; transition: transform .15s; }
 .filters-trigger.open .ft-arrow { transform: rotate(180deg); }
@@ -485,6 +513,7 @@ div.search-box:focus { outline: none; }
   letter-spacing: 2px; text-transform: uppercase;
   color: var(--neon2); flex-shrink: 0;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ink-badge{border:1px solid rgba(var(--neon2-rgb),0.35);background:rgba(var(--neon2-rgb),0.07)}
 .ink-cat-tabs {
   display: flex; gap: 6px; flex-wrap: wrap;
   margin-bottom: 24px;
@@ -501,6 +530,7 @@ div.search-box:focus { outline: none; }
 }
 .ink-ctab:hover { color: var(--paper); border-color: rgba(245,240,232,0.3); background: rgba(245,240,232,0.05); }
 .ink-ctab.on { background: rgba(255,71,163,0.12); border-color: rgba(255,71,163,0.5); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ink-ctab.on{background:rgba(var(--neon2-rgb),0.12);border-color:rgba(var(--neon2-rgb),0.5)}
 .ink-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -516,6 +546,7 @@ div.search-box:focus { outline: none; }
   aspect-ratio: 2/3;
   display: flex; flex-direction: column;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ink-card{border:1px solid rgba(var(--neon2-rgb),0.12)}
 .ink-card:hover {
   border-color: var(--neon2);
   transform: scale(1.02);
@@ -531,6 +562,7 @@ div.search-box:focus { outline: none; }
   font-size: 9px; letter-spacing: 1px;
   padding: 2px 7px; border-radius: 1px;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ink-club-badge{background:rgba(var(--neon2-rgb),0.85)}
 .ink-divider {
   border: none; border-top: 1px solid var(--border);
   margin: 28px 0 0;
@@ -571,6 +603,7 @@ div.search-box:focus { outline: none; }
   letter-spacing: 2px; text-transform: uppercase;
   color: var(--neon); flex-shrink: 0;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .top10-badge{border:1px solid rgba(var(--neon-rgb),0.35);background:rgba(var(--neon-rgb),0.07)}
 
 .top10-track {
   display: flex; flex-wrap: wrap; gap: 6px;
@@ -608,10 +641,13 @@ div.search-box:focus { outline: none; }
   pointer-events: none;
   transition: color .2s;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .t10-rank{color:rgba(var(--neon-rgb),0.12)}
 .t10-card:nth-child(1) .t10-rank { color: rgba(232,255,71,0.22); font-size: 6rem; }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .t10-card:nth-child(1) .t10-rank{color:rgba(var(--neon-rgb),0.22)}
 .t10-card:nth-child(2) .t10-rank { color: rgba(200,200,210,0.16); }
 .t10-card:nth-child(3) .t10-rank { color: rgba(205,127,50,0.16); }
 .t10-card:hover .t10-rank { color: rgba(232,255,71,0.06); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .t10-card:hover .t10-rank{color:rgba(var(--neon-rgb),0.06)}
 
 /* medal badge top-left */
 .t10-medal {
@@ -675,6 +711,7 @@ div.search-box:focus { outline: none; }
   content: ''; position: absolute; inset: 0;
   background: var(--gen-bg, #111118);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .t10-gen::before{background:var(--gen-bg, var(--screen))}
 .t10-gen::after {
   content: ''; position: absolute; inset: 0;
   background-image: radial-gradient(circle, rgba(245,240,232,0.07) 1px, transparent 1px);
@@ -773,6 +810,7 @@ div.search-box:focus { outline: none; }
   position: absolute; inset: 0;
   background: var(--gen-bg, #111118);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .card-gen::before{background:var(--gen-bg, var(--screen))}
 /* halftone on no-cover cards */
 .card-gen::after {
   content: '';
@@ -795,7 +833,7 @@ div.search-box:focus { outline: none; }
   position: absolute; top: 7px; right: 7px; z-index: 10;
   display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
 }
-/* +18 chip */
+/* +18 chip — fondo sólido, no translúcido, para que no se pierda en portadas oscuras */
 .adult-chip {
   background: var(--neon2);
   color: #1a0010;
@@ -803,44 +841,54 @@ div.search-box:focus { outline: none; }
   font-size: 10px; letter-spacing: 1px;
   padding: 1px 6px;
   border-radius: 1px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.5);
 }
 .card.adult-blurred .card-cover img,
 .card.adult-blurred .card-gen::before { filter: blur(14px); }
 .card.adult-blurred .adult-chip::after { content: '🔞 OCULT'; }
 .card.adult-blurred .adult-chip { background: rgba(255,71,163,0.4); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .card.adult-blurred .adult-chip{background:rgba(var(--neon2-rgb),0.4)}
 
-/* estado corner */
+/* estado corner — fondo sólido + borde propio, ya no depende del color de la portada */
 .card-estado {
   position: absolute; top: 7px; left: 7px; z-index: 10;
   font-family: 'DM Sans', sans-serif;
   font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
   padding: 2px 6px; border-radius: 1px;
+  background: rgba(10,10,14,0.75);
+  border: 1px solid currentColor;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
 }
-.e-fin { background: rgba(71,255,224,0.2); color: var(--neon3); }
-.e-cont { background: rgba(232,255,71,0.2); color: var(--neon); }
-.e-hiatus { background: rgba(255,200,71,0.2); color: #ffc847; }
-.e-cancel { background: rgba(255,71,71,0.18); color: #ff6b6b; }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .card-estado{background:rgba(var(--ink-rgb),0.75)}
+.e-fin { color: var(--neon3); }
+.e-cont { color: var(--neon); }
+.e-hiatus { color: #ffc847; }
+.e-cancel { color: #ff6b6b; }
 
-/* hover overlay */
+/* overlay — siempre visible para garantizar contraste sobre cualquier portada;
+   incluye también una ligera viñeta arriba para las esquinas de badges */
 .card-overlay {
   position: absolute; inset: 0; z-index: 5;
-  background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.92) 70%);
-  opacity: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 22%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.96) 100%);
+  opacity: 1;
   transition: opacity .22s;
 }
+.card:hover .card-overlay { opacity: 1; }
 
-/* info panel */
+/* info panel — visible por defecto (el hover ya no es necesario para leerla,
+   solo aporta un pequeño realce en desktop) */
 .card-info {
   position: absolute; bottom: 0; left: 0; right: 0; z-index: 6;
   padding: 12px 10px 10px;
-  transform: translateY(6px);
+  transform: translateY(0);
   transition: transform .22s;
 }
 .card-title {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 12px; line-height: 1.35;
   color: var(--white);
+  text-shadow: 0 1px 3px rgba(0,0,0,.85), 0 1px 8px rgba(0,0,0,.6);
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   margin-bottom: 6px;
 }
@@ -848,13 +896,17 @@ div.search-box:focus { outline: none; }
 .ctag {
   font-size: 8px; letter-spacing: .5px;
   padding: 1px 5px;
-  background: rgba(245,240,232,0.1);
-  color: rgba(245,240,232,0.6);
+  background: rgba(10,10,10,0.55);
+  color: rgba(245,240,232,0.85);
+  border: 1px solid rgba(245,240,232,0.15);
   border-radius: 1px;
   font-family: 'DM Sans', sans-serif;
   white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
 }
-.ctag.adult { background: rgba(255,71,163,0.15); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ctag{background:rgba(var(--ink-rgb),0.55)}
+.ctag.adult { background: rgba(255,71,163,0.25); color: var(--neon2); border-color: rgba(255,71,163,0.35); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ctag.adult{background:rgba(var(--neon2-rgb),0.25);border-color:rgba(var(--neon2-rgb),0.35)}
 
 /* subido badges — ahora dentro de .card-topright, ya no fijos por su cuenta */
 .card-subido {
@@ -866,9 +918,14 @@ div.search-box:focus { outline: none; }
   border-radius: 1px;
   font-family: 'DM Sans', sans-serif;
   font-weight: 500;
+  background: rgba(10,10,14,0.75);
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
 }
-.sbib { background: rgba(71,255,224,0.15); color: var(--neon3); border: 1px solid rgba(71,255,224,0.3); }
-.sfiles { background: rgba(232,255,71,0.12); color: var(--neon); border: 1px solid rgba(232,255,71,0.25); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .sbadge{background:rgba(var(--ink-rgb),0.75)}
+.sbib { color: var(--neon3); border: 1px solid rgba(71,255,224,0.5); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .sbib{border:1px solid rgba(var(--neon3-rgb),0.5)}
+.sfiles { color: var(--neon); border: 1px solid rgba(232,255,71,0.45); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .sfiles{border:1px solid rgba(var(--neon-rgb),0.45)}
 
 /* ── EMPTY ────────────────────────────────────────────── */
 .empty {
@@ -903,6 +960,7 @@ div.search-box:focus { outline: none; }
   scrollbar-color: rgba(232,255,71,0.2) transparent;
   position: relative;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .modal{background:var(--surface);border:1px solid rgba(var(--neon-rgb),0.2);scrollbar-color:rgba(var(--neon-rgb),0.2) transparent}
 /* neon top bar on modal */
 .modal::before {
   content: '';
@@ -960,6 +1018,7 @@ div.search-box:focus { outline: none; }
   display: flex; align-items: center; justify-content: center;
   border-radius: 1px;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .modal-cover-gen{background:var(--surface2)}
 .modal-cover-gen span { font-size: 2.5rem; opacity: .2; }
 
 .modal-sec {
@@ -1005,7 +1064,9 @@ div.search-box:focus { outline: none; }
   font-family: 'DM Sans', sans-serif; font-weight: 500;
 }
 .mb-fin { background: rgba(71,255,224,0.12); color: var(--neon3); border: 1px solid rgba(71,255,224,0.25); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mb-fin{background:rgba(var(--neon3-rgb),0.12);border:1px solid rgba(var(--neon3-rgb),0.25)}
 .mb-cont { background: rgba(232,255,71,0.1); color: var(--neon); border: 1px solid rgba(232,255,71,0.2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mb-cont{background:rgba(var(--neon-rgb),0.1);border:1px solid rgba(var(--neon-rgb),0.2)}
 .mb-hiatus { background: rgba(255,200,71,0.1); color: #ffc847; border: 1px solid rgba(255,200,71,0.2); }
 .mb-cancel { background: rgba(255,71,71,0.1); color: #ff6b6b; border: 1px solid rgba(255,71,71,0.2); }
 /* ubicación: mismo tratamiento neutro, solo el icono distingue */
@@ -1014,8 +1075,10 @@ div.search-box:focus { outline: none; }
   border: 1px solid rgba(245,240,232,0.14); text-transform: none;
 }
 .mb-adult { background: rgba(255,71,163,0.12); color: var(--neon2); border: 1px solid rgba(255,71,163,0.25); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mb-adult{background:rgba(var(--neon2-rgb),0.12);border:1px solid rgba(var(--neon2-rgb),0.25)}
 .mb-caps { background: rgba(245,240,232,0.06); color: var(--muted); border: 1px solid rgba(245,240,232,0.15); }
 .mb-spicy { background: rgba(255,71,163,0.14); color: var(--neon2); border: 1px solid rgba(255,71,163,0.3); font-weight: 700; }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mb-spicy{background:rgba(var(--neon2-rgb),0.14);border:1px solid rgba(var(--neon2-rgb),0.3)}
 .modal-autor {
   font-size: 11.5px; color: var(--muted);
   font-family: 'DM Sans', sans-serif; letter-spacing: .2px;
@@ -1059,6 +1122,7 @@ div.search-box:focus { outline: none; }
   font-size: 11px; color: var(--neon2);
   margin-bottom: 12px;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .modal-adult-warn{background:rgba(var(--neon2-rgb),0.07);border:1px solid rgba(var(--neon2-rgb),0.2)}
 
 /* ── ADVERTENCIAS DE CONTENIDO ───────────────────────────── */
 .modal-cw-box {
@@ -1096,6 +1160,7 @@ div.search-box:focus { outline: none; }
   padding: 10px 12px; border-radius: 1px;
   margin-bottom: 16px;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .modal-read-box{background:rgba(var(--neon3-rgb),0.06);border:1px solid rgba(var(--neon3-rgb),0.25)}
 .modal-read-title {
   display: flex; align-items: center; gap: 6px;
   font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
@@ -1112,6 +1177,7 @@ div.search-box:focus { outline: none; }
   text-decoration: none; font-weight: 600;
   transition: background .15s, color .15s;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .modal-read-link{background:rgba(var(--neon3-rgb),0.1);border:1px solid rgba(var(--neon3-rgb),0.35)}
 .modal-read-link:hover { background: var(--neon3); color: #08110f; }
 .modal-tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .mtag {
@@ -1123,8 +1189,11 @@ div.search-box:focus { outline: none; }
   letter-spacing: .3px;
 }
 .mtag.adult { border-color: rgba(255,71,163,0.25); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mtag.adult{border-color:rgba(var(--neon2-rgb),0.25)}
 .mtag.mtag-tropo { border-color: rgba(255,71,163,0.3); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mtag.mtag-tropo{border-color:rgba(var(--neon2-rgb),0.3)}
 .mtag.mtag-personaje { border-color: rgba(71,255,224,0.3); color: var(--neon3); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mtag.mtag-personaje{border-color:rgba(var(--neon3-rgb),0.3)}
 .modal-extra-block { margin-top: 12px; display: flex; flex-direction: column; gap: 9px; }
 .modal-extra-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
 .modal-extra-label { font-size: 10px; letter-spacing: .08em; color: var(--dim); text-transform: uppercase; margin-right: 2px; }
@@ -1144,8 +1213,10 @@ div.search-box:focus { outline: none; }
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; opacity: 0; transition: opacity .25s;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .scroll-top{background:rgba(var(--neon-rgb),0.08)}
 .scroll-top.vis { opacity: 1; }
 .scroll-top:hover { background: rgba(232,255,71,0.18); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .scroll-top:hover{background:rgba(var(--neon-rgb),0.18)}
 
 /* ══════════════════════════════════════════════════════════
    RESPONSIVE — TABLET  ≤ 900px
@@ -1357,6 +1428,7 @@ div.search-box:focus { outline: none; }
 }
 .pag-btn:hover { border-color: var(--neon); color: var(--neon); }
 .pag-btn.on  { background: rgba(232,255,71,.12); border-color: rgba(232,255,71,.5); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .pag-btn.on{background:rgba(var(--neon-rgb),.12);border-color:rgba(var(--neon-rgb),.5)}
 .pag-btn:disabled { opacity: .25; pointer-events: none; }
 .pag-btn.wide { width: auto; padding: 0 10px; }
 .pag-info-sec {
@@ -1381,6 +1453,7 @@ div.search-box:focus { outline: none; }
   width: 18px; height: 1px;
   background: rgba(232,255,71,0.3);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ts-watermark::before{background:rgba(var(--neon-rgb),0.3)}
 
 /* ══════════════════════════════════════════════════════════
    MOBILE FILTER BOTTOM SHEET
@@ -1394,6 +1467,7 @@ div.search-box:focus { outline: none; }
   border-bottom: 1px solid var(--border);
   overflow-x: auto; scrollbar-width: none;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mob-filter-bar{background:rgba(var(--screen-rgb),0.97)}
 .mob-filter-bar::-webkit-scrollbar { display: none; }
 
 .mob-filter-btn {
@@ -1407,6 +1481,7 @@ div.search-box:focus { outline: none; }
 }
 .mob-filter-btn:hover { color: var(--paper); border-color: rgba(245,240,232,0.3); }
 .mob-filter-btn.active { background: rgba(232,255,71,0.1); border-color: rgba(232,255,71,0.45); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mob-filter-btn.active{background:rgba(var(--neon-rgb),0.1);border-color:rgba(var(--neon-rgb),0.45)}
 .mob-filter-btn .mfb-icon { font-size: 13px; }
 .mob-active-dot {
   width: 6px; height: 6px; border-radius: 50%;
@@ -1424,9 +1499,13 @@ div.search-box:focus { outline: none; }
   transition: all .15s;
 }
 .mob-chip-estado { background: rgba(232,255,71,0.1); border: 1px solid rgba(232,255,71,0.4); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mob-chip-estado{background:rgba(var(--neon-rgb),0.1);border:1px solid rgba(var(--neon-rgb),0.4)}
 .mob-chip-sub    { background: rgba(71,255,224,0.08); border: 1px solid rgba(71,255,224,0.35); color: var(--neon3); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mob-chip-sub{background:rgba(var(--neon3-rgb),0.08);border:1px solid rgba(var(--neon3-rgb),0.35)}
 .mob-chip-tag    { background: rgba(255,71,163,0.1); border: 1px solid rgba(255,71,163,0.4); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mob-chip-tag{background:rgba(var(--neon2-rgb),0.1);border:1px solid rgba(var(--neon2-rgb),0.4)}
 .mob-chip-adult  { background: rgba(255,71,163,0.12); border: 1px solid rgba(255,71,163,0.5); color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mob-chip-adult{background:rgba(var(--neon2-rgb),0.12);border:1px solid rgba(var(--neon2-rgb),0.5)}
 .mob-chip-sort   { background: rgba(245,240,232,0.06); border: 1px solid rgba(245,240,232,0.2); color: var(--muted); }
 .mob-chip .mob-chip-x { font-size: 10px; opacity: .6; margin-left: 1px; }
 
@@ -1451,6 +1530,7 @@ div.search-box:focus { outline: none; }
   max-height: 85vh;
   display: flex; flex-direction: column;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .fsheet{background:var(--surface)}
 .fsheet.open { transform: translateY(0); }
 
 .fsheet-handle {
@@ -1486,6 +1566,7 @@ div.search-box:focus { outline: none; }
   border-top: 1px solid var(--border2);
   background: #16161f;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .fsheet-footer{background:var(--surface)}
 .fsheet-apply {
   width: 100%;
   font-family: 'DM Sans', sans-serif;
@@ -1557,6 +1638,7 @@ div.search-box:focus { outline: none; }
   background: currentColor; border-color: currentColor;
   box-shadow: inset 0 0 0 3px var(--surface, #16161f);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .fsopt.on::before,:where(body.theme-halloween,body.theme-christmas) .fsopt.on-teal::before,:where(body.theme-halloween,body.theme-christmas) .fsopt.on-pink::before{box-shadow:inset 0 0 0 3px var(--surface, var(--surface))}
 
 .fsheet-toggles { display: flex; flex-direction: column; gap: 1px; }
 .fsheet-toggle-row {
@@ -1641,6 +1723,7 @@ div.search-box:focus { outline: none; }
 }
 .t10m-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .t10m-cover-gen { width: 100%; height: 100%; background: var(--gen-bg,#111118); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .t10m-cover-gen{background:var(--gen-bg,var(--screen))}
 .t10m-info { flex: 1; min-width: 0; }
 .t10m-title {
   font-family: 'DM Sans', sans-serif; font-weight: 500;
@@ -1689,6 +1772,7 @@ div.search-box:focus { outline: none; }
   border: 1px solid var(--border);
   background: rgba(232,255,71,0.04);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .user-chip-top{background:rgba(var(--neon-rgb),0.04)}
 .user-avatar-top {
   width: 22px; height: 22px; border-radius: 2px;
   background: linear-gradient(135deg, var(--neon), var(--neon3));
@@ -1737,6 +1821,7 @@ div.search-box:focus { outline: none; }
 .user-dropdown-item:hover { background: rgba(245,240,232,0.06); }
 .user-dropdown-item.danger { color: var(--neon2); }
 .user-dropdown-item.danger:hover { background: rgba(255,71,163,0.08); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .user-dropdown-item.danger:hover{background:rgba(var(--neon2-rgb),0.08)}
 
 /* ── MI ESTANTERÍA — VISTA COMPLETA ────────────────────── */
 #shelfView {
@@ -1786,12 +1871,14 @@ body.shelf-active .topbar-center { display: none; }
 }
 .shelf-nav-item:hover { background: rgba(245,240,232,0.05); color: var(--paper); }
 .shelf-nav-item.on { background: rgba(232,255,71,0.08); border-color: rgba(232,255,71,0.3); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .shelf-nav-item.on{background:rgba(var(--neon-rgb),0.08);border-color:rgba(var(--neon-rgb),0.3)}
 .shelf-nav-item .snl { display: flex; align-items: center; gap: 8px; }
 .shelf-nav-count {
   font-size: 11px; padding: 1px 7px; border-radius: 10px;
   background: rgba(245,240,232,0.08); color: var(--muted);
 }
 .shelf-nav-item.on .shelf-nav-count { background: rgba(232,255,71,0.18); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .shelf-nav-item.on .shelf-nav-count{background:rgba(var(--neon-rgb),0.18)}
 .shelf-back-btn {
   display: flex; align-items: center; gap: 6px;
   margin-top: 24px; padding: 9px 12px; border-radius: 4px;
@@ -1849,6 +1936,7 @@ body.shelf-active .topbar-center { display: none; }
   scrollbar-color: rgba(232,255,71,0.2) transparent;
   position: relative;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .logros-modal{background:var(--surface);border:1px solid rgba(var(--neon-rgb),0.2);scrollbar-color:rgba(var(--neon-rgb),0.2) transparent}
 .logros-modal::before {
   content: '';
   position: sticky; top: 0;
@@ -1894,6 +1982,7 @@ body.shelf-active .topbar-center { display: none; }
   transition: transform .15s, border-color .15s;
 }
 .logros-badge:hover { transform: translateY(-2px); border-color: rgba(232,255,71,0.4); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .logros-badge:hover{border-color:rgba(var(--neon-rgb),0.4)}
 .logros-badge-imgbox {
   width: 60px; height: 60px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -1933,6 +2022,7 @@ body.shelf-active .topbar-center { display: none; }
   position: relative;
   box-shadow: 0 24px 64px rgba(0,0,0,.7);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .auth-modal{background:var(--surface);border:1px solid rgba(var(--neon-rgb),0.25)}
 .auth-modal::before {
   content: ''; display: block; height: 2px;
   background: linear-gradient(90deg, var(--neon), var(--neon2), var(--neon3));
@@ -2062,7 +2152,9 @@ body.shelf-active .topbar-center { display: none; }
   font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
   cursor: pointer; transition: all .18s;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .btn-vote-del{border:1px solid rgba(var(--neon2-rgb),0.35)}
 .btn-vote-del:hover { background: rgba(255,71,163,0.1); border-color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .btn-vote-del:hover{background:rgba(var(--neon2-rgb),0.1)}
 .btn-vote-del:disabled { opacity: .35; cursor: not-allowed; }
 .vote-feedback-m { font-size: 11px; color: var(--neon3); margin-top: 5px; min-height: 14px; }
 .login-prompt-m { font-size: 12px; color: var(--muted); text-align: center; padding: 4px 0; }
@@ -2079,7 +2171,9 @@ body.shelf-active .topbar-center { display: none; }
 }
 .shelf-btn:hover { border-color: rgba(245,240,232,0.35); color: var(--paper); }
 .shelf-btn.cs-want.active { background: rgba(71,255,224,0.16); border-color: var(--neon3); color: var(--neon3); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .shelf-btn.cs-want.active{background:rgba(var(--neon3-rgb),0.16)}
 .shelf-btn.cs-reading.active { background: rgba(232,255,71,0.16); border-color: var(--neon); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .shelf-btn.cs-reading.active{background:rgba(var(--neon-rgb),0.16)}
 .shelf-btn.cs-read.active { background: rgba(107,255,158,0.16); border-color: #6bff9e; color: #6bff9e; }
 .shelf-remove-btn { margin-top: 2px; }
 .shelf-dates-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; }
@@ -2108,7 +2202,9 @@ body.shelf-active .topbar-center { display: none; }
   font-family: 'DM Sans', sans-serif;
 }
 .card-shelf-badge.cs-want { background: rgba(71,255,224,0.18); color: var(--neon3); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .card-shelf-badge.cs-want{background:rgba(var(--neon3-rgb),0.18)}
 .card-shelf-badge.cs-reading { background: rgba(232,255,71,0.18); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .card-shelf-badge.cs-reading{background:rgba(var(--neon-rgb),0.18)}
 .card-shelf-badge.cs-read { background: rgba(107,255,158,0.18); color: #6bff9e; }
 
 /* avg star badge on card */
@@ -2121,6 +2217,7 @@ body.shelf-active .topbar-center { display: none; }
   color: #0a0a0a; display: flex; align-items: center; gap: 3px;
   box-shadow: 0 1px 8px rgba(0,0,0,0.6);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .card-avg{color:var(--ink)}
 .card-avg .cstar { font-size: 9px; }
 
 /* ── SPICY VOTE (nivel spicy comunitario, Supabase) ──────── */
@@ -2150,6 +2247,7 @@ body.shelf-active .topbar-center { display: none; }
 .rd-wrap { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.87); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
 .rd-wrap.open { display: flex; }
 .rd-modal { background: #13131e; border: 1px solid rgba(232,255,71,0.2); border-radius: 2px; max-width: 380px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .rd-modal{background:var(--surface);border:1px solid rgba(var(--neon-rgb),0.2)}
 .rd-modal::before { content: ''; position: sticky; top: 0; display: block; height: 2px; background: linear-gradient(90deg, var(--neon), var(--neon2)); }
 .rd-modal-x { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 2px; background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all .15s; z-index: 1; }
 .rd-modal-x:hover { border-color: var(--neon2); color: var(--neon2); }
@@ -2158,6 +2256,7 @@ body.shelf-active .topbar-center { display: none; }
 .rd-top { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; }
 .rd-cover img { width: 58px; height: 84px; object-fit: cover; border-radius: 1px; border: 1px solid var(--border); flex-shrink: 0; }
 .rd-cover-gen { width: 58px; height: 84px; background: #1c1c28; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .rd-cover-gen{background:var(--surface2)}
 .rd-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: .5px; line-height: 1.05; color: var(--paper); }
 .rd-autor { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--dim); margin-top: 4px; }
 .rd-block { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
@@ -2210,6 +2309,7 @@ body.shelf-active .topbar-center { display: none; }
   scrollbar-color: rgba(255,71,163,0.25) transparent;
   position: relative;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ruleta-modal{background:var(--surface);border:1px solid rgba(var(--neon2-rgb),0.25);scrollbar-color:rgba(var(--neon2-rgb),0.25) transparent}
 .ruleta-modal::before {
   content: '';
   position: sticky; top: 0;
@@ -2235,6 +2335,7 @@ body.shelf-active .topbar-center { display: none; }
 }
 .ruleta-toggle-btn:hover { border-color: rgba(245,240,232,0.35); color: var(--paper); }
 .ruleta-toggle-btn.active { background: rgba(232,255,71,0.14); border-color: var(--neon); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ruleta-toggle-btn.active{background:rgba(var(--neon-rgb),0.14)}
 .ruleta-count { font-size: 11px; color: var(--dim); letter-spacing: .3px; margin-bottom: 14px; }
 .ruleta-stage {
   min-height: 210px; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -2274,7 +2375,9 @@ body.shelf-active .topbar-center { display: none; }
   font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
   cursor: pointer; transition: all .18s;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ruleta-again-btn{border:1px solid rgba(var(--neon2-rgb),0.35)}
 .ruleta-again-btn:hover { background: rgba(255,71,163,0.1); border-color: var(--neon2); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .ruleta-again-btn:hover{background:rgba(var(--neon2-rgb),0.1)}
 .ruleta-empty { font-size: 12.5px; color: var(--muted); text-align: center; padding: 1rem 0; }
 @media (max-width: 600px) {
   .ruleta-modal-body { padding: 18px 16px 22px; }
@@ -2305,9 +2408,12 @@ body.shelf-active .topbar-center { display: none; }
   padding: 4px; cursor: default; display: flex; flex-direction: column; gap: 3px; transition: all .15s;
 }
 .cal-day.has-books { cursor: pointer; border-color: rgba(71,255,224,0.22); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .cal-day.has-books{border-color:rgba(var(--neon3-rgb),0.22)}
 .cal-day.has-books:hover { border-color: var(--neon3); background: var(--surface); }
 .cal-day.is-today { border-color: var(--neon); box-shadow: 0 0 0 1px rgba(232,255,71,.25) inset; }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .cal-day.is-today{box-shadow:0 0 0 1px rgba(var(--neon-rgb),.25) inset}
 .cal-day.is-selected { border-color: var(--neon2); background: rgba(255,71,163,.08); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .cal-day.is-selected{background:rgba(var(--neon2-rgb),.08)}
 .cal-day.empty-cell { background: transparent; border: none; }
 .cal-day-num { font-size: 10px; color: var(--dim); font-weight: 500; }
 .cal-day.is-today .cal-day-num { color: var(--neon); font-weight: 700; }
@@ -2381,6 +2487,15 @@ body.home-active .topbar-center { display: none; }
   );
   pointer-events: none;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-hero::before{background:conic-gradient(
+    from 270deg at 50% 100%,
+    transparent 0deg,
+    rgba(var(--neon-rgb),0.025) 1deg,
+    transparent 2deg,
+    transparent 5deg,
+    rgba(var(--neon2-rgb),0.015) 6deg,
+    transparent 7deg
+  )}
 .hv-eyebrow {
   display: inline-flex; align-items: center; gap: 10px;
   font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
@@ -2418,9 +2533,13 @@ body.home-active .topbar-center { display: none; }
   transition: all .2s;
 }
 .hv-cta-main { background: var(--neon); color: #0a0a0a; }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-cta-main{color:var(--ink)}
 .hv-cta-main:hover { background: #d4f03c; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,255,71,.25); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-cta-main:hover{box-shadow:0 8px 24px rgba(var(--neon-rgb),.25)}
 .hv-cta-ink { background: rgba(255,71,163,0.12); color: var(--neon2); border: 1px solid rgba(255,71,163,0.35); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-cta-ink{background:rgba(var(--neon2-rgb),0.12);border:1px solid rgba(var(--neon2-rgb),0.35)}
 .hv-cta-ink:hover { background: rgba(255,71,163,0.22); transform: translateY(-2px); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-cta-ink:hover{background:rgba(var(--neon2-rgb),0.22)}
 .hv-cta-sec { background: transparent; color: var(--paper); border: 1px solid var(--border2); }
 .hv-cta-sec:hover { border-color: var(--neon); color: var(--neon); transform: translateY(-2px); }
 
@@ -2496,7 +2615,9 @@ body.home-active .topbar-center { display: none; }
   position: relative; overflow: hidden;
   cursor: pointer; transition: border-color .2s;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-ink-block{border:1px solid rgba(var(--neon2-rgb),.2)}
 .hv-ink-block:hover { border-color: rgba(255,71,163,.45); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-ink-block:hover{border-color:rgba(var(--neon2-rgb),.45)}
 .hv-ink-block::before {
   content: ''; display: block; height: 2px;
   background: linear-gradient(90deg, var(--neon2), var(--neon));
@@ -2517,6 +2638,7 @@ body.home-active .topbar-center { display: none; }
   background: rgba(255,71,163,.08);
   font-size: 8px; letter-spacing: 2px;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-ink-badge{border:1px solid rgba(var(--neon2-rgb),.35);background:rgba(var(--neon2-rgb),.08)}
 .hv-ink-h2 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2.8rem; letter-spacing: 3px; line-height: 1;
@@ -2532,6 +2654,7 @@ body.home-active .topbar-center { display: none; }
   display: flex; align-items: center; justify-content: center;
   font-size: 9px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-ink-step-n{background:rgba(var(--neon2-rgb),.15)}
 /* Category demo cards */
 .hv-cat-demo { display: flex; flex-direction: column; gap: 7px; }
 .hv-cat-row {
@@ -2542,6 +2665,7 @@ body.home-active .topbar-center { display: none; }
   transition: border-color .2s;
 }
 .hv-cat-row:hover { border-color: rgba(255,71,163,.3); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-cat-row:hover{border-color:rgba(var(--neon2-rgb),.3)}
 .hv-cat-row-icon { font-size: 1rem; }
 .hv-cat-row-name { flex: 1; font-size: 12px; font-weight: 500; color: var(--paper); }
 .hv-cat-row-count { font-size: 9px; color: var(--dim); font-family: 'Space Mono', monospace; }
@@ -2550,6 +2674,7 @@ body.home-active .topbar-center { display: none; }
   border: 1px solid rgba(255,71,163,.3); color: var(--neon2);
   white-space: nowrap;
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-cat-badge{border:1px solid rgba(var(--neon2-rgb),.3)}
 
 /* How it works */
 .hv-how {
@@ -2617,6 +2742,7 @@ body.home-active .topbar-center { display: none; }
   color: var(--neon); border-color: var(--neon);
   background: rgba(232,255,71,.06);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-footer-pill:hover{background:rgba(var(--neon-rgb),.06)}
 .hv-footer-links {
   margin-top: 20px; padding-top: 20px;
   border-top: 1px solid var(--border);
@@ -2640,6 +2766,7 @@ body.home-active .topbar-center { display: none; }
   color: var(--neon3); border-color: var(--neon3);
   background: rgba(71,255,224,.06);
 }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .hv-footer-link:hover{background:rgba(var(--neon3-rgb),.06)}
 
 /* light mode tweaks for home */
 
@@ -2666,9 +2793,113 @@ body.home-active .topbar-center { display: none; }
 }
 .home-nav-btn:hover { color: var(--paper); border-color: rgba(245,240,232,.35); }
 .home-nav-btn.active { background: rgba(232,255,71,.08); border-color: rgba(232,255,71,.35); color: var(--neon); }
+/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .home-nav-btn.active{background:rgba(var(--neon-rgb),.08);border-color:rgba(var(--neon-rgb),.35)}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMAS ESTACIONALES — Halloween (octubre) y Navidad (1 dic – 7 ene)
+   Skin temporal: solo se activa con body.theme-halloween / body.theme-christmas
+   (ver el script justo después de <body>). Sin tema activo no cambia nada.
+   Los colores neón se redefinen aquí; los que estaban escritos a mano en rgba(...)
+   tienen su regla equivalente ("theme-seasonal") junto a la original.
+   ══════════════════════════════════════════════════════════════ */
+body.theme-halloween{
+  --screen:#0e0913;--ink:#07040a;--surface:#181020;--surface2:#22162b;
+  --neon:#ff8a1f;--neon2:#b57cff;--neon3:#7dff8a;
+  --neon-rgb:255,138,31;--neon2-rgb:181,124,255;--neon3-rgb:125,255,138;
+  --screen-rgb:14,9,19;--ink-rgb:7,4,10;
+}
+body.theme-christmas{
+  --screen:#08140f;--ink:#040b08;--surface:#0f1d17;--surface2:#162a21;
+  --neon:#f5c451;--neon2:#ff4d5e;--neon3:#5fe3a1;
+  --neon-rgb:245,196,81;--neon2-rgb:255,77,94;--neon3-rgb:95,227,161;
+  --screen-rgb:8,20,15;--ink-rgb:4,11,8;
+}
+
+/* Capas decorativas: brasas (Halloween) y nieve (Navidad). Nunca bloquean clics. */
+#hwEmbers,#xmSnowLayer{position:fixed;inset:0;pointer-events:none;z-index:240;overflow:hidden}
+.hw-ember{
+  position:absolute;bottom:-4%;border-radius:50%;opacity:0;will-change:transform,opacity;
+  background:radial-gradient(circle,rgba(var(--neon-rgb),.95) 0%,rgba(var(--neon-rgb),.3) 60%,transparent 100%);
+  box-shadow:0 0 6px rgba(var(--neon-rgb),.45);
+  animation:hwEmberRise linear infinite;
+}
+@keyframes hwEmberRise{
+  0%{transform:translate(0,0);opacity:0}
+  12%{opacity:var(--hw-op,.6)}
+  50%{transform:translate(calc(var(--hw-drift,10) * 1px),-52vh)}
+  88%{opacity:var(--hw-op,.6)}
+  100%{transform:translate(calc(var(--hw-drift,10) * -.6px),-108vh);opacity:0}
+}
+.xm-flake{
+  position:absolute;top:-6%;border-radius:50%;will-change:transform,opacity;
+  animation-name:xmSnowFall;animation-timing-function:linear;animation-iteration-count:infinite;
+}
+.xm-flake-far{background:rgba(233,238,240,.55);filter:blur(1.1px)}
+.xm-flake-mid{background:radial-gradient(circle,rgba(240,244,246,.85) 0%,rgba(240,244,246,.3) 65%,transparent 100%);filter:blur(.4px)}
+.xm-flake-near{background:radial-gradient(circle,rgba(245,248,250,.95) 0%,rgba(245,248,250,.35) 60%,transparent 100%);box-shadow:0 0 3px rgba(235,240,245,.35)}
+.xm-flake-warm{background:radial-gradient(circle,rgba(255,240,205,.9) 0%,rgba(255,225,170,.3) 60%,transparent 100%);box-shadow:0 0 4px rgba(255,225,170,.4)}
+@keyframes xmSnowFall{
+  0%{transform:translate(0,-8vh);opacity:0}
+  10%{opacity:var(--xm-op,.6)}
+  35%{transform:translate(calc(var(--xm-drift,12) * 1px),28vh)}
+  65%{transform:translate(calc(var(--xm-drift,12) * -0.7px),64vh)}
+  90%{opacity:var(--xm-op,.6)}
+  100%{transform:translate(calc(var(--xm-drift,12) * 0.4px),112vh);opacity:0}
+}
+@media (prefers-reduced-motion: reduce){
+  #hwEmbers,#xmSnowLayer{display:none}
+}
+
+/* Colección de temporada (Halloween: «La colección de octubre» · Navidad: «Los libros bajo el árbol»)
+   Franja compacta sobre el catálogo; solo con un tema activo y solo en la pestaña «Todas». */
+.season-collection{display:none;max-width:1400px;margin:0 auto;padding:14px 20px 4px;position:relative;z-index:1}
+.season-collection.on{display:block}
+body.home-active .season-collection{display:none !important}
+.season-coll-inner{
+  display:flex;align-items:center;flex-wrap:wrap;gap:12px 26px;padding:12px 16px;
+  border:1px solid rgba(var(--neon-rgb),.25);
+  background:linear-gradient(90deg,rgba(var(--neon-rgb),.08),transparent 75%);
+}
+.season-coll-head{flex:1 1 230px;min-width:200px}
+.season-coll-eyebrow{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--neon);margin-bottom:4px}
+.season-coll-title{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:2px;line-height:1;color:var(--white)}
+.season-coll-title span{color:var(--neon)}
+.season-coll-sub{font-size:11.5px;color:var(--muted);margin-top:5px;max-width:340px}
+.season-coll-grid{display:grid;grid-template-columns:repeat(3,84px);gap:6px}
+.season-coll-grid .card{width:84px}
+.season-coll-more{
+  padding:8px 14px;border:1px solid var(--neon);background:transparent;color:var(--neon);
+  font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;transition:background .2s,color .2s;
+}
+.season-coll-more:hover{background:var(--neon);color:var(--ink)}
+@media (max-width:640px){
+  .season-collection{padding:10px 12px 2px}
+  .season-coll-inner{justify-content:center;text-align:center;padding:12px}
+  .season-coll-head{flex-basis:100%}
+  .season-coll-sub{margin-left:auto;margin-right:auto}
+}
 </style>
 </head>
 <body>
+<script>
+/* Temas estacionales: Halloween (todo octubre) y Navidad (1 dic – 7 ene, ambos incluidos).
+   Se activan solos por fecha. Para previsualizarlos sin esperar: ?halloween=1 o ?navidad=1
+   (y =0 para apagarlos). Nota: con cualquier parámetro en la URL esta web abre el catálogo;
+   para verlos en la portada usa ?view=home&halloween=1 (o &navidad=1). */
+(function(){
+  var p; try{ p=new URLSearchParams(location.search); }catch(e){ p=null; }
+  function flag(k){ var v=p&&p.get(k); return (v==='1'||v==='true')?true:((v==='0'||v==='false')?false:null); }
+  var hOv=flag('halloween'), xOv=flag('navidad');
+  var now=new Date(), m=now.getMonth(), d=now.getDate();
+  var hw = hOv!==null ? hOv : (m===9);
+  var xm = xOv!==null ? xOv : (m===11 || (m===0 && d<=7));
+  if(hOv===true) xm=false; else if(xOv===true) hw=false; else if(hw && xm) xm=false; // nunca los dos a la vez
+  window.SEASON_THEME = hw ? 'halloween' : (xm ? 'christmas' : null);
+  document.body.classList.toggle('theme-halloween', hw);
+  document.body.classList.toggle('theme-christmas', xm);
+})();
+</script>
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="logo">
@@ -3034,6 +3265,18 @@ body.home-active .topbar-center { display: none; }
   </div>
 </div>
 
+<!-- COLECCIÓN DE TEMPORADA — ventana con toda la colección (se abre desde «Ver más») -->
+<div class="ruleta-modal-wrap" id="seasonCollModalWrap" onclick="if(event.target===this)seasonCloseCollection()">
+  <div class="ruleta-modal" style="max-width:920px">
+    <button class="logros-modal-x" onclick="seasonCloseCollection()">✕</button>
+    <div class="ruleta-modal-body">
+      <div class="logros-modal-title" id="seasonCollModalTitle"></div>
+      <p class="logros-modal-sub" id="seasonCollModalSub"></p>
+      <div class="grid" id="seasonCollModalGrid"></div>
+    </div>
+  </div>
+</div>
+
 <!-- TINTA SAPPHIC WATERMARK -->
 <div class="ts-watermark">Tinta Sapphic</div>
 
@@ -3356,6 +3599,19 @@ body.home-active .topbar-center { display: none; }
     <button class="fsheet-apply" id="fsheetApplyBtn" type="button">Ver resultados</button>
   </div>
 </div>
+
+<!-- COLECCIÓN DE TEMPORADA — solo con un tema activo y en la pestaña «Todas» (textos y contenido los pone el JS) -->
+<section class="season-collection" id="seasonCollection" aria-label="Colección de temporada">
+  <div class="season-coll-inner">
+    <div class="season-coll-head">
+      <div class="season-coll-eyebrow" id="seasonCollEyebrow"></div>
+      <div class="season-coll-title" id="seasonCollTitle"></div>
+      <div class="season-coll-sub" id="seasonCollSub"></div>
+    </div>
+    <div class="season-coll-grid" id="seasonCollGrid"></div>
+    <button class="season-coll-more" id="seasonCollMore" type="button" onclick="seasonOpenCollection()" style="display:none">✦ Ver más ✦</button>
+  </div>
+</section>
 
 <!-- INK CLUB LECTURAS -->
 <div class="ink-section" id="inkSection">
@@ -3702,25 +3958,96 @@ async function handleResetPasswordM() {
 }
 
 // ── RATINGS ───────────────────────────────────────────────
-async function loadRatings() {
-  if (!SB_READY) return;
-  const { data } = await sb.from('ratings').select('manga_id,score');
-  ratingsMap = {};
-  if (!data) return;
+// Lectura paginada de votos (ratings / spicy_votes).
+// - Sin opts: consulta PÚBLICA (todas las filas). Con opts.userId: consulta PERSONAL, filtrada
+//   siempre por user_id = opts.userId (un userId vacío es un error: nunca cae a la consulta pública).
+// - Orden determinista (user_id, manga_id) para que .range() no duplique ni pierda filas
+//   (requiere que (user_id, manga_id) sea único; ver informe).
+// - Avanza por las filas realmente recibidas, así que funciona aunque el "Max Rows" de la API
+//   sea menor que el tamaño de página.
+// - Pide count exacto en la 1ª página y lo EXIGE: si no llega un número válido (null, NaN...) es un
+//   error, no se dan por buenos datos sin poder verificarlos. Si lo recibido no cuadra con el count,
+//   reintenta una vez y después devuelve error en vez de datos incompletos.
+// - Nunca lanza: devuelve { ok, rows, error }.
+const VOTES_PAGE_SIZE = 1000;
+// Tope de páginas por intento: red de seguridad contra bucles sin fin, no un límite de uso.
+// 10000 páginas × 1000 filas = 10 millones de filas, muy por encima de lo que se puede agregar en el
+// cliente; una tabla legítima nunca se acerca. Superarlo es un error (sin reintento).
+const VOTES_MAX_PAGES = 10000;
+async function fetchAllVoteRows(table, opts = {}) {
+  const personal = Object.prototype.hasOwnProperty.call(opts, 'userId');
+  if (personal && !opts.userId) {
+    return { ok: false, rows: [], error: new Error(`userId vacío en consulta personal de ${table}`) };
+  }
+  let lastError = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const rows = [];
+    let total = null;
+    let from = 0;
+    let pages = 0;
+    lastError = null;
+    try {
+      while (true) {
+        if (pages++ >= VOTES_MAX_PAGES) {
+          return { ok: false, rows: [], error: new Error(`Límite de ${VOTES_MAX_PAGES} páginas superado en ${table}`) };
+        }
+        let q = sb.from(table).select('manga_id,score', from === 0 ? { count: 'exact' } : undefined);
+        if (personal) q = q.eq('user_id', opts.userId);
+        const { data, error, count } = await q
+          .order('user_id', { ascending: true })
+          .order('manga_id', { ascending: true })
+          .range(from, from + VOTES_PAGE_SIZE - 1);
+        if (error) { lastError = error; break; }
+        if (from === 0) {
+          if (!Number.isInteger(count) || count < 0) { lastError = new Error(`count no válido en ${table}: ${count}`); break; }
+          total = count;
+        }
+        const got = data ? data.length : 0;
+        if (got === 0) break;
+        for (let i = 0; i < got; i++) rows.push(data[i]);
+        from += got;
+        if (rows.length >= total) break;
+      }
+    } catch (e) {
+      lastError = e;
+    }
+    if (lastError) continue;
+    if (rows.length !== total) {
+      lastError = new Error(`Recuento inconsistente en ${table}: recibidas ${rows.length} de ${total}`);
+      continue;
+    }
+    return { ok: true, rows, error: null };
+  }
+  return { ok: false, rows: [], error: lastError };
+}
+function aggregateScores(rows) {
   const grouped = {};
-  data.forEach(r => { (grouped[r.manga_id] = grouped[r.manga_id] || []).push(r.score); });
+  rows.forEach(r => { (grouped[r.manga_id] = grouped[r.manga_id] || []).push(r.score); });
+  const out = {};
   Object.entries(grouped).forEach(([id, scores]) => {
-    ratingsMap[id] = {
+    out[id] = {
       avg:   Math.round(scores.reduce((a, b) => a + b, 0) / scores.length * 10) / 10,
       count: scores.length
     };
   });
+  return out;
+}
+// Devuelve true si la consulta fue correcta (con o sin votos) y false si falló.
+// Si falla, no se sobrescribe el estado actual con datos incompletos.
+async function loadRatings() {
+  if (!SB_READY) return;
+  const res = await fetchAllVoteRows('ratings');
+  if (!res.ok) { console.warn('No se pudieron cargar los ratings:', res.error && res.error.message || res.error); return false; }
+  ratingsMap = aggregateScores(res.rows);
+  return true;
 }
 async function loadMyRatings() {
   if (!SB_READY || !currentUser) return;
-  const { data } = await sb.from('ratings').select('manga_id,score').eq('user_id', currentUser.id);
+  const res = await fetchAllVoteRows('ratings', { userId: currentUser.id });
+  if (!res.ok) { console.warn('No se pudieron cargar tus ratings:', res.error && res.error.message || res.error); return false; }
   myRatings = {};
-  if (data) data.forEach(r => myRatings[r.manga_id] = r.score);
+  res.rows.forEach(r => myRatings[r.manga_id] = r.score);
+  return true;
 }
 
 function buildCommunityRowHTML(e) {
@@ -3821,23 +4148,18 @@ function refreshCardBadge(id) {
 // ── SPICY VOTES (Supabase) ─────────────────────────────────
 async function loadSpicy() {
   if (!SB_READY) return;
-  const { data } = await sb.from('spicy_votes').select('manga_id,score');
-  spicyMap = {};
-  if (!data) return;
-  const grouped = {};
-  data.forEach(r => { (grouped[r.manga_id] = grouped[r.manga_id] || []).push(r.score); });
-  Object.entries(grouped).forEach(([id, scores]) => {
-    spicyMap[id] = {
-      avg:   Math.round(scores.reduce((a, b) => a + b, 0) / scores.length * 10) / 10,
-      count: scores.length
-    };
-  });
+  const res = await fetchAllVoteRows('spicy_votes');
+  if (!res.ok) { console.warn('No se pudieron cargar los votos spicy:', res.error && res.error.message || res.error); return false; }
+  spicyMap = aggregateScores(res.rows);
+  return true;
 }
 async function loadMySpicy() {
   if (!SB_READY || !currentUser) return;
-  const { data } = await sb.from('spicy_votes').select('manga_id,score').eq('user_id', currentUser.id);
+  const res = await fetchAllVoteRows('spicy_votes', { userId: currentUser.id });
+  if (!res.ok) { console.warn('No se pudieron cargar tus votos spicy:', res.error && res.error.message || res.error); return false; }
   mySpicyVotes = {};
-  if (data) data.forEach(r => mySpicyVotes[r.manga_id] = r.score);
+  res.rows.forEach(r => mySpicyVotes[r.manga_id] = r.score);
+  return true;
 }
 function buildSpicyCommunityRowHTML(e) {
   const r = spicyMap[e.id] || { avg: 0, count: 0 };
@@ -4430,6 +4752,7 @@ let fDemo = 'all';
 let fShelf = 'all'; // all | want | reading | read — filtro de estantería personal
 let fTropos = [], fPersonajes = [];
 let fAutor = [], fSubgeneros = [], fAnio = 'all';
+let autorFilterBuilt = false;
 let activeSec = 'all'; // active category tab
 let activeSort = 'recent'; // recent | rating | az
 let homeActive = false; // home view state — set by init()
@@ -4518,31 +4841,50 @@ async function init() {
     if (!location.search) history.replaceState(null, '', '?view=home');
   }
 
+  // Iniciar cuanto antes las cargas independientes de catálogo y datos públicos.
+  // Mantenerlas en una única Promise.all conserva el fallback actual si alguna falla.
+  const _catalogPublicPromise = Promise.all(
+    SB_READY ? [fetch(DATA), loadRatings(), loadSpicy()] : [fetch(DATA)]
+  );
+
+  let _initialPersonalPromise = Promise.resolve();
   if (SB_READY) {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) currentUser = session.user;
     sb.auth.onAuthStateChange((_e, session) => {
       if (_e === 'PASSWORD_RECOVERY') { openResetModal(); return; }
       currentUser = session?.user || null;
       renderAuthArea();
       updateAuthGatedUI();
+
+      // INITIAL_SESSION forma parte del arranque que init() ya coordina.
+      // No volver a cargar aquí los datos personales ni renderizar antes del catálogo.
+      if (_e === 'INITIAL_SESSION') return;
+
       if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]).then(() => { renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); });
       else { myRatings = {}; myReadingStatus = {}; myReadingDates = {}; mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
     });
+
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      // Arrancar las consultas personales en cuanto se conoce la sesión,
+      // sin esperar a que termine el catálogo.
+      _initialPersonalPromise = Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]);
+      // La consulta arranca antes de la carga del catálogo; marca su rechazo como
+      // manejado mientras init() sigue coordinando ambos flujos.
+      _initialPersonalPromise.catch(() => {});
+    }
   }
   renderAuthArea();
 
   try {
-    const fetches = [fetch(DATA)];
-    if (SB_READY) fetches.push(loadRatings(), loadSpicy());
-    const [dataResp] = await Promise.all(fetches);
+    const [dataResp] = await _catalogPublicPromise;
     allData = await dataResp.json();
     normalizeAllTags();
   } catch(e) {
     console.warn('No se pudo cargar manga_data.json:', e.message);
     allData = [];
   }
-  if (SB_READY && currentUser) await Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]);
+  await _initialPersonalPromise;
 
   buildStats();
   buildCatTabs();
@@ -4550,10 +4892,10 @@ async function init() {
   buildSubgeneroFilter();
   buildTropoFilter();
   buildPersonajeFilter();
-  buildAutorFilter();
   buildAnioFilter();
   buildShelfSeccionOptions();
   updateAuthGatedUI();
+  if (fAutor.length > 0) buildAutorFilter();
   applyStateToUI();
   initFsheetAccordion();
   updateFiltersTrigger();
@@ -4707,7 +5049,7 @@ function buildTagFilter() {
   if (panel) {
     panel.innerHTML = `<div class="dopt on-pink" data-f="tag" data-v="__all__">Todos</div>` +
       sortedTags.map(t =>
-        `<div class="dopt" data-f="tag" data-v="${esc(t)}">${tagLabel(t)}</div>`
+        `<div class="dopt" data-f="tag" data-v="${esc(t)}">${esc(tagLabel(t))}</div>`
       ).join('');
     // re-bind click events on panel
     panel.querySelectorAll('.dopt').forEach(opt => {
@@ -4731,7 +5073,7 @@ function buildTagFilter() {
   if (fsOpts) {
     fsOpts.innerHTML = `<button class="fsopt on-pink" data-f="tag" data-v="__all__">Todos</button>` +
       sortedTags.map(t =>
-        `<button class="fsopt" data-f="tag" data-v="${esc(t)}">${tagLabel(t)}</button>`
+        `<button class="fsopt" data-f="tag" data-v="${esc(t)}">${esc(tagLabel(t))}</button>`
       ).join('');
     fsOpts.addEventListener('click', e => {
       const opt = e.target.closest('.fsopt');
@@ -4781,7 +5123,7 @@ function buildTropoFilter() {
   if (panel) {
     panel.innerHTML = `<div class="dopt on-pink" data-f="tropo" data-v="__all__">Todos</div>` +
       sortedTropos.map(t =>
-        `<div class="dopt" data-f="tropo" data-v="${esc(t)}">${tagLabel(t)}</div>`
+        `<div class="dopt" data-f="tropo" data-v="${esc(t)}">${esc(tagLabel(t))}</div>`
       ).join('');
     panel.querySelectorAll('.dopt').forEach(opt => {
       opt.addEventListener('click', () => {
@@ -4802,7 +5144,7 @@ function buildTropoFilter() {
   if (fsOpts) {
     fsOpts.innerHTML = `<button class="fsopt on-pink" data-f="tropo" data-v="__all__">Todos</button>` +
       sortedTropos.map(t =>
-        `<button class="fsopt" data-f="tropo" data-v="${esc(t)}">${tagLabel(t)}</button>`
+        `<button class="fsopt" data-f="tropo" data-v="${esc(t)}">${esc(tagLabel(t))}</button>`
       ).join('');
     fsOpts.addEventListener('click', e => {
       const opt = e.target.closest('.fsopt');
@@ -4848,7 +5190,7 @@ function buildPersonajeFilter() {
   if (panel) {
     panel.innerHTML = `<div class="dopt on-pink" data-f="personaje" data-v="__all__">Todos</div>` +
       sortedPersonajes.map(t =>
-        `<div class="dopt" data-f="personaje" data-v="${esc(t)}">${tagLabel(t)}</div>`
+        `<div class="dopt" data-f="personaje" data-v="${esc(t)}">${esc(tagLabel(t))}</div>`
       ).join('');
     panel.querySelectorAll('.dopt').forEach(opt => {
       opt.addEventListener('click', () => {
@@ -4869,7 +5211,7 @@ function buildPersonajeFilter() {
   if (fsOpts) {
     fsOpts.innerHTML = `<button class="fsopt on-pink" data-f="personaje" data-v="__all__">Todos</button>` +
       sortedPersonajes.map(t =>
-        `<button class="fsopt" data-f="personaje" data-v="${esc(t)}">${tagLabel(t)}</button>`
+        `<button class="fsopt" data-f="personaje" data-v="${esc(t)}">${esc(tagLabel(t))}</button>`
       ).join('');
     fsOpts.addEventListener('click', e => {
       const opt = e.target.closest('.fsopt');
@@ -4915,7 +5257,7 @@ function buildSubgeneroFilter() {
   if (panel) {
     panel.innerHTML = `<div class="dopt on-pink" data-f="subgenero" data-v="__all__">Todos</div>` +
       sortedSub.map(t =>
-        `<div class="dopt" data-f="subgenero" data-v="${esc(t)}">${tagLabel(t)}</div>`
+        `<div class="dopt" data-f="subgenero" data-v="${esc(t)}">${esc(tagLabel(t))}</div>`
       ).join('');
     panel.querySelectorAll('.dopt').forEach(opt => {
       opt.addEventListener('click', () => {
@@ -4936,7 +5278,7 @@ function buildSubgeneroFilter() {
   if (fsOpts) {
     fsOpts.innerHTML = `<button class="fsopt on-pink" data-f="subgenero" data-v="__all__">Todos</button>` +
       sortedSub.map(t =>
-        `<button class="fsopt" data-f="subgenero" data-v="${esc(t)}">${tagLabel(t)}</button>`
+        `<button class="fsopt" data-f="subgenero" data-v="${esc(t)}">${esc(tagLabel(t))}</button>`
       ).join('');
     fsOpts.addEventListener('click', e => {
       const opt = e.target.closest('.fsopt');
@@ -4974,6 +5316,8 @@ function updateSubgeneroDropUI() {
 
 // ── AUTOR FILTER (dynamic, multi-select) ───────────────────
 function buildAutorFilter() {
+  if (autorFilterBuilt) return;
+  autorFilterBuilt = true;
   const autorCount = {};
   allData.forEach(e => {
     const autores = Array.isArray(e.autor) ? e.autor : (e.autor ? [e.autor] : []);
@@ -4989,18 +5333,18 @@ function buildAutorFilter() {
       sortedAutores.map(t =>
         `<div class="dopt" data-f="autor" data-v="${esc(t)}">${esc(t)}</div>`
       ).join('');
-    panel.querySelectorAll('.dopt').forEach(opt => {
-      opt.addEventListener('click', () => {
-        const v = opt.dataset.v;
-        if (v === '__all__') { fAutor = []; }
-        else {
-          const idx = fAutor.indexOf(v);
-          if (idx >= 0) fAutor.splice(idx, 1);
-          else fAutor.push(v);
-        }
-        updateAutorDropUI();
-        onFsheetChange();
-      });
+    panel.addEventListener('click', e => {
+      const opt = e.target.closest('.dopt');
+      if (!opt || !panel.contains(opt)) return;
+      const v = opt.dataset.v;
+      if (v === '__all__') { fAutor = []; }
+      else {
+        const idx = fAutor.indexOf(v);
+        if (idx >= 0) fAutor.splice(idx, 1);
+        else fAutor.push(v);
+      }
+      updateAutorDropUI();
+      onFsheetChange();
     });
   }
 
@@ -5135,7 +5479,7 @@ function renderInkClub() {
   tabsEl.innerHTML = `<button class="ink-ctab on" data-inkcat="all">✦ Todas <span style="opacity:.5;font-size:10px">${inkData.length}</span></button>` +
     cats.map(c => {
       const count = inkData.filter(e => (e.ink_categories||[e.seccion]).includes(c)).length;
-      return `<button class="ink-ctab" data-inkcat="${esc(c)}">${c} <span style="opacity:.5;font-size:10px">${count}</span></button>`;
+      return `<button class="ink-ctab" data-inkcat="${esc(c)}">${esc(c)} <span style="opacity:.5;font-size:10px">${count}</span></button>`;
     }).join('');
   tabsEl.querySelectorAll('.ink-ctab').forEach(btn => {
     btn.classList.toggle('on', btn.dataset.inkcat === inkCat);
@@ -5187,7 +5531,7 @@ function renderInkGrid() {
       <div class="card-info">
         ${shelfBadge}
         <div class="card-title">${esc(e.titulo)}</div>
-        <div class="card-tags">${(e.tags||[]).slice(0,3).map(t=>`<span class="ctag">${tagLabel(t)}</span>`).join('')}</div>
+        <div class="card-tags">${(e.tags||[]).slice(0,3).map(t=>`<span class="ctag">${esc(tagLabel(t))}</span>`).join('')}</div>
       </div>
       ${ratingsMap[e.id] ? `<div class="card-avg"><span class="cstar">★</span>${ratingsMap[e.id].avg}</div>` : ''}
       ${spicyMap[e.id] && spicyMap[e.id].avg > 0 ? `<div class="card-spicy">🌶 ${spicyMap[e.id].avg}/5</div>` : ''}`;
@@ -5342,6 +5686,7 @@ function renderSections(resetPages) {
 
   // INK CLUB section: show only on 'all' and 'ink_club' — renderInkClub handles visibility
   renderInkClub();
+  seasonRenderCollection(); // colección de temporada (solo con un tema activo)
 
   // ── TAB "INK CLUB" ───────────────────────────────────────
   if (activeSec === 'ink_club') {
@@ -5667,7 +6012,7 @@ function openModal(e, isRefresh) {
     <div class="similar-block">
       <div class="similar-title">Historias similares</div>
       <div class="similar-row">${sim.map(s => `
-        <div class="similar-card" onclick="ruletaOpenBook(${JSON.stringify(s.id)})">
+        <div class="similar-card" onclick="ruletaOpenBook(${jsArg(s.id)})">
           <div class="similar-cover">${s.imagen ? `<img src="${esc(s.imagen)}" alt="${esc(s.titulo)}" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=similar-noimg>📖</div>'">` : '<div class="similar-noimg">📖</div>'}</div>
           <div class="similar-card-title">${esc(s.titulo)}</div>
         </div>`).join('')}</div>
@@ -5868,6 +6213,42 @@ function bindEvents() {
     renderSections(false);
   });
 
+  // Category tabs — let mouse wheel scroll horizontally, and allow click+drag
+  // so desktop users (no touch/trackpad swipe) can reach tabs hidden off-screen
+  // like "Cómic" and "Novela Gráfica" when the strip overflows.
+  (function enableCatTabsScrolling() {
+    const strip = document.getElementById('catTabs');
+    if (!strip) return;
+
+    strip.addEventListener('wheel', (e) => {
+      // Only hijack the wheel when there is actually something to scroll
+      if (strip.scrollWidth <= strip.clientWidth) return;
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (delta === 0) return;
+      e.preventDefault();
+      strip.scrollLeft += delta;
+    }, { passive: false });
+
+    let isDown = false, startX = 0, startScroll = 0, dragged = false;
+    strip.addEventListener('mousedown', (e) => {
+      isDown = true; dragged = false;
+      startX = e.pageX; startScroll = strip.scrollLeft;
+    });
+    window.addEventListener('mouseup', () => { isDown = false; strip.classList.remove('dragging'); });
+    window.addEventListener('mouseleave', () => { isDown = false; strip.classList.remove('dragging'); });
+    strip.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      const dx = e.pageX - startX;
+      if (Math.abs(dx) > 4 && !dragged) { dragged = true; strip.classList.add('dragging'); }
+      if (dragged) strip.scrollLeft = startScroll - dx;
+    });
+    // Suppress the click that follows a drag so it doesn't accidentally
+    // select whichever tab the cursor lands on.
+    strip.addEventListener('click', (e) => {
+      if (dragged) { e.stopPropagation(); e.preventDefault(); dragged = false; }
+    }, true);
+  })();
+
   // Dropdown toggles — open/close on button click (not on panel clicks)
   document.querySelectorAll('.fdrop').forEach(drop => {
     // clicking the button area (not an option) toggles open/close
@@ -5901,7 +6282,13 @@ function bindEvents() {
         // toggle the dropdown open/closed
         const wasOpen = drop.classList.contains('open');
         document.querySelectorAll('.fdrop.open').forEach(d => d.classList.remove('open'));
-        if (!wasOpen) drop.classList.add('open');
+        if (!wasOpen) {
+          if (drop.id === 'dropAutor') {
+            buildAutorFilter();
+            updateAutorDropUI();
+          }
+          drop.classList.add('open');
+        }
       }
       e.stopPropagation();
     });
@@ -5962,7 +6349,10 @@ function sl(s) {
 function esc(s) {
   return String(s||'')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function jsArg(s) {
+  return esc(JSON.stringify(String(s??'')));
 }
 
 /* ── TOP 10 ─────────────────────────────────────────────── */
@@ -6240,7 +6630,12 @@ function bindFsheetAccordion() {
     if (!label) return;
     const sec = label.closest('.fsheet-section');
     if (!sec || sec.classList.contains('no-accordion')) return;
+    const willOpen = sec.classList.contains('collapsed');
     sec.classList.toggle('collapsed');
+    if (willOpen && sec.dataset.field === 'autor') {
+      buildAutorFilter();
+      updateAutorDropUI();
+    }
   });
 }
 
@@ -6537,7 +6932,7 @@ function ruletaShowResult(e) {
         <div class="ruleta-result-title">${esc(e.titulo)}</div>
         <div class="ruleta-result-tags">${tags}</div>
         <div class="ruleta-result-btns">
-          <button class="btn-vote-submit" style="font-size:.9rem;padding:6px 14px" onclick="ruletaOpenBook(${JSON.stringify(e.id)})">Ver ficha</button>
+          <button class="btn-vote-submit" style="font-size:.9rem;padding:6px 14px" onclick="ruletaOpenBook(${jsArg(e.id)})">Ver ficha</button>
           <button class="ruleta-again-btn" onclick="ruletaSpin()">🎲 Girar otra vez</button>
         </div>
       </div>
@@ -6622,7 +7017,7 @@ function renderReadingCalendar() {
         ${active.map(p => {
           const rangeStr = `${new Date(p.start + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })} → ${p.ongoing ? 'ahora' : new Date(p.end + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`;
           const cov = p.cover ? `<img class="cal-panel-cover" src="${esc(p.cover)}" alt="" referrerpolicy="no-referrer">` : `<div class="cal-panel-cover" style="display:flex;align-items:center;justify-content:center">📖</div>`;
-          return `<div class="cal-panel-book" onclick="ruletaOpenBook(${JSON.stringify(p.bookId)})">
+          return `<div class="cal-panel-book" onclick="ruletaOpenBook(${jsArg(p.bookId)})">
             ${cov}
             <div class="cal-panel-info">
               <div class="cal-panel-title">${esc(p.title)}</div>
@@ -6685,6 +7080,186 @@ function closeCalendarModal() {
 function handleCalendarBgClick(e) {
   if (e.target === document.getElementById('calendarModalWrap')) closeCalendarModal();
 }
+
+/* ══════════════════════════════════════════════════════════════
+   TEMAS ESTACIONALES (Halloween / Navidad)
+   El tema lo decide el script que hay justo después de <body> (window.SEASON_THEME).
+   ══════════════════════════════════════════════════════════════ */
+const SEASON = window.SEASON_THEME || null; // 'halloween' | 'christmas' | null
+
+const SEASON_TEXTS = {
+  halloween: { eyebrow: '🎃 Edición de octubre · Tinta Sapphic', jp: 'ハロウィン・カタログ' },
+  christmas: { eyebrow: '🎄 Edición navideña · Tinta Sapphic',   jp: 'クリスマス・カタログ' }
+};
+
+// Colección de temporada. Halloween: solo lo que encaja (si no hay nada, la franja no se muestra).
+// Navidad: si hay menos de 3 que encajen, se completa con historias reales al azar (como en La Estantería,
+// porque las palabras navideñas casi nunca aparecen en las etiquetas de un catálogo GL).
+const SEASON_COLLECTION = {
+  halloween: {
+    eyebrow: 'Selección de octubre',
+    titleHtml: 'La colección <span>de octubre</span>',
+    sub: 'Historias para perderse entre secretos, sombras y noches interminables.',
+    modalTitle: '🎃 LA COLECCIÓN DE OCTUBRE',
+    modalSub: n => `${n} historia${n === 1 ? '' : 's'} para la noche de octubre`,
+    keywords: ['terror','horror','gótic','gotic','oscur','sobrenatural','supernatural','thriller','misterio',
+      'paranorm','vampir','bruja','fantasma','maldici','macabro','siniestr','demoni','ocultismo','muerte'],
+    fillGaps: false
+  },
+  christmas: {
+    eyebrow: 'Selección de diciembre',
+    titleHtml: 'Los libros <span>bajo el árbol</span>',
+    sub: 'Historias para leer envueltas en una manta, con una taza caliente cerca.',
+    modalTitle: '🎄 LOS LIBROS BAJO EL ÁRBOL',
+    modalSub: n => `${n} historia${n === 1 ? '' : 's'} para las noches de diciembre`,
+    keywords: ['navidad','navideñ','invierno','nieve','helad','frio','frío','fiesta','celebra','regalo','diciembre','año nuevo',
+      'winter','christmas','snow'],
+    fillGaps: true
+  }
+};
+
+// Portada y cabecera del catálogo: solo el eyebrow y la línea japonesa; el título GL PANELS no cambia.
+// Además rellena los textos de la franja de la colección de temporada.
+function seasonApplyTexts() {
+  const t = SEASON_TEXTS[SEASON];
+  if (!t) return;
+  document.querySelectorAll('.hv-eyebrow, .hero-eyebrow').forEach(el => { el.textContent = t.eyebrow; });
+  document.querySelectorAll('.hv-jp, .hero-jp').forEach(el => { el.textContent = t.jp; });
+  const c = SEASON_COLLECTION[SEASON];
+  document.getElementById('seasonCollEyebrow').textContent = c.eyebrow;
+  document.getElementById('seasonCollTitle').innerHTML = c.titleHtml;
+  document.getElementById('seasonCollSub').textContent = c.sub;
+}
+
+// Brasas que suben despacio (Halloween). Pocas partículas; nunca bloquean clics.
+function hwCreateEmbers() {
+  if (document.getElementById('hwEmbers')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'hwEmbers';
+  wrap.setAttribute('aria-hidden', 'true');
+  const n = window.innerWidth < 640 ? 10 : 18;
+  let html = '';
+  for (let i = 0; i < n; i++) {
+    const size = (Math.random() * 2.6 + 1.4).toFixed(1);
+    const left = (Math.random() * 98 + 1).toFixed(1);
+    const dur = (Math.random() * 9 + 9).toFixed(1);
+    const delay = (Math.random() * parseFloat(dur)).toFixed(1);
+    const drift = (Math.random() * 60 - 30).toFixed(0);
+    const op = (Math.random() * 0.35 + 0.35).toFixed(2);
+    html += `<span class="hw-ember" style="width:${size}px;height:${size}px;left:${left}%;--hw-drift:${drift};--hw-op:${op};animation-duration:${dur}s;animation-delay:-${delay}s"></span>`;
+  }
+  wrap.innerHTML = html;
+  document.body.appendChild(wrap);
+}
+
+// Nieve (Navidad): una capa fija con tres profundidades; cada copo es un punto difuminado.
+function xmMakeFlake(depth) {
+  const cfg = {
+    far:  { size: [1, 1.7],   op: [.22, .4],  dur: [17, 23], cls: 'xm-flake-far' },
+    mid:  { size: [1.7, 2.6], op: [.4, .62],  dur: [12, 16], cls: 'xm-flake-mid' },
+    near: { size: [2.6, 4],   op: [.55, .85], dur: [8, 11],  cls: 'xm-flake-near' }
+  }[depth];
+  const rand = (a, b) => Math.random() * (b - a) + a;
+  const size = rand(...cfg.size).toFixed(1);
+  const left = rand(0.5, 99).toFixed(1);
+  const delay = rand(0, cfg.dur[1]).toFixed(1);
+  const dur = rand(...cfg.dur).toFixed(1);
+  const op = rand(...cfg.op).toFixed(2);
+  const drift = rand(-26, 26).toFixed(0);
+  const warm = depth === 'near' && Math.random() < 0.22;
+  const cls = 'xm-flake ' + (warm ? 'xm-flake-warm' : cfg.cls);
+  return `<span class="${cls}" style="width:${size}px;height:${size}px;left:${left}%;--xm-op:${op};--xm-drift:${drift};animation-duration:${dur}s;animation-delay:-${delay}s"></span>`;
+}
+function xmCreateSnowLayer() {
+  if (document.getElementById('xmSnowLayer')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'xmSnowLayer';
+  wrap.setAttribute('aria-hidden', 'true');
+  const counts = window.innerWidth < 640 ? { far: 8, mid: 6, near: 4 } : { far: 14, mid: 11, near: 8 };
+  let html = '';
+  for (let i = 0; i < counts.far; i++) html += xmMakeFlake('far');
+  for (let i = 0; i < counts.mid; i++) html += xmMakeFlake('mid');
+  for (let i = 0; i < counts.near; i++) html += xmMakeFlake('near');
+  wrap.innerHTML = html;
+  document.body.appendChild(wrap);
+}
+
+// ── Colección de temporada ───────────────────────────────────────
+// Vista previa: 3 historias al azar (siempre reales del catálogo) + «Ver más» con toda la colección.
+let seasonPickIds = null; // las 3 elegidas, para que no cambien cada vez que se re-renderiza el catálogo
+
+// Respeta «Ocultar +18», igual que el resto del catálogo.
+function seasonVisibleItems() {
+  return allData.filter(e => !(hideAdult && e.adult));
+}
+function seasonIsMatch(e, cfg) {
+  const fields = [...(e.tags || []), ...(e.tropos || []), ...(e.subgeneros || []), ...(e.personajes || [])].join(' ').toLowerCase();
+  return cfg.keywords.some(k => fields.includes(k));
+}
+// n al azar sin repetir (Fisher–Yates; sort(() => Math.random() - .5) sesga el resultado).
+function seasonPickRandom(arr, n) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, n);
+}
+function seasonCard(e) {
+  const pal = GEN_PALETTES[e.seccion] || GEN_PALETTES['Sin Clasificación'];
+  return buildCard(e, pal[0]);
+}
+
+function seasonRenderCollection() {
+  const sec = document.getElementById('seasonCollection');
+  const cfg = SEASON_COLLECTION[SEASON];
+  if (!sec || !cfg) return;
+  const visible = (activeSec === 'all') ? seasonVisibleItems() : [];
+  const coll = visible.filter(e => seasonIsMatch(e, cfg));
+  const pool = cfg.fillGaps ? visible : coll; // de dónde pueden salir las 3 de la vista previa
+  if (!pool.length) { sec.classList.remove('on'); return; }
+  if (!seasonPickIds || !seasonPickIds.length || !seasonPickIds.every(id => pool.some(e => e.id === id))) {
+    let picks = seasonPickRandom(coll, 3);
+    if (cfg.fillGaps && picks.length < 3) {
+      picks = picks.concat(seasonPickRandom(visible.filter(e => !picks.includes(e)), 3 - picks.length));
+    }
+    seasonPickIds = picks.map(e => e.id);
+  }
+  const grid = document.getElementById('seasonCollGrid');
+  grid.innerHTML = '';
+  seasonPickIds.forEach(id => grid.appendChild(seasonCard(pool.find(e => e.id === id))));
+  document.getElementById('seasonCollMore').style.display = coll.length > 3 ? '' : 'none';
+  sec.classList.add('on');
+}
+
+function seasonOpenCollection() {
+  const cfg = SEASON_COLLECTION[SEASON];
+  const wrap = document.getElementById('seasonCollModalWrap');
+  const grid = document.getElementById('seasonCollModalGrid');
+  if (!cfg || !wrap || !grid) return;
+  const list = seasonVisibleItems().filter(e => seasonIsMatch(e, cfg));
+  document.getElementById('seasonCollModalTitle').textContent = cfg.modalTitle;
+  document.getElementById('seasonCollModalSub').textContent = cfg.modalSub(list.length);
+  grid.innerHTML = '';
+  list.forEach(e => grid.appendChild(seasonCard(e)));
+  wrap.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  wrap.querySelector('.ruleta-modal').scrollTop = 0;
+}
+function seasonCloseCollection() {
+  const wrap = document.getElementById('seasonCollModalWrap');
+  if (!wrap || !wrap.classList.contains('open')) return; // no tocar el scroll si no está abierta
+  wrap.classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Al pulsar una historia de la ventana: primero se cierra la ventana y luego se abre la ficha
+// (listener en captura: se ejecuta antes que el de la propia tarjeta).
+document.getElementById('seasonCollModalGrid').addEventListener('click', seasonCloseCollection, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') seasonCloseCollection(); });
+
+if (SEASON) seasonApplyTexts();
+if (SEASON === 'halloween') hwCreateEmbers();
+if (SEASON === 'christmas') xmCreateSnowLayer();
 
 init();</script>
 

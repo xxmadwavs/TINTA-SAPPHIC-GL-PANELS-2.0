@@ -4592,9 +4592,96 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
     height: 44px; box-sizing: border-box; padding: 0 14px 0 38px; line-height: 42px;
   }
 }
+/* ── FASE 3.4: con «Mi estantería» abierta, Inicio no se marca como sección activa ── */
+@media (min-width: 901px) {
+  body.shelf-active .topbar .topbar-nav .home-nav-btn.active:not(:disabled) {
+    background: transparent; border-color: transparent; color: var(--gl-text-secondary);
+  }
+  body.shelf-active .topbar .topbar-nav .home-nav-btn.active::after { content: none; }
+}
+@media (max-width: 900px) {
+  body.shelf-active .topbar .topbar-menu .home-nav-btn.active:not(:disabled) {
+    background: transparent; border-color: transparent; color: var(--gl-text);
+  }
+  body.shelf-active .topbar .topbar-menu .home-nav-btn.active::after { content: none; }
+  body.home-active.shelf-active .logo-link::after { content: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .logo-dot { animation: none; }
   .topbar-menu-btn, .topbar-menu-ico, .topbar-menu-ico::before, .topbar-menu-ico::after { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GL PANELS · FASE 4.3 — INDICADORES VISUALES DE TARJETAS
+   Estado de publicación (Finalizado · Continúa · Hiatus · Cancelado;
+   cualquier otro valor se muestra neutro con su texto) y +18.
+   Solo cambia aspecto y marcado de los badges: datos, permisos y
+   reglas de visibilidad no se tocan.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Estado sobre portada: icono + texto (en móvil solo icono; el texto sigue accesible) */
+.card-estado {
+  display: inline-flex; align-items: center; gap: 4px;
+  max-width: calc(100% - 62px);
+  padding: 2px 6px; line-height: 1.2;
+  font-size: var(--fs-badge);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+}
+.card.adult-blurred .card-estado { max-width: calc(100% - 70px); }
+.card-estado .estado-ico { flex: none; font-size: .85em; line-height: 1; }
+.card-estado .estado-lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Estado desconocido: neutro, sin icono, siempre con su texto literal */
+.e-other { --bd-c: var(--cmp-on-cover); --bd-text: var(--cmp-on-cover-muted); }
+.mb-other { --bd-c: var(--gl-text); --bd-text: var(--gl-text-secondary); --bd-bg-mix: 7%; --bd-line-mix: 18%; }
+
+/* Ink Club: la insignia INK y el estado comparten esquina sin pisarse */
+.card-topleft {
+  position: absolute; top: 7px; left: 7px; z-index: 10;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  max-width: calc(100% - 56px);
+}
+.card-topleft > .ink-club-badge,
+.card-topleft > .card-estado { position: static; max-width: 100%; }
+
+/* +18: sólido, rosa de marca, borde oscuro para separarlo de portadas claras */
+.adult-chip, .mb-adult {
+  --bd-c: var(--cmp-pink);
+  display: inline-flex; align-items: center; justify-content: center; gap: 3px;
+  min-width: 30px; padding: 2px 6px; line-height: 1.2;
+  font-family: var(--font-ui); font-size: var(--fs-label);
+  font-weight: 800; letter-spacing: .03em; font-variant-numeric: tabular-nums;
+  white-space: nowrap; flex: none;
+  color: var(--cmp-on-solid-pink);
+  background: var(--cmp-pink);
+  border: 0; border-radius: var(--cmp-r-badge-sm);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.3), 0 0 0 1px rgba(10,10,14,.55), 0 1px 6px rgba(0,0,0,.5);
+}
+/* Contenido oculto por «Ocultar +18»: mismo indicador, con tratamiento sobre fondo y candado */
+.card.adult-blurred .adult-chip {
+  color: color-mix(in srgb, var(--cmp-pink) 60%, #fff);
+  background: color-mix(in srgb, var(--cmp-pink) 26%, var(--cmp-scrim));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cmp-pink) 85%, transparent), 0 1px 6px rgba(0,0,0,.5);
+}
+.card.adult-blurred .adult-chip::after { content: '🔒'; font-size: .8em; font-weight: 400; }
+.card.adult-blurred .adult-chip { gap: 2px; padding-inline: 5px; min-width: 0; }
+
+/* +18 en otras vistas: ancla propia en cada una */
+.t10-card .adult-chip { position: absolute; top: 6px; right: 6px; z-index: 10; padding: 1px 5px; font-size: var(--fs-badge); min-width: 0; }
+.similar-card { position: relative; }
+.similar-card .adult-chip { position: absolute; top: 4px; right: 4px; z-index: 2; padding: 1px 5px; font-size: var(--fs-badge); min-width: 0; }
+.t10m-meta .adult-chip { padding: 1px 5px; font-size: var(--fs-badge); min-width: 0; }
+.ruleta-result-flags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+
+/* Móvil (rejilla de 3 columnas): estado solo icono, texto accesible para lectores de pantalla */
+@media (max-width: 600px) {
+  .card-estado { padding: 2px 5px; max-width: calc(100% - 50px); }
+  .card.adult-blurred .card-estado { max-width: calc(100% - 50px); }
+  .card-estado:not(.e-other) .estado-lbl {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  .adult-chip { min-width: 0; padding: 1px 5px; font-size: var(--fs-badge); }
 }
 </style>
 </head>
@@ -5531,8 +5618,11 @@ window.addEventListener('popstate', () => setTopbarMenu(false));
 (() => {
   const b = document.getElementById('homeNavBtn');
   if (!b) return;
-  const sync = () => b.classList.contains('active') ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
-  new MutationObserver(sync).observe(b, { attributes: true, attributeFilter: ['class'] });
+  // FASE 3.4: con «Mi estantería» abierta (body.shelf-active) la portada está oculta, así que Inicio no es la página actual
+  const sync = () => (b.classList.contains('active') && !document.body.classList.contains('shelf-active')) ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current');
+  const mo = new MutationObserver(sync);
+  mo.observe(b, { attributes: true, attributeFilter: ['class'] });
+  mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
   sync();
 })();
 
@@ -6529,9 +6619,40 @@ const GEN_PALETTES = {
   'Novela Gráfica': ['#0a1a1a','#1a0a1a','#0a1a0a'],
 };
 
-const ESTADO_CLS = {Finalizado:'e-fin',Continúa:'e-cont',Hiatus:'e-hiatus',Cancelado:'e-cancel'};
-const ESTADO_MCLS = {Finalizado:'mb-fin',Continúa:'mb-cont',Hiatus:'mb-hiatus',Cancelado:'mb-cancel'};
-const ESTADO_ICONS = {Finalizado:'✓',Continúa:'▶',Hiatus:'⏸',Cancelado:'✗'};
+// FASE 4.3 · Indicadores unificados de estado de publicación y +18.
+// Estados reales en los datos: Finalizado, Continúa, Hiatus y Cancelado.
+// Un estado desconocido NO se reasigna a ninguno de ellos: se muestra con su texto
+// literal y un estilo neutro (e-other / mb-other). Sin estado → no se pinta badge.
+const ESTADO_INFO = {
+  'Finalizado': { key:'fin',    icon:'✓', label:'Finalizado' },
+  'Continúa':   { key:'cont',   icon:'▶', label:'Continúa'   },
+  'Hiatus':     { key:'hiatus', icon:'⏸', label:'Hiatus'     },
+  'Cancelado':  { key:'cancel', icon:'✗', label:'Cancelado'  }
+};
+function estadoInfo(raw) {
+  const txt = raw == null ? '' : String(raw).trim();
+  if (!txt) return null;
+  if (Object.prototype.hasOwnProperty.call(ESTADO_INFO, txt)) return ESTADO_INFO[txt];
+  return { key:'other', icon:'', label: txt };
+}
+// Badge sobre portada (tarjetas): icono siempre; el texto se ve en pantallas anchas
+// y queda accesible (title + texto oculto visualmente) en móvil.
+function estadoCardBadgeHTML(raw) {
+  const s = estadoInfo(raw);
+  if (!s) return '';
+  return `<span class="card-estado e-${s.key}" title="${esc(s.label)}">${s.icon ? `<span class="estado-ico" aria-hidden="true">${s.icon}</span>` : ''}<span class="estado-lbl">${esc(s.label)}</span></span>`;
+}
+// Badge en paneles de información (ficha, resultado de la ruleta).
+function estadoMetaBadgeHTML(raw, extra) {
+  const s = estadoInfo(raw);
+  if (!s) return '';
+  return `<span class="mbadge mb-${s.key}">${s.icon ? s.icon + ' ' : ''}${esc(s.label)}${extra || ''}</span>`;
+}
+// Indicador +18 único. «oculto» = la tarjeta está difuminada por «Ocultar +18».
+function adultChipHTML(hidden) {
+  const lbl = hidden ? 'Contenido para mayores de 18 años (oculto)' : 'Contenido para mayores de 18 años';
+  return `<span class="adult-chip" role="img" aria-label="${lbl}" title="${lbl}">+18</span>`;
+}
 
 let allData = [];
 let hideAdult = false;
@@ -6766,12 +6887,19 @@ async function init() {
 // ── HOME VIEW ─────────────────────────────────────────────
 
 function showHome() {
+  // FASE 3.4: si «Mi estantería» está abierta, Inicio la cierra (mismo estado que deja popstate);
+  // antes la estantería seguía tapando la portada y Inicio parecía no hacer nada.
+  if (shelfActive) {
+    shelfActive = false;
+    document.body.classList.remove('shelf-active');
+    document.getElementById('shelfView').classList.remove('active');
+  }
   homeActive = true;
   document.getElementById('homeView').classList.add('active');
   document.body.classList.add('home-active');
   document.getElementById('homeNavBtn').classList.add('active');
-  // Update URL
-  history.pushState(null, '', '?view=home');
+  // Update URL (FASE 3.4: no apilar una entrada más si ya estamos en ?view=home)
+  if (location.search !== '?view=home') history.pushState(null, '', '?view=home');
   // Populate real stats and INK CLUB categories if data is loaded
   if (allData.length) renderHomeStats();
 }
@@ -7305,17 +7433,17 @@ function renderInkGrid() {
     const coverHtml = e.imagen
       ? `<div class="card-cover"><img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.card-cover').outerHTML='<div class=card-gen style=--gen-bg:#2e0a1a><div class=card-gen-title>${esc(e.titulo.slice(0,30))}</div></div>'"></div>`
       : `<div class="card-gen" style="--gen-bg:#2e0a1a"><div class="card-gen-title">${esc(e.titulo.slice(0,40))}</div></div>`;
-    const ec = ESTADO_CLS[e.estado] || 'e-fin';
-    const ei = ESTADO_ICONS[e.estado] || '';
     const shelfSt = currentUser ? myReadingStatus[e.id] : null;
     const shelfBadge = shelfSt ? `<div class="card-shelf-badge ${SHELF_INFO[shelfSt].cls}">${SHELF_INFO[shelfSt].icon} ${esc(SHELF_INFO[shelfSt].label)}</div>` : '';
     d.innerHTML = `
       ${coverHtml}
-      <span class="ink-club-badge">INK</span>
-      <div class="card-topright">
-        ${e.adult ? `<span class="adult-chip">+18</span>` : ''}
+      <div class="card-topleft">
+        <span class="ink-club-badge">INK</span>
+        ${estadoCardBadgeHTML(e.estado)}
       </div>
-      <span class="card-estado ${ec}">${ei}</span>
+      <div class="card-topright">
+        ${e.adult ? adultChipHTML(false) : ''}
+      </div>
       <div class="card-overlay"></div>
       <div class="card-info">
         ${shelfBadge}
@@ -7657,21 +7785,19 @@ function buildCard(e, bgColor) {
         <div class="card-gen-title">${esc(e.titulo.slice(0,40))}</div>
        </div>`;
 
-  const ec = ESTADO_CLS[e.estado] || 'e-fin';
-  const ei = ESTADO_ICONS[e.estado] || '';
   const shelfSt = currentUser ? myReadingStatus[e.id] : null;
   const shelfBadge = shelfSt ? `<div class="card-shelf-badge ${SHELF_INFO[shelfSt].cls}">${SHELF_INFO[shelfSt].icon} ${esc(SHELF_INFO[shelfSt].label)}</div>` : '';
 
   d.innerHTML = `
     ${coverHtml}
     <div class="card-topright">
-      ${e.adult ? `<span class="adult-chip">+18</span>` : ''}
+      ${e.adult ? adultChipHTML(hideAdult) : ''}
       ${(e.in_biblioteca || e.in_files) ? `<div class="card-subido">
         ${e.in_biblioteca ? '<span class="sbadge sbib">BIB</span>' : ''}
         ${e.in_files ? '<span class="sbadge sfiles">FILE</span>' : ''}
       </div>` : ''}
     </div>
-    <span class="card-estado ${ec}">${ei}</span>
+    ${estadoCardBadgeHTML(e.estado)}
     <div class="card-overlay"></div>
     <div class="card-info">
       ${shelfBadge}
@@ -7711,8 +7837,10 @@ function openModal(e, isRefresh) {
   pendingStar = myRatings[e.id] || 0;
   pendingSpicy = mySpicyVotes.hasOwnProperty(e.id) ? mySpicyVotes[e.id] : -1;
 
-  const mc = ESTADO_MCLS[e.estado] || 'mb-fin';
-  const ei = ESTADO_ICONS[e.estado] || '';
+  const capsTxt = e.capitulos_totales ? ` · ${e.capitulos_totales} cap.` : '';
+  const lecturaBadge = estadoInfo(e.estado)
+    ? estadoMetaBadgeHTML(e.estado, capsTxt)
+    : (e.capitulos_totales ? `<span class="mbadge mb-caps">${e.capitulos_totales} cap.</span>` : '');
   const tags = (e.tags||[]).map(t =>
     '<span class="mtag' + (t.toLowerCase()==='erotica' ? ' adult' : '') + '">' + esc(t) + '</span>').join('');
   const coverHtml = e.imagen
@@ -7736,12 +7864,12 @@ function openModal(e, isRefresh) {
         ${(() => { const autores = Array.isArray(e.autor) ? e.autor : (e.autor ? [e.autor] : []); const autorStr = autores.join(', '); return autorStr ? `<div class="modal-autor">✍️ ${esc(autorStr)}${e.anio_inicio ? ' · ' + esc(String(e.anio_inicio)) : ''}</div>` : (e.anio_inicio ? `<div class="modal-autor">${esc(String(e.anio_inicio))}</div>` : ''); })()}
         ${e.adult ? '<div class="modal-adult-warn">🔞 Contenido para mayores de 18 años</div>' : ''}
         <div class="modal-meta-groups">
-          <div class="meta-group">
+          ${lecturaBadge ? `<div class="meta-group">
             <span class="meta-glabel">Lectura</span>
             <div class="meta-row">
-              <span class="mbadge ${mc}">${ei} ${esc(e.estado)}${e.capitulos_totales ? ` · ${e.capitulos_totales} cap.` : ''}</span>
+              ${lecturaBadge}
             </div>
-          </div>
+          </div>` : ''}
           ${(e.in_biblioteca || e.in_files) ? `
           <div class="meta-group">
             <span class="meta-glabel">Dónde</span>
@@ -7802,6 +7930,7 @@ function openModal(e, isRefresh) {
       <div class="similar-title">Historias similares</div>
       <div class="similar-row">${sim.map(s => `
         <div class="similar-card" onclick="ruletaOpenBook(${jsArg(s.id)})">
+          ${s.adult ? adultChipHTML(false) : ''}
           <div class="similar-cover">${s.imagen ? `<img src="${esc(s.imagen)}" alt="${esc(s.titulo)}" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=similar-noimg>📖</div>'">` : '<div class="similar-noimg">📖</div>'}</div>
           <div class="similar-card-title">${esc(s.titulo)}</div>
         </div>`).join('')}</div>
@@ -8199,6 +8328,7 @@ function renderTop10() {
         <div class="t10-overlay"></div>
         <div class="t10-rank">${i + 1}</div>
         <div class="t10-medal ${medal.cls}">${medal.lbl}</div>
+        ${e.adult ? adultChipHTML(false) : ''}
         <div class="t10-info">
           <div class="t10-title">${esc(e.titulo)}</div>
           <div>
@@ -8589,6 +8719,7 @@ function renderTop10Mobile() {
           <div class="t10m-meta">
             <span class="t10m-score">★ ${r.avg}</span>
             <span class="t10m-votes">${r.count}v</span>
+            ${e.adult ? adultChipHTML(false) : ''}
           </div>
         </div>
         <span class="t10m-arrow">›</span>
@@ -8719,6 +8850,7 @@ function ruletaShowResult(e) {
       <div class="ruleta-result-info">
         <div class="ruleta-result-sec">${esc(e.seccion || '')}</div>
         <div class="ruleta-result-title">${esc(e.titulo)}</div>
+        ${(estadoInfo(e.estado) || e.adult) ? `<div class="ruleta-result-flags">${estadoMetaBadgeHTML(e.estado)}${e.adult ? adultChipHTML(false) : ''}</div>` : ''}
         <div class="ruleta-result-tags">${tags}</div>
         <div class="ruleta-result-btns">
           <button class="btn-vote-submit" style="font-size:.9rem;padding:6px 14px" onclick="ruletaOpenBook(${jsArg(e.id)})">Ver ficha</button>

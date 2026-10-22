@@ -1,5 +1,366 @@
 [
   {
+    "id": "gl_1792572300839_b3p",
+    "titulo": "The Iron Inside",
+    "seccion": "Manhwa",
+    "estado": "Finalizado",
+    "imagen": "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx167669-ILepKfirJ3MT.jpg",
+    "desc": "Amor y supervivencia bajo la arena.\nBaekgi despierta en un mundo sepultado por la arena tras haber sido criogenizada. Se une a «Spear and Shield», una unidad encargada de proteger el búnker, y comienza a entrenarse bajo las órdenes de su oficial superior, Ibaek. Deben luchar por sobrevivir en este nuevo mundo, en medio de epidemias repentinas y ataques de monstruos...",
+    "tags": [
+      "Ciencia Ficción",
+      "Fantasía",
+      "Drama",
+      "Romance"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": true,
+    "subido": "",
+    "tropos": [],
+    "personajes": [
+      "Militar",
+      "Cazadora de Monstruos"
+    ],
+    "titulos_alt": [
+      "철과 속"
+    ],
+    "subgeneros": [
+      "Apocalipsis"
+    ],
+    "autor": [
+      "Cinna (ii)",
+      "Bisha"
+    ],
+    "anio_inicio": 2022,
+    "content_rating": "erotica"
+  },
+  {
+    "id": "gl_1792572144168_7xy",
+    "titulo": "A Love-Hate Chord",
+    "seccion": "Manhwa",
+    "estado": "Finalizado",
+    "imagen": "https://uploads.mangadex.org/covers/14366aaf-6f20-4aca-b1a2-def6e8ed3180/b3885fab-b696-4be7-9450-9f460533583d.jpg",
+    "desc": "Las dos alumnas del Departamento de Piano de la Escuela de Artes de Seohwa, Choi In-jeong y Seon Kyung-hwa, compiten ferozmente entre sí. Su rivalidad, que comenzó en la escuela secundaria, ha continuado sin cesar. Recientemente, en su último curso, Choi In-jeong, que siempre había estado ligeramente por detrás en cuanto a habilidad pianística, se ha acercado mucho a Kyung-hwa, quien ha empezado a sentir una sensación de crisis... La obsesión de In-jeong por Kyung-hwa y la ansiedad de Kyung-hwa hacia In-jeong. ¿Cuál podría ser la razón que se esconde detrás de todo esto?",
+    "tags": [
+      "Drama"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": false,
+    "subido": "",
+    "tropos": [],
+    "personajes": [
+      "Hada"
+    ],
+    "titulos_alt": [
+      "Yae juem hwa eum",
+      "애증화음"
+    ],
+    "identidad_genero": [
+      "Stud"
+    ],
+    "pais_cultura": [
+      "Corea del Sur"
+    ],
+    "capitulos_totales": 92,
+    "autor": [
+      "Jeongu"
+    ],
+    "anio_inicio": 2022,
+    "content_rating": "safe"
+  },
+  {
+    "id": "gl_1792572100504_4l0",
+    "titulo": "Don't Touch My Ears",
+    "seccion": "Manhua",
+    "estado": "Continúa",
+    "imagen": "https://uploads.mangadex.org/covers/51887d8b-d01e-4906-8e45-ea8c1a054ffe/cfb47430-ab6a-42d5-bc8b-889ed079a9a4.png",
+    "desc": "Ruan Ning cursa segundo de bachillerato en el Instituto Hongcheng. Es la delegada de clase, la mejor alumna de su curso y la chica más popular del instituto. Pero tiene un secreto: es una persona-bestia, y nadie puede ver sus orejas ni su cola, al menos hasta que llega una nueva y guapa alumna transferida.",
+    "tags": [
+      "Romance"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": false,
+    "subido": "",
+    "tropos": [],
+    "personajes": [],
+    "titulos_alt": [
+      "別摸我耳朵",
+      "bié mō wǒ ěr duǒ",
+      "Don't Touch My Ears"
+    ],
+    "subgeneros": [
+      "Trans"
+    ],
+    "identidad_genero": [
+      "Stud",
+      "Trans"
+    ],
+    "pais_cultura": [
+      "China"
+    ],
+    "autor": [
+      "Lily Club (橘姬社)",
+      "Ice Free Herbal Jelly (去冰仙草冻)",
+      "狍子窝工作室",
+      "猫小夏",
+      "小小颗花生"
+    ],
+    "anio_inicio": 2026,
+    "content_rating": "safe"
+  },
+  {
+    "id": "gl_1792571388685_ihb",
+    "titulo": "Cage That Robin",
+    "seccion": "Manhua",
+    "estado": "Continúa",
+    "imagen": "https://cdn.mangaupdates.com/image/i533996.jpg",
+    "desc": "[Tía con complejo de salvadora × sobrina fantasmal, posesiva y siniestra]\n\nHace cinco años, Ye Qi —la sobrina adoptada por Zhu Suo— mató a su propio padre y luego desapareció. Cinco años después, Ye Qi regresa y, de repente, es nombrada superiora directa de Zhu Suo.\nAl mismo tiempo, Zhu Suo empieza a tener cada noche sueños sensuales en los que una mujer misteriosa la encierra y la humilla.\nElla lucha por escapar, pero la frontera entre el sueño y la realidad se va difuminando cada vez más.\nPuesto que se niega cuando está despierta, puede rendirse en sus sueños.\n\n«Buenas noches, tía. Ojalá sea la única en tus sueños para siempre».",
+    "tags": [
+      "Acción",
+      "Drama",
+      "Fantasía",
+      "Romance"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": true,
+    "subido": "",
+    "tropos": [],
+    "personajes": [],
+    "titulos_alt": [
+      "囚禁那只知更鸟"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mvhupjyyrpyso",
+        "label": "Bilibili (original)",
+        "url": "https://manga.bilibili.com/detail/mc40125"
+      }
+    ],
+    "autor": [
+      "二三玖陆工作室",
+      "如梦画社",
+      "灼灼"
+    ],
+    "anio_inicio": 2026,
+    "content_rating": "erotica"
+  },
+  {
+    "id": "gl_1792571288582_hyq",
+    "titulo": "Hey! Stinky Baby",
+    "seccion": "Manhua",
+    "estado": "Continúa",
+    "imagen": "https://ap-proxy.mangabaka.dev/proxy.php?url=https://cdn.anime-planet.com/manga/primary/hey-stinky-baby-1.webp?t=1782879277",
+    "desc": "La vida cotidiana de una pareja falsa, una serpiente trabajadora muy genial y una chica mofeta que hace serpentinas!",
+    "tags": [
+      "Fantasía",
+      "Romance"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": false,
+    "subido": "",
+    "tropos": [],
+    "personajes": [],
+    "titulos_alt": [
+      "嘿！臭宝"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mvhun5z8g13jm",
+        "label": "Bilibili (raw)",
+        "url": "https://manga.bilibili.com/detail/mc40877"
+      }
+    ],
+    "autor": [
+      "爱豆喵工作室",
+      "y神"
+    ],
+    "anio_inicio": 2026,
+    "content_rating": "safe",
+    "demografico": "shoujo"
+  },
+  {
+    "id": "gl_1792571121863_0zf",
+    "titulo": "Knee Pads",
+    "seccion": "Webtoon",
+    "estado": "Continúa",
+    "imagen": "https://scontent-mad2-1.cdninstagram.com/v/t51.82787-15/819855008_18020068796926083_3701490821553481099_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=Mzk5Mjc5NTgzODA4NjEwODA0NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=KHgzmMf78aIQ7kNvwGrA67j&_nc_oc=AdrMFiF_7hOZb03Ne1bmBQIyGP1zEpwp6ySDvYYCzLk1dpK-csbw9VfwnuYbgH2vGDIE30xihOhBs0y4wqg4_PlH&_nc_zt=23&_nc_ht=scontent-mad2-1.cdninstagram.com&_nc_gid=JS3xt5soX8_-627Ty-47TA&_nc_ss=7b6a8&oh=00_AQNGspeddiBToMccGogVrnFfZ2zOmUHWofOihZpz9vPRhA&oe=6ADE550B",
+    "desc": "Wren Wu, estudiante de último curso de la universidad, nunca ha sido una persona que trabaje en equipo. Por eso, cuando ingresan a su hermano en una clínica de rehabilitación al otro lado del país y su familia la obliga a mudarse con ellos, su mundo se viene abajo. Su soledad se ve aún más puesta a prueba cuando se une al equipo de roller derby de la universidad. Probablemente sea un error. Como antigua patinadora artística, el derby dista mucho del patinaje al que está acostumbrada. Es un deporte duro, sucio y se le hacen moratones con facilidad. Pero quizá su mayor reto sea la escurridiza y exasperante capitana del equipo: Corinne Fontaine.",
+    "tags": [
+      "Romance"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": false,
+    "subido": "",
+    "tropos": [
+      "Enemies to Lovers"
+    ],
+    "personajes": [],
+    "subgeneros": [
+      "Deporte",
+      "Universidad",
+      "Wattpad"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mvhujsre0hvu8",
+        "label": "webtoon",
+        "url": "https://www.webtoons.com/en/romance/knee-pads/list?title_no=11119"
+      }
+    ],
+    "autor": [
+      "Studio Pinya",
+      "Jordan Jackson",
+      "Adriene Im",
+      "WmW"
+    ],
+    "content_rating": "safe"
+  },
+  {
+    "id": "gl_1792570918882_gz7",
+    "titulo": "Shine on You",
+    "seccion": "Manhwa",
+    "estado": "Continúa",
+    "imagen": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbBQokPf5JGXjLfSZ5wdHhqwKuWA6EXVNcmwZOs0ELlmvB01aB78uYt_zR&s=10",
+    "desc": "Hace cuatro años, Joe reveló que era una escritora que utilizaba el seudónimo de Jeffery Collins.\nEn medio de numerosas críticas, un hombre afable llamado Liam se acercó a ella.\nSin embargo, resultó ser un crítico literario de mala fama.\nA esto se sumó la desaprobación de su padre como escritora, lo que hizo que Joe se volviera hostil e incapaz de confiar en nadie.\nEso fue así hasta que Anna Baker, una brillante joven estudiante de arte, empezó a cambiarla.",
+    "tags": [
+      "Drama",
+      "Romance",
+      "Comedia"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": false,
+    "subido": "",
+    "tropos": [
+      "Age Gap",
+      "Unrequited Love"
+    ],
+    "personajes": [],
+    "subgeneros": [
+      "Universidad"
+    ],
+    "autor": [
+      "Digby"
+    ],
+    "anio_inicio": 2021,
+    "content_rating": "safe",
+    "demografico": "shoujo"
+  },
+  {
+    "id": "gl_1792570729329_exv",
+    "titulo": "Deep Within the Jade Curtains",
+    "seccion": "Manhua",
+    "estado": "Continúa",
+    "imagen": "https://cdn.mangaupdates.com/image/i539608.jpg",
+    "desc": "Para vengar a sus padres, Shen Tang planea acabar con la familia imperial, y elige a la quinta princesa, Qu Ling, como trampolín.\nPensaba que Qu Ling la odiaría.\nPero resulta que Qu Ling la quiere, la quiere tanto que quiere todo lo que tiene que ver con ella.",
+    "tags": [
+      "Histórica",
+      "Romance",
+      "Drama"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": false,
+    "subido": "",
+    "tropos": [],
+    "personajes": [],
+    "titulos_alt": [
+      "玉账深"
+    ],
+    "autor": [
+      "苏新",
+      "鹿竹"
+    ],
+    "anio_inicio": 2026,
+    "content_rating": "safe",
+    "demografico": "shoujo"
+  },
+  {
+    "id": "gl_1792570491684_a4e",
+    "titulo": "Gacha Girl!",
+    "seccion": "Webtoon",
+    "estado": "Continúa",
+    "imagen": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTvwQD0UwTHnLBVo-fQeV8BDsic9b0aXNtADPH_0yXfDTXV_A9u",
+    "desc": "Penny lleva los últimos ocho años enamorada de la misma chica; el único problema es que no la ha visto desde el instituto. Pero cuando ambas se reencuentran de repente como compañeras de habitación en la universidad, Penny descubre rápidamente que la chica que conocía entonces se ha convertido en alguien muy, muy diferente… y, para empeorar las cosas, es posible que uno de sus compañeros de clase sea un vampiro. Magia, coqueteos muy gays y triángulos amorosos multidimensionales… ¡Bienvenidos a la Universidad de Foxshine!",
+    "tags": [
+      "Fantasía",
+      "Romance",
+      "Fantasía Urbana"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": true,
+    "subido": "",
+    "tropos": [
+      "Opposites Attract",
+      "Childhood Friends",
+      "Roommates"
+    ],
+    "personajes": [
+      "Vampira"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mvhu4q91p5f48",
+        "label": "wentoon",
+        "url": "https://www.webtoons.com/en/canvas/gacha-girl-gl/list?title_no=453216"
+      }
+    ],
+    "autor": [
+      "slothcraftin GL"
+    ],
+    "anio_inicio": 2020,
+    "content_rating": "erotica"
+  },
+  {
+    "id": "gl_1792570358646_qok",
+    "titulo": "BLINDFOLD",
+    "seccion": "Webtoon",
+    "estado": "Continúa",
+    "imagen": "https://uploads.mangadex.org/covers/164b1f7b-c530-450a-b9d1-90f19cebe679/65c1d1c8-6275-4892-9c71-36adc8cc802d.jpg",
+    "desc": "Esta historia está situada en el año 2054. La detective Celia Mine está trabajando en un extraño caso de asesinato, un proceso en el cual hace una nueva amiga...",
+    "tags": [
+      "Drama",
+      "Romance",
+      "Misterio",
+      "Thriller"
+    ],
+    "in_biblioteca": false,
+    "in_files": false,
+    "adult": false,
+    "subido": "",
+    "tropos": [
+      "Slow Burn"
+    ],
+    "personajes": [
+      "Detective"
+    ],
+    "titulos_alt": [
+      "Блайндфолд"
+    ],
+    "subgeneros": [
+      "Crimen",
+      "Suspense"
+    ],
+    "enlaces_lectura": [
+      {
+        "id": "mvhu337qeecm7",
+        "label": "Webtoon",
+        "url": "https://www.webtoons.com/en/canvas/blindfold-gl/list?title_no=173612"
+      }
+    ],
+    "autor": [
+      "Mashersan"
+    ],
+    "anio_inicio": 2018,
+    "content_rating": "sugestiva"
+  },
+  {
     "id": "gl_1791927260264_ovu",
     "titulo": "Even a Hopeless Romantic Wants to Be Loved!",
     "seccion": "Manhwa",

@@ -1026,11 +1026,7 @@ div.search-box:focus { outline: none; }
   border-radius: 1px;
   box-shadow: 0 1px 4px rgba(0,0,0,.5); font-weight:var(--fw-semibold);
 }
-.card.adult-blurred .card-cover img,
-.card.adult-blurred .card-gen::before { filter: blur(14px); }
-.card.adult-blurred .adult-chip::after { content: '🔞 OCULT'; }
-.card.adult-blurred .adult-chip { background: rgba(255,71,163,0.4); color: var(--neon2); }
-/* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .card.adult-blurred .adult-chip{background:rgba(var(--neon2-rgb),0.4)}
+/* (FASE 4.4) el desenfoque +18 vive ahora en el bloque «PORTADAS» del final: body.hide-adult + data-adult */
 
 /* estado corner — fondo sólido + borde propio, ya no depende del color de la portada */
 .card-estado {
@@ -1691,6 +1687,20 @@ div.search-box:focus { outline: none; }
 /* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mob-chip-adult{background:rgba(var(--neon2-rgb),0.12);border:1px solid rgba(var(--neon2-rgb),0.5)}
 .mob-chip-sort   { background: rgba(245,240,232,0.06); border: 1px solid rgba(245,240,232,0.2); color: var(--gl-text-muted); }
 .mob-chip .mob-chip-x { font-size: var(--fs-label); opacity: .6; margin-left: 1px; }
+
+
+/* ── FASE 6.3: filtros activos (escritorio, móvil y hoja) · reutiliza .mob-chip ── */
+.active-filters { max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 20px 8px; }
+.active-filters:empty { display: none; }
+.fsheet-active { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; max-height: 96px; overflow-y: auto; }
+.fsheet-active:empty { display: none; }
+.mob-chip .mob-chip-k { font-size: var(--fs-badge); opacity: .7; text-transform: uppercase; letter-spacing: .04em; }
+.mob-chip-clear { background: transparent; border: 1px dashed rgba(245,240,232,0.3); color: var(--gl-text-muted); }
+.mob-chip-clear:hover { color: var(--gl-text); border-color: rgba(245,240,232,0.55); }
+.mob-chip-undo { background: rgba(71,255,224,0.08); border: 1px solid rgba(71,255,224,0.35); color: var(--neon3); }
+.mob-chip:hover .mob-chip-x { opacity: 1; }
+.mob-chip:focus-visible { outline: 2px solid var(--neon3); outline-offset: 2px; }
+@media (max-width: 600px) { .active-filters { display: none !important; } }
 
 /* bottom sheet overlay */
 .fsheet-overlay {
@@ -4628,7 +4638,7 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
   font-weight: var(--fw-semibold);
   text-transform: uppercase;
 }
-.card.adult-blurred .card-estado { max-width: calc(100% - 70px); }
+body.hide-adult .card[data-adult="1"] .card-estado { max-width: calc(100% - 70px); }
 .card-estado .estado-ico { flex: none; font-size: .85em; line-height: 1; }
 .card-estado .estado-lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Estado desconocido: neutro, sin icono, siempre con su texto literal */
@@ -4658,13 +4668,13 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.3), 0 0 0 1px rgba(10,10,14,.55), 0 1px 6px rgba(0,0,0,.5);
 }
 /* Contenido oculto por «Ocultar +18»: mismo indicador, con tratamiento sobre fondo y candado */
-.card.adult-blurred .adult-chip {
+body.hide-adult .card[data-adult="1"] .adult-chip {
   color: color-mix(in srgb, var(--cmp-pink) 60%, #fff);
   background: color-mix(in srgb, var(--cmp-pink) 26%, var(--cmp-scrim));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cmp-pink) 85%, transparent), 0 1px 6px rgba(0,0,0,.5);
 }
-.card.adult-blurred .adult-chip::after { content: '🔒'; font-size: .8em; font-weight: 400; }
-.card.adult-blurred .adult-chip { gap: 2px; padding-inline: 5px; min-width: 0; }
+body.hide-adult .card[data-adult="1"] .adult-chip::after { content: '🔒'; content: '🔒' / 'oculto'; font-size: .8em; font-weight: 400; }
+body.hide-adult .card[data-adult="1"] .adult-chip { gap: 2px; padding-inline: 5px; min-width: 0; }
 
 /* +18 en otras vistas: ancla propia en cada una */
 .t10-card .adult-chip { position: absolute; top: 6px; right: 6px; z-index: 10; padding: 1px 5px; font-size: var(--fs-badge); min-width: 0; }
@@ -4676,13 +4686,152 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
 /* Móvil (rejilla de 3 columnas): estado solo icono, texto accesible para lectores de pantalla */
 @media (max-width: 600px) {
   .card-estado { padding: 2px 5px; max-width: calc(100% - 50px); }
-  .card.adult-blurred .card-estado { max-width: calc(100% - 50px); }
+  body.hide-adult .card[data-adult="1"] .card-estado { max-width: calc(100% - 50px); }
   .card-estado:not(.e-other) .estado-lbl {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
     overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
   }
   .adult-chip { min-width: 0; padding: 1px 5px; font-size: var(--fs-badge); }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   GL PANELS · FASE 4.4 — PORTADAS: ESTABILIDAD, FALLBACK Y +18
+   Solo cambia el tratamiento de las imágenes: el espacio se reserva
+   antes de cargar, el placeholder es coherente con GL PANELS y el
+   desenfoque +18 depende de body.hide-adult + data-adult="1".
+   ══════════════════════════════════════════════════════════════ */
+
+/* Espacio reservado: las proporciones no dependen de que la imagen haya cargado */
+.card, .ink-card, .t10-card { aspect-ratio: 2 / 3; }
+.card-cover, .t10-cover { position: absolute; inset: 0; }
+.t10m-cover { aspect-ratio: 2 / 3; }
+.similar-cover { aspect-ratio: 96 / 138; }
+.ruleta-result-cover { aspect-ratio: 78 / 112; }
+.modal-cover img, .modal-cover-gen { aspect-ratio: 2 / 3; }
+.rd-cover img, .rd-cover-gen { aspect-ratio: 58 / 84; }
+.cal-cover-thumb, .cal-cover-ph { aspect-ratio: 5 / 7; }
+.cal-panel-cover { aspect-ratio: 32 / 46; }
+
+/* Mientras carga: fondo de esqueleto bajo la imagen (queda tapado al pintarse) */
+img[data-cover] {
+  background-color: var(--gl-surface-2, #1c1c28);
+  background-image: linear-gradient(105deg, transparent 30%, color-mix(in srgb, var(--gl-text, #f5f0e8) 8%, transparent) 50%, transparent 70%);
+  background-size: 220% 100%;
+  animation: gl-cover-shimmer 1.4s linear infinite;
+}
+@keyframes gl-cover-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+@media (prefers-reduced-motion: reduce) { img[data-cover] { animation: none; } }
+img[data-cover][data-loaded] { animation: none; background-image: none; }
+
+/* Placeholders sin imagen (fallo o portada inexistente) */
+.ruleta-result-ph, .cal-panel-ph, .similar-noimg, .cal-cover-ph {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gl-surface-2, #1c1c28);
+  background-image: linear-gradient(160deg, color-mix(in srgb, var(--cmp-pink, #ff47a3) 14%, transparent), transparent 70%);
+}
+.ruleta-result-ph { width: 100%; height: 100%; font-size: 1.5rem; opacity: .85; }
+.cal-panel-ph { font-size: var(--fs-label); }
+
+/* ── +18: desenfoque de portadas con «Ocultar +18» ─────────────────────
+   Va en la propia <img> y con !important para que ni un estilo posterior,
+   ni el hover, ni reutilizar la tarjeta lo anulen. El escalado evita que el
+   borde difuminado deje ver el contorno. Los placeholders no contienen imagen. */
+body.hide-adult img[data-cover][data-adult="1"] {
+  filter: blur(var(--adult-blur, 14px)) !important;
+  transform: scale(1.14) !important;
+}
+body.hide-adult .cal-cover-thumb[data-adult="1"],
+body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
+
+/* ══════════════════════════════════════════════════════════════
+   GL PANELS · FASE 4.5 — CORRECCIONES TRAS LA VALIDACIÓN
+   · Las insignias de valoración (★) y spicy (🌶) iban superpuestas a las
+     etiquetas de la tarjeta (en las 25 de cada página con votos) y, en móvil,
+     se pisaban entre sí. Ahora la tarjeta reserva su propia franja inferior.
+   ══════════════════════════════════════════════════════════════ */
+.card:has(> .card-avg, > .card-spicy) .card-info { padding-bottom: 36px; }
+@media (max-width: 600px) {
+  .card-avg, .card-spicy { padding: 2px 5px; gap: 2px; font-size: var(--fs-badge); }
+  .card-avg .cstar { font-size: inherit; }
+  .card:has(> .card-avg, > .card-spicy) .card-info { padding-bottom: 32px; }
+}
+
+/* · Las etiquetas se muestran con su nombre legible (tagLabel) también en la tarjeta del catálogo:
+     antes salían tal cual en los datos internos («Accion», «Fantasia», «Slice_of_Life»).
+   · Una etiqueta larga no puede desbordar la tarjeta. */
+.ctag { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* · Vista previa de la colección de temporada (tarjetas de 84 px): los badges se pisaban
+     (estado con BIB/FILE y el título con los badges superiores). Versión compacta. */
+.season-coll-grid .card .card-subido { flex-direction: column; align-items: flex-end; }
+.season-coll-grid .card .card-tags { display: none; }
+.season-coll-grid .card .card-title { -webkit-line-clamp: 2; }
+.season-coll-grid .card .card-estado:not(.e-other) .estado-lbl {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* ── FASE 5.3: buscador (botón limpiar, estado vacío, región viva) ── */
+.search-clear {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%;
+  background: transparent; color: var(--gl-text-muted);
+  font-family: var(--font-ui); font-size: var(--fs-small); line-height: 1;
+  cursor: pointer; align-items: center; justify-content: center;
+  display: none; z-index: 2;
+}
+.search-clear.show { display: flex; }
+.search-clear:hover { color: var(--gl-text); background: color-mix(in srgb, var(--gl-text) 10%, transparent); }
+.search-clear:focus-visible { outline: 2px solid var(--ctl-accent, var(--neon)); outline-offset: -2px; }
+.topbar-center div.search-box,
+.mobile-search div.search-box { padding-right: 36px; }
+@media (max-width: 900px) { .search-clear { width: 32px; height: 32px; right: 8px; } }
+.search-live {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.empty-msg { max-width: 42ch; margin: 0 auto; overflow-wrap: anywhere; color: var(--gl-text-secondary, var(--gl-text-muted)); }
+.empty-msg .empty-q { color: var(--gl-text); font-weight: var(--fw-medium, 600); }
+.empty-hint { max-width: 42ch; margin: 8px auto 0; font-size: var(--fs-small); }
+.empty-hint[hidden] { display: none; }
+.empty-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+.empty-actions:empty { display: none; }
+.empty-btn {
+  min-height: 40px; padding: 0 18px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--ctl-border, var(--border)); background: transparent; color: var(--gl-text);
+  font-family: var(--font-ui); font-size: var(--fs-small); letter-spacing: var(--ls-ui);
+  transition: border-color .2s, background .2s;
+}
+.empty-btn:hover { border-color: var(--ctl-accent, var(--neon)); background: color-mix(in srgb, var(--ctl-accent, var(--neon)) 8%, transparent); }
+.empty-btn:focus-visible { outline: 2px solid var(--ctl-accent, var(--neon)); outline-offset: 2px; }
+
+/* ── FASE 5.4: sugerencias del buscador ── */
+.search-suggest {
+  position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 400;
+  margin: 0; padding: 6px; list-style: none; min-width: 260px;
+  max-height: min(62vh, 420px); overflow-y: auto; overscroll-behavior: contain;
+  background: var(--cmp-surface, var(--screen)); color: var(--gl-text);
+  border: 1px solid var(--ctl-border, var(--border)); border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(0,0,0,.55);
+}
+.search-suggest[hidden] { display: none; }
+.mobile-search .search-suggest { left: 12px; right: 12px; top: calc(100% - 2px); }
+.sug-item {
+  display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 10px;
+  border-radius: 10px; border-left: 3px solid transparent; cursor: pointer;
+  font-family: var(--font-ui);
+}
+.sug-item:hover { background: color-mix(in srgb, var(--gl-text) 7%, transparent); }
+.sug-item.active {
+  background: color-mix(in srgb, var(--ctl-accent, var(--neon)) 16%, transparent);
+  border-left-color: var(--ctl-accent, var(--neon));
+}
+.sug-cover { flex: none; width: 32px; height: 46px; border-radius: 4px; overflow: hidden; background: var(--cmp-surface-2, #1c1424); display: flex; align-items: center; justify-content: center; }
+.sug-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sug-noimg { font-size: 16px; opacity: .6; }
+.sug-text { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.sug-title { font-size: var(--fs-small); color: var(--gl-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sug-sub { font-size: var(--fs-label); color: var(--gl-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sug-item .adult-chip { margin-left: auto; }
 </style>
 </head>
 <body>
@@ -4715,7 +4864,9 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
   </div>
   <div class="topbar-center">
     <span class="search-icon" aria-hidden="true">⌕</span>
-    <div class="search-box" id="srch" contenteditable="true" role="searchbox" aria-label="Buscar" data-placeholder="Buscar título, género, descripción…" spellcheck="false"></div>
+    <div class="search-box" id="srch" contenteditable="true" role="combobox" aria-label="Buscar" aria-autocomplete="list" aria-expanded="false" aria-controls="srchSuggest" aria-multiline="false" enterkeyhint="search" inputmode="search" data-placeholder="Buscar título, género, descripción…" spellcheck="false"></div>
+    <button type="button" class="search-clear" id="srchClear" aria-label="Limpiar búsqueda" title="Limpiar búsqueda" hidden><span aria-hidden="true">✕</span></button>
+    <ul class="search-suggest" id="srchSuggest" role="listbox" aria-label="Sugerencias de obras" hidden></ul>
   </div>
   <div class="topbar-right">
     <button type="button" class="topbar-menu-btn" id="topbarMenuBtn" aria-label="Menú" aria-expanded="false" aria-controls="topbarMenu" onclick="toggleTopbarMenu()"><span class="topbar-menu-ico" aria-hidden="true"></span></button>
@@ -5092,7 +5243,9 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
 <!-- MOBILE SEARCH (hidden on desktop, sticky below topbar on mobile) -->
 <div class="mobile-search" style="display:none; position:relative;">
   <span class="ms-icon">⌕</span>
-  <div class="search-box" id="srchMobile" contenteditable="true" role="searchbox" aria-label="Buscar" data-placeholder="Buscar título, género…" spellcheck="false"></div>
+  <div class="search-box" id="srchMobile" contenteditable="true" role="combobox" aria-label="Buscar" aria-autocomplete="list" aria-expanded="false" aria-controls="srchMobileSuggest" aria-multiline="false" enterkeyhint="search" inputmode="search" data-placeholder="Buscar título, género…" spellcheck="false"></div>
+  <button type="button" class="search-clear" id="srchMobileClear" aria-label="Limpiar búsqueda" title="Limpiar búsqueda" hidden><span aria-hidden="true">✕</span></button>
+  <ul class="search-suggest" id="srchMobileSuggest" role="listbox" aria-label="Sugerencias de obras" hidden></ul>
 </div>
 
 <!-- HERO -->
@@ -5272,6 +5425,8 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
 
     <span class="filter-count" id="filterCount"></span>
   </div>
+  <!-- FASE 6.3: filtros activos (escritorio); misma función que el móvil y la hoja -->
+  <div class="active-filters" id="activeFilters" role="group" aria-label="Filtros activos"></div>
 </div>
 
 <!-- MOBILE FILTER BAR (shown only on mobile) -->
@@ -5280,7 +5435,7 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
     <span class="mfb-icon">⊟</span> Filtros
     <span class="mob-active-dot" id="mobActiveDot"></span>
   </button>
-  <div id="mobActiveChips"></div>
+  <div id="mobActiveChips" role="group" aria-label="Filtros activos" style="display:contents"></div>
 </div>
 
 <!-- FILTER BOTTOM SHEET -->
@@ -5291,6 +5446,7 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
     <span class="fsheet-title">Filtros</span>
     <button class="fsheet-reset" id="fsheetReset">Limpiar todo</button>
   </div>
+  <div class="fsheet-active" id="fsheetActive" role="group" aria-label="Filtros activos"></div>
   <div class="fsheet-body" id="fsheetBody">
     <!-- Estado -->
     <div class="fsheet-section" data-field="estado">
@@ -5460,10 +5616,15 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
 <hr class="top10-divider">
 
 <!-- MAIN -->
+<div class="search-live" id="searchLive" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="search-live" id="filterLive" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="search-live" id="suggestLive" role="status" aria-live="polite" aria-atomic="true"></div>
 <main class="main" id="mainContent">
   <div class="empty" id="emptyState">
-    <div class="empty-big">空</div>
-    <p>Sin resultados con los filtros actuales.</p>
+    <div class="empty-big" aria-hidden="true">空</div>
+    <p class="empty-msg" id="emptyMsg">Sin resultados con los filtros actuales.</p>
+    <p class="empty-hint" id="emptyHint" hidden></p>
+    <div class="empty-actions" id="emptyActions"></div>
   </div>
 </main>
 
@@ -6175,9 +6336,7 @@ function renderReadDoneModal() {
   if (!e || !body) return;
   const autores = Array.isArray(e.autor) ? e.autor : (e.autor ? [e.autor] : []);
   const autorStr = autores.join(', ');
-  const coverHtml = e.imagen
-    ? `<div class="rd-cover"><img src="${esc(e.imagen)}" alt="" referrerpolicy="no-referrer" onerror="this.closest('.rd-cover').outerHTML='<div class=rd-cover-gen>📖</div>'"></div>`
-    : `<div class="rd-cover-gen">📖</div>`;
+  const coverHtml = coverImgHTML('rd', e.imagen, '');
   const starBtns = [1,2,3,4,5].map(n => `<button class="sstar${n <= rdStar ? ' lit' : ''}" data-n="${n}" onclick="rdSelectStar(${n})">★</button>`).join('');
   const zeroBtn = `<button class="schile zero${rdSpicy === 0 ? ' lit' : ''}" data-s="0" title="${SPICY_LABELS[0]}" onclick="rdSelectSpicy(0)">🚫 Sin steam</button>`;
   const chiles = [1,2,3,4,5].map(n => `<button class="schile${n <= rdSpicy && rdSpicy > 0 ? ' lit' : ''}" data-s="${n}" title="${SPICY_LABELS[n]}" onclick="rdSelectSpicy(${n})">🌶</button>`).join('');
@@ -6648,11 +6807,101 @@ function estadoMetaBadgeHTML(raw, extra) {
   if (!s) return '';
   return `<span class="mbadge mb-${s.key}">${s.icon ? s.icon + ' ' : ''}${esc(s.label)}${extra || ''}</span>`;
 }
-// Indicador +18 único. «oculto» = la tarjeta está difuminada por «Ocultar +18».
-function adultChipHTML(hidden) {
-  const lbl = hidden ? 'Contenido para mayores de 18 años (oculto)' : 'Contenido para mayores de 18 años';
+// Indicador +18 único. El estado «oculto» ya no se fija al construir la tarjeta:
+// lo decide el CSS según body.hide-adult (ver syncAdultProtection).
+function adultChipHTML() {
+  const lbl = 'Contenido para mayores de 18 años';
   return `<span class="adult-chip" role="img" aria-label="${lbl}" title="${lbl}">+18</span>`;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   FASE 4.4 · PORTADAS: carga, fallback y protección +18
+   · Todas las portadas se generan con coverImgHTML(): atributos de
+     tamaño, decoding async, lazy donde ya lo había, referrerpolicy.
+   · Un único listener de «error» (captura) sustituye al antiguo onerror
+     en línea: reemplaza la <img> por un placeholder sin imagen, una sola
+     vez por elemento, y recuerda la URL fallida un rato para no volver a
+     pedirla en cada re-render.
+   · El desenfoque +18 depende de body.hide-adult + data-adult="1" en la
+     propia <img>: no se pierde al reutilizar o reconstruir tarjetas.
+   ══════════════════════════════════════════════════════════════ */
+const COVER_FAIL_TTL = 5 * 60 * 1000;          // una URL fallida no se reintenta durante 5 min
+const COVER_FAILED = new Map();                 // url → instante del fallo
+function coverHasFailed(url) {
+  const t = COVER_FAILED.get(url);
+  if (t == null) return false;
+  if (Date.now() - t > COVER_FAIL_TTL) { COVER_FAILED.delete(url); return false; }
+  return true;
+}
+const _ph = o => (o.alt ? ` role="img" aria-label="${esc(o.alt)}"` : ' aria-hidden="true"');
+const COVER_SPECS = {
+  // wrap: contenedor que acompaña a la imagen · keepWrap: el contenedor se conserva y solo cambia su contenido
+  card:    { wrap:'card-cover', lazy:true, w:200, h:300,
+             gen:o => `<div class="card-gen" style="--gen-bg:${esc(o.bg || '#111118')}"><div class="card-gen-title">${esc(String(o.title || '').slice(0,40))}</div></div>` },
+  t10:     { wrap:'t10-cover', lazy:true, w:130, h:195,
+             gen:o => `<div class="t10-gen" style="--gen-bg:${esc(o.bg || '#111118')}"></div>` },
+  t10m:    { wrap:'t10m-cover', keepWrap:true, lazy:true, w:40, h:60,
+             gen:o => `<div class="t10m-cover-gen"></div>` },
+  modal:   { w:120, h:180,
+             gen:o => `<div class="modal-cover-gen"${_ph(o)}><span>📖</span></div>` },
+  similar: { lazy:true, w:96, h:138,
+             gen:o => `<div class="similar-noimg"${_ph(o)}>📖</div>` },
+  rd:      { wrap:'rd-cover', w:58, h:84,
+             gen:o => `<div class="rd-cover-gen"${_ph(o)}>📖</div>` },
+  ruleta:  { w:78, h:112,
+             gen:o => `<div class="ruleta-result-ph"${_ph(o)}>📖</div>` },
+  cal:     { lazy:true, w:20, h:28,
+             gen:o => `<div class="cal-cover-ph ${esc(o.cls || '')}" title="${esc(o.ttl || '')}"${_ph(o)}>📖</div>` },
+  sug:     { lazy:true, w:32, h:46,
+             gen:o => `<div class="sug-noimg" aria-hidden="true">📖</div>` },
+  calpanel:{ lazy:true, w:32, h:46,
+             gen:o => `<div class="cal-panel-cover cal-panel-ph"${_ph(o)}>📖</div>` }
+};
+// Marca el body según «Ocultar +18». Se llama en cada render con portadas y en renderSections.
+function syncAdultProtection() {
+  if (document.body) document.body.classList.toggle('hide-adult', !!hideAdult);
+}
+// o: { adult, bg, title, cls, ttl } · adult → la <img> lleva data-adult="1" (la protección la aplica el CSS)
+function coverImgHTML(kind, src, alt, o) {
+  o = Object.assign({}, o || {}, { alt: alt || '' });
+  const sp = COVER_SPECS[kind];
+  syncAdultProtection();
+  const gen = sp.gen(o);
+  if (!src || coverHasFailed(src)) return sp.keepWrap ? `<div class="${sp.wrap}">${gen}</div>` : gen;
+  const a = [`src="${esc(src)}"`, `alt="${esc(alt || '')}"`, `width="${sp.w}"`, `height="${sp.h}"`,
+             'decoding="async"', 'referrerpolicy="no-referrer"', `data-cover="${kind}"`];
+  if (sp.lazy) a.push('loading="lazy"');
+  if (o.adult) a.push('data-adult="1"');
+  if (o.bg) a.push(`data-bg="${esc(o.bg)}"`);
+  if (o.title) a.push(`data-title="${esc(o.title)}"`);
+  if (o.cls) a.push(`data-cls="${esc(o.cls)}"`);
+  if (o.ttl) a.push(`data-ttl="${esc(o.ttl)}"`);
+  if (o.imgClass) a.push(`class="${esc(o.imgClass)}"`);
+  const img = `<img ${a.join(' ')}>`;
+  return sp.wrap ? `<div class="${sp.wrap}">${img}</div>` : img;
+}
+// Fallback único (los eventos «error» no burbujean: se escucha en captura).
+// Una vez sustituida la <img> ya no hay recurso que pueda volver a fallar.
+document.addEventListener('error', function (ev) {
+  const img = ev.target;
+  if (!(img instanceof HTMLImageElement) || !img.dataset.cover) return;
+  if (img.dataset.coverFailed) return;                  // protección anti-bucle
+  img.dataset.coverFailed = '1';
+  const url = img.getAttribute('src');
+  if (url) COVER_FAILED.set(url, Date.now());
+  const sp = COVER_SPECS[img.dataset.cover];
+  if (!sp) { img.removeAttribute('src'); return; }
+  const tpl = document.createElement('template');
+  tpl.innerHTML = sp.gen({ alt: img.getAttribute('alt') || '', bg: img.dataset.bg, title: img.dataset.title,
+                           cls: img.dataset.cls, ttl: img.dataset.ttl });
+  const target = (sp.keepWrap || !sp.wrap) ? img : (img.closest('.' + sp.wrap) || img);
+  target.replaceWith(tpl.content);
+}, true);
+// Al cargar, se retira el esqueleto animado (evita repintados innecesarios).
+document.addEventListener('load', function (ev) {
+  const img = ev.target;
+  if (img instanceof HTMLImageElement && img.dataset.cover) img.dataset.loaded = '1';
+}, true);
 
 let allData = [];
 let hideAdult = false;
@@ -6673,8 +6922,12 @@ const secPages = {}; // current page per section key
 let inkCat = 'all'; // active ink club category
 
 // ── URL STATE ─────────────────────────────────────────────
-function pushState() {
-  if (homeActive || shelfActive) return; // home/shelf views manage their own URL
+/* ── FASE 6.4: contexto del catálogo (URL + history.state) ──────────────
+   URL: filtros, orden, pestaña, páginas (p_*) y búsqueda (q). Atrás/adelante nunca crean entradas
+   por filtros (replaceState). Una ficha abierta ocupa UNA entrada encima del catálogo
+   (state.manga); el scroll se guarda en state.ctx de esa entrada y de la del catálogo. */
+let _modalMangaId = null; // id de la ficha que ocupa la entrada de historial actual
+function buildCatalogParams() {
   const p = new URLSearchParams();
   if (activeSec !== 'all')  p.set('sec', activeSec);
   if (fEstado   !== 'all')  p.set('estado', fEstado);
@@ -6690,9 +6943,57 @@ function pushState() {
   if (hideAdult)            p.set('adult', '1');
   if (activeSort !== 'recent') p.set('sort', activeSort);
   if (fOnlyAdult)             p.set('only18', '1');
+  if (fQ && fQ.trim())        p.set('q', fQ.trim());
   Object.entries(secPages).forEach(([k, v]) => { if (v > 1) p.set('p_' + k, v); });
+  return p;
+}
+function pushState() {
+  if (homeActive || shelfActive) return; // home/shelf views manage their own URL
+  const p = buildCatalogParams();
+  if (_modalMangaId) p.set('manga', _modalMangaId); // la ficha abierta (o recargada) conserva su ?manga=
+  const cur = history.state || {};
+  const st = {};
+  if (cur.ctx) st.ctx = cur.ctx;
+  if (_modalMangaId) st.manga = _modalMangaId;
   const qs = p.toString();
-  history.replaceState(null, '', qs ? '?' + qs : location.pathname);
+  history.replaceState(Object.keys(st).length ? st : null, '', qs ? '?' + qs : location.pathname);
+}
+function saveCatalogContext() { // posición del catálogo en la entrada actual (no en la de la ficha)
+  if (homeActive || shelfActive) return null;
+  const cur = history.state || {};
+  const ctx = { y: Math.round(window.scrollY || 0) };
+  if (!_modalMangaId && !cur.manga) {
+    try { history.replaceState({ ...cur, ctx }, '', location.href); } catch (e) {}
+  }
+  return ctx;
+}
+function restoreCatalogScroll(ctx) {
+  if (!ctx || typeof ctx.y !== 'number') return;
+  let tries = 0;
+  const go = () => {
+    window.scrollTo({ top: ctx.y, behavior: 'instant' });
+    if (Math.abs((window.scrollY || 0) - ctx.y) > 2 && ++tries < 8) setTimeout(go, 120); // la página aún puede estar creciendo
+  };
+  requestAnimationFrame(go);
+}
+function resetCatalogState() {
+  activeSec = 'all'; fEstado = 'all'; fDemo = 'all'; fSub = 'all'; fShelf = 'all'; fAnio = 'all';
+  fTags = []; fTropos = []; fPersonajes = []; fSubgeneros = []; fAutor = [];
+  hideAdult = false; fOnlyAdult = false; activeSort = 'recent'; fQ = '';
+  Object.keys(secPages).forEach(k => delete secPages[k]);
+}
+const _qsKey = p => [...p.entries()].filter(([k]) => k !== 'manga').map(([k, v]) => k + '=' + v).sort().join('&');
+// Si la URL de la entrada a la que se navega trae otro estado de catálogo (p. ej. tras cambiar filtros y avanzar), se sincroniza
+function syncCatalogFromUrl() {
+  if (homeActive || shelfActive) return false;
+  if (_qsKey(new URLSearchParams(location.search)) === _qsKey(buildCatalogParams())) return false;
+  resetCatalogState();
+  loadState();
+  ['srch', 'srchMobile'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = fQ; });
+  syncFilterUI();
+  applyStateToUI();
+  renderSections(false);
+  return true;
 }
 
 function loadState() {
@@ -6721,6 +7022,7 @@ function loadState() {
   if (p.get('adult') === '1') hideAdult = true;
   if (p.has('sort'))  activeSort = p.get('sort');
   if (p.get('only18') === '1') fOnlyAdult = true;
+  if (p.has('q')) fQ = p.get('q');
   // restore per-section pages
   p.forEach((v, k) => { if (k.startsWith('p_')) secPages[k.slice(2)] = parseInt(v) || 1; });
 }
@@ -6737,6 +7039,10 @@ async function init() {
   // Capturar ?manga=ID lo antes posible, antes de que pushState() (llamado
   // dentro de renderSections/renderInkClub) pueda sobrescribir la URL y perderlo.
   const _initMangaId = new URLSearchParams(location.search).get('manga');
+  // FASE 6.4: recarga sobre la propia entrada de una ficha → se reutiliza (sin entrada nueva)
+  const _initState = history.state || {};
+  const _initCtx = _initState.ctx || null;
+  if (_initMangaId && _initState.manga && String(_initState.manga) === String(_initMangaId)) _modalMangaId = _initMangaId;
 
   // Default to HOME only on fresh load (no URL params at all)
   if (!location.search) homeActive = true;
@@ -6825,8 +7131,11 @@ async function init() {
   if (_initMangaId && allData.length) {
     const _initEntry = allData.find(e => e.id === _initMangaId);
     if (_initEntry) {
+      if (!homeActive) restoreCatalogScroll(_initCtx);
       openModal(_initEntry);
-    }
+    } else if (_modalMangaId) { _modalMangaId = null; pushState(); } // id inexistente: queda solo el catálogo
+  } else if (!homeActive && _initCtx) {
+    restoreCatalogScroll(_initCtx); // recarga / vuelta al catálogo: misma posición
   }
 
   bindEvents();
@@ -6843,15 +7152,32 @@ async function init() {
   // Handle browser back/forward
   window.addEventListener('popstate', () => {
     const p = new URLSearchParams(location.search);
-    // Si venimos de un modal abierto, cerrarlo sin tocar la URL otra vez
-    if (document.getElementById('modalWrap').classList.contains('open') && !p.has('manga')) {
-      document.getElementById('modalWrap').classList.remove('open');
+    const st = history.state || {};
+    const wrap = document.getElementById('modalWrap');
+    const mid = p.get('manga');
+    const entry = mid ? allData.find(e => String(e.id) === String(mid)) : null;
+    // FASE 6.4: atrás/adelante hacia una entrada de ficha → se abre sin añadir historial
+    if (entry) {
+      if (!wrap.classList.contains('open') || !activeModalItem || String(activeModalItem.id) !== String(mid)) {
+        _modalMangaId = entry.id;
+        syncCatalogFromUrl();
+        openModal(entry, true);
+        document.title = entry.titulo + ' — GL PANELS';
+      }
+      return;
+    }
+    // Hacia una entrada sin ficha: se cierra la ficha (sin tocar la URL) y se restaura el catálogo
+    if (wrap.classList.contains('open')) {
+      wrap.classList.remove('open');
       document.body.style.overflow = '';
       activeModalItem = null;
       _preModalUrl = null;
+      _modalMangaId = null;
       document.title = 'GL PANELS — カタログ';
+      if (!homeActive && !shelfActive) { syncCatalogFromUrl(); restoreCatalogScroll(st.ctx); }
       return;
     }
+    _modalMangaId = null;
     if (shelfActive && p.get('view') !== 'shelf') {
       shelfActive = false;
       document.body.classList.remove('shelf-active');
@@ -6881,7 +7207,11 @@ async function init() {
       renderInkClub();
       renderSections(false);
     }
+    if (!homeActive && !shelfActive) { syncCatalogFromUrl(); restoreCatalogScroll(st.ctx); }
   });
+  // FASE 6.4: guarda la posición del catálogo al salir de la página o pasar a segundo plano
+  window.addEventListener('pagehide', saveCatalogContext);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveCatalogContext(); });
 }
 
 // ── HOME VIEW ─────────────────────────────────────────────
@@ -7430,9 +7760,9 @@ function renderInkGrid() {
   filtered.forEach(e => {
     const d = document.createElement('div');
     d.className = 'card ink-card';
-    const coverHtml = e.imagen
-      ? `<div class="card-cover"><img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.card-cover').outerHTML='<div class=card-gen style=--gen-bg:#2e0a1a><div class=card-gen-title>${esc(e.titulo.slice(0,30))}</div></div>'"></div>`
-      : `<div class="card-gen" style="--gen-bg:#2e0a1a"><div class="card-gen-title">${esc(e.titulo.slice(0,40))}</div></div>`;
+    d.dataset.id = e.id;   // 4.5: igual que buildCard (refreshCardBadge y demás actualizaciones localizan la tarjeta por data-id)
+    if (e.adult) d.dataset.adult = '1';
+    const coverHtml = coverImgHTML('card', e.imagen, e.titulo, { adult: e.adult, bg: '#2e0a1a', title: e.titulo });
     const shelfSt = currentUser ? myReadingStatus[e.id] : null;
     const shelfBadge = shelfSt ? `<div class="card-shelf-badge ${SHELF_INFO[shelfSt].cls}">${SHELF_INFO[shelfSt].icon} ${esc(SHELF_INFO[shelfSt].label)}</div>` : '';
     d.innerHTML = `
@@ -7442,7 +7772,7 @@ function renderInkGrid() {
         ${estadoCardBadgeHTML(e.estado)}
       </div>
       <div class="card-topright">
-        ${e.adult ? adultChipHTML(false) : ''}
+        ${e.adult ? adultChipHTML() : ''}
       </div>
       <div class="card-overlay"></div>
       <div class="card-info">
@@ -7469,6 +7799,7 @@ function applyStateToUI() {
     if (srchEl) srchEl.innerText = fQ;
     if (srchMob) srchMob.innerText = fQ;
   }
+  if (window.GLSearch) window.GLSearch.refresh();
   // adult toggle
   if (hideAdult) {
     document.getElementById('adultBtn').classList.add('active');
@@ -7588,7 +7919,87 @@ function sortItems(items) {
   }
 }
 
-function renderSections(resetPages) {
+/* ── FASE 5.3: estado vacío y anuncio accesible de la búsqueda ── */
+function hasActiveFilters() {
+  // FASE 6.3: definición única. Para el estado vacío cuentan los filtros y el +18, no el orden (no cambia los resultados).
+  return activeFilterChips().some(c => c.kind !== 'orden');
+}
+let _filterUndo = null, _undoNext = null; // instantánea para «Deshacer» tras limpiar todo
+function filterSnapshot() {
+  return { fEstado, fDemo, fSub, fShelf, fAnio, activeSort, hideAdult, fOnlyAdult,
+    fTags: fTags.slice(), fTropos: fTropos.slice(), fPersonajes: fPersonajes.slice(), fSubgeneros: fSubgeneros.slice(), fAutor: fAutor.slice() };
+}
+function restoreFilterSnapshot(sn) {
+  fEstado = sn.fEstado; fDemo = sn.fDemo; fSub = sn.fSub; fShelf = sn.fShelf; fAnio = sn.fAnio; activeSort = sn.activeSort;
+  hideAdult = sn.hideAdult; fOnlyAdult = sn.fOnlyAdult;
+  fTags = sn.fTags.slice(); fTropos = sn.fTropos.slice(); fPersonajes = sn.fPersonajes.slice(); fSubgeneros = sn.fSubgeneros.slice(); fAutor = sn.fAutor.slice();
+  // Permisos: tropos, personajes y estantería solo existen con sesión
+  if (!currentUser) { fTropos = []; fPersonajes = []; fShelf = 'all'; }
+  onFsheetChange();
+}
+function undoClearFilters() {
+  if (!_filterUndo) return;
+  const sn = _filterUndo; _filterUndo = null;
+  restoreFilterSnapshot(sn);
+  announceFilters('Filtros restaurados');
+}
+function resetFilterState() { // «Limpiar todo»: filtros, orden y +18; no toca la pestaña ni el texto de búsqueda
+  if (activeFilterChips().length) _undoNext = filterSnapshot();
+  fEstado = 'all'; fDemo = 'all'; fSub = 'all'; fShelf = 'all'; fAnio = 'all';
+  fTags = []; fTropos = []; fPersonajes = []; fSubgeneros = []; fAutor = [];
+  hideAdult = false; fOnlyAdult = false; activeSort = 'recent';
+  onFsheetChange();
+  if (_filterUndo) announceFilters('Filtros eliminados. Puedes deshacer.');
+}
+function announceFilters(msg) {
+  const el = document.getElementById('filterLive');
+  if (el) el.textContent = msg;
+}
+function announceSearch(total) {
+  const el = document.getElementById('searchLive');
+  if (!el) return;
+  if (total === null || !fQ || !searchNormQuery(fQ)) { el.textContent = ''; return; }
+  el.textContent = total === 0
+    ? `Sin resultados para «${fQ}»`
+    : `${total} resultado${total !== 1 ? 's' : ''} para «${fQ}»`;
+}
+function updateEmptyState(show) {
+  if (!show) return;
+  const msg = document.getElementById('emptyMsg');
+  const hint = document.getElementById('emptyHint');
+  const act = document.getElementById('emptyActions');
+  if (!msg || !act) return;
+  const q = (fQ && searchNormQuery(fQ)) ? fQ : '';
+  const filt = hasActiveFilters();
+  // El texto de la consulta se inserta como texto (nunca como HTML)
+  msg.textContent = '';
+  if (q) {
+    msg.append('Sin resultados para «');
+    const strong = document.createElement('span');
+    strong.className = 'empty-q'; strong.textContent = q;
+    msg.append(strong, filt ? '» con los filtros actuales.' : '».');
+  } else {
+    msg.textContent = 'Sin resultados con los filtros actuales.';
+  }
+  if (hint) {
+    const t = q ? (filt ? 'Prueba a cambiar la búsqueda o a quitar algún filtro.' : 'Revisa la ortografía o prueba con otro término.') : '';
+    hint.textContent = t; hint.hidden = !t;
+  }
+  act.textContent = '';
+  const mk = (label, fn) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'empty-btn'; b.textContent = label;
+    b.addEventListener('click', fn); act.appendChild(b);
+  };
+  if (q) mk('Limpiar búsqueda', () => { if (window.GLSearch) window.GLSearch.clear(true); });
+  if (filt) mk('Quitar filtros', resetFilterState);
+}
+
+function renderSections(resetPages, opts) {
+  // opts.search: la llamada viene solo de escribir en el buscador; INK CLUB y la
+  // colección de temporada no dependen de la consulta, así que no se reconstruyen.
+  const fromSearch = !!(opts && opts.search);
+  syncAdultProtection();
   const groups = groupBy(allData);
   const main   = document.getElementById('mainContent');
   main.querySelectorAll('.section').forEach(s => s.remove());
@@ -7602,12 +8013,15 @@ function renderSections(resetPages) {
   document.getElementById('top10Section').style.display = activeSec === 'all' ? '' : 'none';
 
   // INK CLUB section: show only on 'all' and 'ink_club' — renderInkClub handles visibility
-  renderInkClub();
-  seasonRenderCollection(); // colección de temporada (solo con un tema activo)
+  if (!fromSearch) {
+    renderInkClub();
+    seasonRenderCollection(); // colección de temporada (solo con un tema activo)
+  }
 
   // ── TAB "INK CLUB" ───────────────────────────────────────
   if (activeSec === 'ink_club') {
     empty.classList.remove('show');
+    announceSearch(null);
     main.style.display = 'none';
     pushState();
     updateMobBar();
@@ -7635,6 +8049,8 @@ function renderSections(resetPages) {
     renderSecPage('__all__', allMatched);
 
     empty.classList.toggle('show', totalVis === 0);
+    updateEmptyState(totalVis === 0);
+    announceSearch(totalVis);
     const fc = document.getElementById('filterCount');
     if (fc) fc.textContent = `${totalVis} historia${totalVis !== 1 ? 's' : ''}`;
 
@@ -7684,6 +8100,8 @@ function renderSections(resetPages) {
     });
 
     empty.classList.toggle('show', totalVis === 0);
+    updateEmptyState(totalVis === 0);
+    announceSearch(totalVis);
     const fc = document.getElementById('filterCount');
     if (fc) fc.textContent = `${totalVis} historia${totalVis !== 1 ? 's' : ''}`;
   }
@@ -7772,18 +8190,14 @@ function pagRange(cur, total) {
 /* ── CARD ───────────────────────────────────────────────── */
 function buildCard(e, bgColor) {
   const d = document.createElement('div');
-  d.className = 'card' + (e.adult && hideAdult ? ' adult-blurred' : '');
+  d.className = 'card';
   d.dataset.id = e.id;
+  if (e.adult) d.dataset.adult = '1';   // el desenfoque lo aplica el CSS con body.hide-adult
 
   const tags = (e.tags||[]).slice(0,3).map(t =>
-    `<span class="ctag${t.toLowerCase()==='erotica'?' adult':''}">${esc(t)}</span>`).join('');
+    `<span class="ctag${t.toLowerCase()==='erotica'?' adult':''}">${esc(tagLabel(t))}</span>`).join('');
 
-  const coverHtml = e.imagen
-    ? `<div class="card-cover"><img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" loading="lazy" referrerpolicy="no-referrer"
-        onerror="this.closest('.card-cover').outerHTML='<div class=card-gen style=--gen-bg:${bgColor}><div class=card-gen-title>${esc(e.titulo.slice(0,30))}</div></div>'"></div>`
-    : `<div class="card-gen" style="--gen-bg:${bgColor}">
-        <div class="card-gen-title">${esc(e.titulo.slice(0,40))}</div>
-       </div>`;
+  const coverHtml = coverImgHTML('card', e.imagen, e.titulo, { adult: e.adult, bg: bgColor, title: e.titulo });
 
   const shelfSt = currentUser ? myReadingStatus[e.id] : null;
   const shelfBadge = shelfSt ? `<div class="card-shelf-badge ${SHELF_INFO[shelfSt].cls}">${SHELF_INFO[shelfSt].icon} ${esc(SHELF_INFO[shelfSt].label)}</div>` : '';
@@ -7791,7 +8205,7 @@ function buildCard(e, bgColor) {
   d.innerHTML = `
     ${coverHtml}
     <div class="card-topright">
-      ${e.adult ? adultChipHTML(hideAdult) : ''}
+      ${e.adult ? adultChipHTML() : ''}
       ${(e.in_biblioteca || e.in_files) ? `<div class="card-subido">
         ${e.in_biblioteca ? '<span class="sbadge sbib">BIB</span>' : ''}
         ${e.in_files ? '<span class="sbadge sfiles">FILE</span>' : ''}
@@ -7842,10 +8256,8 @@ function openModal(e, isRefresh) {
     ? estadoMetaBadgeHTML(e.estado, capsTxt)
     : (e.capitulos_totales ? `<span class="mbadge mb-caps">${e.capitulos_totales} cap.</span>` : '');
   const tags = (e.tags||[]).map(t =>
-    '<span class="mtag' + (t.toLowerCase()==='erotica' ? ' adult' : '') + '">' + esc(t) + '</span>').join('');
-  const coverHtml = e.imagen
-    ? `<img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=modal-cover-gen><span>📖</span></div>'">`
-    : `<div class="modal-cover-gen"><span>📖</span></div>`;
+    '<span class="mtag' + (t.toLowerCase()==='erotica' ? ' adult' : '') + '">' + esc(tagLabel(t)) + '</span>').join('');
+  const coverHtml = coverImgHTML('modal', e.imagen, e.titulo);
 
   const CR_INFO = {
     safe:      { icon: '🟢', label: 'Safe' },
@@ -7930,8 +8342,8 @@ function openModal(e, isRefresh) {
       <div class="similar-title">Historias similares</div>
       <div class="similar-row">${sim.map(s => `
         <div class="similar-card" onclick="ruletaOpenBook(${jsArg(s.id)})">
-          ${s.adult ? adultChipHTML(false) : ''}
-          <div class="similar-cover">${s.imagen ? `<img src="${esc(s.imagen)}" alt="${esc(s.titulo)}" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=similar-noimg>📖</div>'">` : '<div class="similar-noimg">📖</div>'}</div>
+          ${s.adult ? adultChipHTML() : ''}
+          <div class="similar-cover">${coverImgHTML('similar', s.imagen, s.titulo, { adult: s.adult })}</div>
           <div class="similar-card-title">${esc(s.titulo)}</div>
         </div>`).join('')}</div>
     </div>` : ''; })()}
@@ -7969,23 +8381,33 @@ function openModal(e, isRefresh) {
 
   if (isRefresh) return;
 
-  // URL propia para la historia
-  _preModalUrl = location.href;
+  // URL propia para la historia (FASE 6.4: una sola entrada por ficha)
   const mangaParams = new URLSearchParams(location.search);
   mangaParams.set('manga', e.id);
-  history.pushState({ manga: e.id }, '', '?' + mangaParams.toString());
+  const _cur = history.state || {};
+  const _hadEntry = !!(_modalMangaId && _cur.manga);
+  _modalMangaId = e.id;
+  if (_hadEntry) {
+    // ya hay una entrada de ficha (recarga o ficha encadenada): se sustituye, no se apila
+    if (String(_cur.manga) !== String(e.id)) history.replaceState({ manga: e.id, ctx: _cur.ctx }, '', '?' + mangaParams.toString());
+  } else {
+    const ctx = saveCatalogContext();
+    history.pushState(ctx ? { manga: e.id, ctx } : { manga: e.id }, '', '?' + mangaParams.toString());
+  }
   document.title = esc(e.titulo) + ' — GL PANELS';
 }
 function closeModal() {
-  document.getElementById('modalWrap').classList.remove('open');
+  const wrap = document.getElementById('modalWrap');
+  const wasOpen = wrap.classList.contains('open');
+  wrap.classList.remove('open');
   document.body.style.overflow = '';
   activeModalItem = null;
-  // Restaurar URL anterior
-  if (_preModalUrl) {
-    history.pushState(null, '', _preModalUrl);
-    _preModalUrl = null;
-  }
+  _preModalUrl = null;
   document.title = 'GL PANELS — カタログ';
+  // FASE 6.4: la ficha ocupa una entrada propia; cerrar = retroceder a la del catálogo (restaura scroll y estado en popstate)
+  const hadEntry = !!(_modalMangaId && history.state && history.state.manga);
+  _modalMangaId = null;
+  if (wasOpen && hadEntry) history.back();
 }
 async function shareBook() {
   if (!activeModalItem) return;
@@ -8014,8 +8436,46 @@ async function shareBook() {
   }
 }
 
+/* ── SEARCH NORMALIZATION (FASE 5.2) ─────────────────────────
+   Compara sin distinguir mayúsculas/minúsculas ni diacríticos.
+   Solo se usa para comparar: nunca modifica los datos ni lo que se muestra. */
+function searchNorm(str) {
+  return String(str == null ? '' : str)
+    .normalize('NFD')                // separa letra + marca (á → a + ´)
+    .replace(/[\u0300-\u036f]/g, '') // quita marcas combinantes latinas
+    .normalize('NFC')                // recompone (evita falsos positivos con hangul/kana)
+    .toLowerCase();
+}
+// Consulta normalizada, memorizada para no repetir el trabajo por cada ficha
+let _sqRaw = null, _sqNorm = '';
+function searchNormQuery(raw) {
+  if (raw !== _sqRaw) { _sqRaw = raw; _sqNorm = searchNorm(raw); }
+  return _sqNorm;
+}
+// Índice en memoria por ficha (WeakMap: no toca el objeto ni el JSON).
+// Se recalcula solo si cambia alguna referencia de los campos originales.
+const _searchIdx = new WeakMap();
+function searchIndexFor(e) {
+  const arr = v => Array.isArray(v) ? v : (v ? [v] : []);
+  let c = _searchIdx.get(e);
+  if (c && c.rt === e.titulo && c.rd === e.desc && c.rg === e.tags &&
+      c.ra === e.autor && c.rl === e.titulos_alt && c.rp === e.tropos && c.rc === e.personajes) return c;
+  c = {
+    rt: e.titulo, rd: e.desc, rg: e.tags, ra: e.autor, rl: e.titulos_alt, rp: e.tropos, rc: e.personajes,
+    titulo: searchNorm(e.titulo),
+    desc: searchNorm(e.desc),
+    tags: searchNorm(arr(e.tags).join(' ')),
+    autor: searchNorm(arr(e.autor).join(' ')),
+    alt: searchNorm(arr(e.titulos_alt).join(' ')),
+    tropos: searchNorm(arr(e.tropos).join(' ')),
+    personajes: searchNorm(arr(e.personajes).join(' '))
+  };
+  _searchIdx.set(e, c);
+  return c;
+}
+
 /* ── FILTERS ────────────────────────────────────────────── */
-function matches(e) {
+function matchesFilters(e) {
   if (hideAdult && e.adult) return false;
   if (fOnlyAdult && !e.adult) return false;
   if (fEstado !== 'all' && e.estado !== fEstado) return false;
@@ -8053,49 +8513,241 @@ function matches(e) {
   }
   // Año exacto
   if (fAnio !== 'all' && String(e.anio_inicio) !== String(fAnio)) return false;
+  return true;
+}
+// Filtros + texto de búsqueda. (FASE 5.4: matchesFilters se reutiliza para las sugerencias.)
+function matches(e) {
+  if (!matchesFilters(e)) return false;
   if (fQ) {
-    const q = fQ.toLowerCase();
-    const alt = (e.titulos_alt||[]).join(' ').toLowerCase();
-    const autorStr = (Array.isArray(e.autor) ? e.autor.join(' ') : (e.autor||'')).toLowerCase();
-    // Tropos/personajes solo cuentan en la búsqueda para usuarias registradas
-    const tropoStr = currentUser ? (e.tropos||[]).join(' ').toLowerCase() : '';
-    const personajeStr = currentUser ? (e.personajes||[]).join(' ').toLowerCase() : '';
-    if (!e.titulo.toLowerCase().includes(q) &&
-        !(e.desc||'').toLowerCase().includes(q) &&
-        !(e.tags||[]).join(' ').toLowerCase().includes(q) &&
-        !autorStr.includes(q) &&
-        !tropoStr.includes(q) &&
-        !personajeStr.includes(q) &&
-        !alt.includes(q)) return false;
+    const q = searchNormQuery(fQ);
+    if (q) {
+      const idx = searchIndexFor(e);
+      // Tropos/personajes solo cuentan en la búsqueda para usuarias registradas
+      if (!idx.titulo.includes(q) &&
+          !idx.desc.includes(q) &&
+          !idx.tags.includes(q) &&
+          !idx.autor.includes(q) &&
+          !(currentUser && idx.tropos.includes(q)) &&
+          !(currentUser && idx.personajes.includes(q)) &&
+          !idx.alt.includes(q)) return false;
+    }
   }
   return true;
+}
+
+/* ── FASE 5.4: SUGERENCIAS ──────────────────────────────────
+   Solo usa allData ya cargada y el índice normalizado de la 5.2: sin red,
+   sin librerías y sin estructuras nuevas. Coincide por título y títulos
+   alternativos; respeta los filtros y la protección +18 vía matchesFilters. */
+const SUGGEST_MIN_CHARS = 2, SUGGEST_MAX = 6;
+function computeSuggestions(raw) {
+  const q = searchNorm(raw).trim();
+  if (q.length < SUGGEST_MIN_CHARS) return [];
+  const found = [];
+  const seen = new Set();
+  for (let i = 0; i < allData.length; i++) {
+    const e = allData[i];
+    if (!e || !e.id || !e.titulo || seen.has(e.id)) continue;
+    const idx = searchIndexFor(e);
+    let score = -1, altHit = '';
+    const t = idx.titulo;
+    if (t === q) score = 0;
+    else if (t.startsWith(q)) score = 1;
+    else if (t.includes(' ' + q)) score = 2;
+    else if (t.includes(q)) score = 3;
+    else if (idx.alt.includes(q)) {
+      // se localiza qué título alternativo coincide (solo ocurre en pocas fichas)
+      const alts = Array.isArray(e.titulos_alt) ? e.titulos_alt : [];
+      for (const a of alts) {
+        const na = searchNorm(a);
+        if (na.includes(q)) { altHit = a; score = na.startsWith(q) || na.includes(' ' + q) ? 4 : 5; break; }
+      }
+    }
+    if (score < 0) continue;
+    if (!matchesFilters(e)) continue;      // +18 oculto, estado, sección activa de filtros, sesión…
+    seen.add(e.id);
+    found.push({ e, score, altHit });
+  }
+  found.sort((a, b) => a.score - b.score || a.e.titulo.length - b.e.titulo.length || a.e.titulo.localeCompare(b.e.titulo, 'es'));
+  return found.slice(0, SUGGEST_MAX);
 }
 
 /* ── EVENTS ─────────────────────────────────────────────── */
 function bindEvents() {
   // Search — contenteditable divs (immune to Chrome autofill)
-  const getSearchText = el => el.innerText.replace(/\n/g, '').trim();
+  // FASE 5.3: debounce, IME, pegado en texto plano, botón ✕ y Escape; el estado sigue siendo fQ.
+  const getSearchText = el => el.innerText.replace(/\s*\n+\s*/g, ' ').trim();
   const setSearchText = (el, val) => { if (el && el.innerText.trim() !== val) { el.innerText = val; } };
-  const syncSearch = val => { fQ = val; renderSections(true); };
 
   const srchEl  = document.getElementById('srch');
   const srchMob = document.getElementById('srchMobile');
+  const boxes = [srchEl, srchMob].filter(Boolean);
+  const clearBtnOf = el => document.getElementById(el.id + 'Clear');
+  const SEARCH_DEBOUNCE_MS = 120;
+  let searchTimer = null, composing = false;
 
-  srchEl.addEventListener('input', () => {
-    const val = getSearchText(srchEl);
-    syncSearch(val);
-    setSearchText(srchMob, val);
+  const updateClearBtns = () => boxes.forEach(el => {
+    const btn = clearBtnOf(el);
+    if (!btn) return;
+    const has = getSearchText(el) !== '';
+    btn.classList.toggle('show', has);
+    btn.hidden = !has;
   });
-  srchEl.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-
-  if (srchMob) {
-    srchMob.addEventListener('input', () => {
-      const val = getSearchText(srchMob);
-      syncSearch(val);
-      setSearchText(srchEl, val);
+  // ── Sugerencias (FASE 5.4): patrón combobox + listbox ──────────────
+  const sug = { el: null, list: null, items: [], active: -1 };
+  const sugListOf = el => document.getElementById(el.id + 'Suggest');
+  const sugLive = document.getElementById('suggestLive');
+  const closeSuggest = () => {
+    if (sug.el) {
+      sug.el.setAttribute('aria-expanded', 'false');
+      sug.el.removeAttribute('aria-activedescendant');
+    }
+    if (sug.list) { sug.list.hidden = true; sug.list.textContent = ''; }
+    if (sugLive) sugLive.textContent = '';
+    sug.el = null; sug.list = null; sug.items = []; sug.active = -1;
+  };
+  const setActive = i => {
+    sug.active = i;
+    const opts = sug.list ? sug.list.children : [];
+    for (let k = 0; k < opts.length; k++) {
+      const on = k === i;
+      opts[k].classList.toggle('active', on);
+      opts[k].setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+    if (i >= 0 && opts[i]) {
+      sug.el.setAttribute('aria-activedescendant', opts[i].id);
+      opts[i].scrollIntoView({ block: 'nearest' });
+    } else if (sug.el) {
+      sug.el.removeAttribute('aria-activedescendant');
+    }
+  };
+  const selectSuggestion = i => {
+    const it = sug.items[i];
+    if (!it) return;
+    const el = sug.el;
+    closeSuggest();
+    commitQuery(getSearchText(el));   // la búsqueda actual queda aplicada detrás de la ficha
+    openModal(it.e);                  // mecanismo existente: ?manga=ID + historial
+    el.blur();                        // el foco no se queda atrás en el buscador
+  };
+  const openSuggest = (el, val) => {
+    if (document.activeElement !== el) { closeSuggest(); return; }
+    const items = computeSuggestions(val);
+    if (!items.length) { closeSuggest(); return; }
+    if (sug.el && sug.el !== el) closeSuggest();
+    const list = sugListOf(el);
+    sug.el = el; sug.list = list; sug.items = items; sug.active = -1;
+    list.textContent = '';
+    items.forEach((it, i) => {
+      const e = it.e;
+      const li = document.createElement('li');
+      li.id = el.id + '-sug-' + i; li.className = 'sug-item'; li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', 'false');
+      const sub = [e.seccion, it.altHit ? 'También: ' + it.altHit : ''].filter(Boolean).join(' · ');
+      li.innerHTML =
+        `<span class="sug-cover">${coverImgHTML('sug', e.imagen, '', { adult: e.adult })}</span>` +
+        `<span class="sug-text"><span class="sug-title">${esc(e.titulo)}</span>` +
+        (sub ? `<span class="sug-sub">${esc(sub)}</span>` : '') + `</span>` +
+        (e.adult ? adultChipHTML() : '');
+      li.addEventListener('mousedown', ev => ev.preventDefault());   // no robar el foco
+      li.addEventListener('click', () => selectSuggestion(i));
+      list.appendChild(li);
     });
-    srchMob.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-  }
+    list.hidden = false;
+    el.setAttribute('aria-expanded', 'true');
+    if (sugLive) sugLive.textContent = `${items.length} sugerencia${items.length !== 1 ? 's' : ''}. Usa las flechas arriba y abajo y Enter para abrir.`;
+  };
+  const commitQuery = val => {          // aplica la consulta a los resultados
+    clearTimeout(searchTimer); searchTimer = null;
+    if (fQ === val) return;
+    fQ = val;
+    renderSections(true, { search: true });
+  };
+  const scheduleQuery = (val, el) => {  // vacía = inmediato; con texto = pequeño debounce
+    clearTimeout(searchTimer);
+    if (val === '') { closeSuggest(); commitQuery(val); return; }
+    searchTimer = setTimeout(() => { commitQuery(val); if (el) openSuggest(el, val); }, SEARCH_DEBOUNCE_MS);
+  };
+  const clearSearch = focusVisible => {
+    boxes.forEach(el => { el.innerHTML = ''; });   // innerHTML vacío → reaparece el placeholder
+    closeSuggest();
+    updateClearBtns();
+    commitQuery('');
+    if (focusVisible) {
+      const target = boxes.find(el => el.offsetParent !== null);
+      if (target) target.focus();
+    }
+  };
+  window.GLSearch = { clear: clearSearch, refresh: updateClearBtns };
+
+  boxes.forEach(el => {
+    const other = boxes.find(x => x !== el);
+    const onInput = ev => {
+      if (composing || (ev && ev.isComposing)) return;
+      if (el.innerText.trim() === '' && el.innerHTML !== '') el.innerHTML = ''; // quita <br> residual
+      const val = getSearchText(el);
+      setSearchText(other, val);
+      updateClearBtns();
+      scheduleQuery(val, el);
+    };
+    el.addEventListener('input', onInput);
+    el.addEventListener('compositionstart', () => { composing = true; });
+    el.addEventListener('compositionend', () => { composing = false; onInput(); });
+    el.addEventListener('paste', ev => {  // siempre texto plano, sin saltos de línea
+      ev.preventDefault();
+      const txt = ((ev.clipboardData || window.clipboardData).getData('text') || '').replace(/\s*[\r\n]+\s*/g, ' ');
+      if (!document.execCommand || !document.execCommand('insertText', false, txt)) {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) {
+          const r = sel.getRangeAt(0); r.deleteContents();
+          const node = document.createTextNode(txt); r.insertNode(node);
+          r.setStartAfter(node); r.collapse(true); sel.removeAllRanges(); sel.addRange(r);
+        }
+        onInput();
+      }
+    });
+    el.addEventListener('keydown', ev => {
+      const open = !!sug.list && !sug.list.hidden && sug.el === el;
+      if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+        if (composing || ev.isComposing) return;
+        if (!open) {                                   // reabrir con la flecha si hay coincidencias
+          const v = getSearchText(el);
+          if (!v) return;
+          openSuggest(el, v);
+          if (!(sug.list && !sug.list.hidden)) return;
+        }
+        ev.preventDefault();
+        const n = sug.items.length, dir = ev.key === 'ArrowDown' ? 1 : -1;
+        let i = sug.active + dir;
+        if (i >= n) i = -1; else if (i < -1) i = n - 1;   // cicla pasando por «sin selección»
+        setActive(i);
+      } else if (ev.key === 'Enter') {
+        ev.preventDefault();
+        if (open && sug.active >= 0) { selectSuggestion(sug.active); return; }
+        closeSuggest();
+        commitQuery(getSearchText(el));                  // aplica ya lo pendiente
+        if (window.matchMedia('(pointer: coarse)').matches) el.blur(); // cierra el teclado táctil
+      } else if (ev.key === 'Escape' && open) {
+        ev.preventDefault(); ev.stopPropagation();       // foco en el buscador y lista abierta: inequívoco
+        closeSuggest();
+      } else if (ev.key === 'Escape' && getSearchText(el) !== '') {
+        ev.preventDefault(); ev.stopPropagation();
+        clearSearch(true);
+      } else if (ev.key === 'Tab') {
+        closeSuggest();
+      }
+    });
+    el.addEventListener('blur', () => { if (sug.el === el) closeSuggest(); });
+    const btn = clearBtnOf(el);
+    if (btn) {
+      btn.addEventListener('mousedown', ev => ev.preventDefault()); // no robar el foco al pulsar
+      btn.addEventListener('click', () => clearSearch(true));
+    }
+  });
+  updateClearBtns();
+  document.addEventListener('pointerdown', ev => {      // clic/toque fuera del buscador y de su lista
+    if (sug.list && !sug.list.contains(ev.target) && !(sug.el && sug.el.contains(ev.target))) closeSuggest();
+  }, true);
 
   // Topbar adult toggle — syncs with pill
   document.getElementById('adultBtn').addEventListener('click', () => {
@@ -8318,9 +8970,7 @@ function renderTop10() {
     const pal = (PALETTES[e.seccion] || ['#111118','#1a1a1a']);
     const genBg = pal[i % pal.length];
 
-    const coverHtml = e.imagen
-      ? `<div class="t10-cover"><img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.t10-cover').outerHTML='<div class=t10-gen style=--gen-bg:${genBg}></div>'"></div>`
-      : `<div class="t10-gen" style="--gen-bg:${genBg}"></div>`;
+    const coverHtml = coverImgHTML('t10', e.imagen, e.titulo, { adult: e.adult, bg: genBg });
 
     return `
       <div class="t10-card" data-id="${e.id}" title="${esc(e.titulo)}">
@@ -8328,7 +8978,7 @@ function renderTop10() {
         <div class="t10-overlay"></div>
         <div class="t10-rank">${i + 1}</div>
         <div class="t10-medal ${medal.cls}">${medal.lbl}</div>
-        ${e.adult ? adultChipHTML(false) : ''}
+        ${e.adult ? adultChipHTML() : ''}
         <div class="t10-info">
           <div class="t10-title">${esc(e.titulo)}</div>
           <div>
@@ -8437,69 +9087,95 @@ function syncFsheetState() {
   if (fsAnioOptsEl) applyOpts(fsAnioOptsEl, 'anio', String(fAnio), 'on');
   document.getElementById('fsAdultHideTog').classList.toggle('on', hideAdult);
   document.getElementById('fsAdultOnlyTog').classList.toggle('on', fOnlyAdult);
-  // Reset button enabled/disabled
-  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fShelf !== 'all' || fAnio !== 'all' ||
-    fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || fSubgeneros.length > 0 || fAutor.length > 0 ||
-    hideAdult || fOnlyAdult || activeSort !== 'recent';
-  document.getElementById('fsheetReset').disabled = !hasFilter;
+  // Botón de la cabecera: «Limpiar todo»; tras limpiar, pasa a «Deshacer» mientras no haya otro cambio
+  const rb = document.getElementById('fsheetReset');
+  const anyActive = activeFilterChips().length > 0;
+  if (rb) {
+    const undo = !anyActive && !!_filterUndo;
+    rb.textContent = undo ? '↩ Deshacer' : 'Limpiar todo';
+    rb.disabled = !anyActive && !undo;
+  }
 }
 
-function updateMobBar() {
-  if (!isMobile()) return;
-  const btn = document.getElementById('mobFilterOpenBtn');
-  const chipsWrap = document.getElementById('mobActiveChips');
-  const dot = document.getElementById('mobActiveDot');
-
+/* FASE 6.3 · Lista única de filtros activos. La usan el botón «Filtros» (insignia), la barra móvil,
+   la franja de escritorio, la hoja de filtros y el estado vacío. */
+function activeFilterChips() {
   const chips = [];
-  const hasFilter = fEstado !== 'all' || fDemo !== 'all' || fSub !== 'all' || fShelf !== 'all' || fAnio !== 'all' ||
-    fTags.length > 0 || fTropos.length > 0 || fPersonajes.length > 0 || fSubgeneros.length > 0 || fAutor.length > 0 ||
-    hideAdult || fOnlyAdult || activeSort !== 'recent';
-
-  btn.classList.toggle('has-active', hasFilter);
-  dot.style.display = hasFilter ? 'block' : 'none';
-
-  if (fEstado !== 'all') chips.push({ cls: 'mob-chip-estado', label: fEstado, clear: () => { fEstado='all'; onFsheetChange(); } });
-  if (fDemo !== 'all') chips.push({ cls: 'mob-chip-estado', label: demoLabel(fDemo), clear: () => { fDemo='all'; onFsheetChange(); } });
-  if (fSub !== 'all') {
-    const l = fSub === 'bib' ? '📚 Biblioteca' : fSub === 'files' ? '📁 FILES' : 'Ambos';
-    chips.push({ cls: 'mob-chip-sub', label: l, clear: () => { fSub='all'; onFsheetChange(); } });
-  }
+  const add = (kind, key, label, cls, clear) => chips.push({ kind, key, label, cls, clear });
+  if (fEstado !== 'all') add('estado', 'Estado', fEstado, 'mob-chip-estado', () => { fEstado = 'all'; });
+  if (fDemo !== 'all') add('demo', 'Demográfico', demoLabel(fDemo), 'mob-chip-estado', () => { fDemo = 'all'; });
+  if (fSub !== 'all') add('sub', 'Ubicación', fSub === 'bib' ? '📚 Biblioteca' : fSub === 'files' ? '📁 FILES' : 'Ambos', 'mob-chip-sub', () => { fSub = 'all'; });
   if (fShelf !== 'all') {
     const shl = {'want':'＋ Quiero leer','reading':'📖 Leyendo','read':'✓ Terminado'};
-    chips.push({ cls: 'mob-chip-estado', label: shl[fShelf] || fShelf, clear: () => { fShelf='all'; onFsheetChange(); } });
+    add('shelf', 'Estantería', shl[fShelf] || fShelf, 'mob-chip-estado', () => { fShelf = 'all'; });
   }
-  fTags.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fTags = fTags.filter(x=>x!==t); onFsheetChange(); } }));
-  fSubgeneros.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fSubgeneros = fSubgeneros.filter(x=>x!==t); onFsheetChange(); } }));
-  fTropos.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fTropos = fTropos.filter(x=>x!==t); onFsheetChange(); } }));
-  fPersonajes.forEach(t => chips.push({ cls: 'mob-chip-tag', label: tagLabel(t), clear: () => { fPersonajes = fPersonajes.filter(x=>x!==t); onFsheetChange(); } }));
-  fAutor.forEach(t => chips.push({ cls: 'mob-chip-tag', label: t, clear: () => { fAutor = fAutor.filter(x=>x!==t); onFsheetChange(); } }));
-  if (fAnio !== 'all') chips.push({ cls: 'mob-chip-estado', label: fAnio, clear: () => { fAnio='all'; onFsheetChange(); } });
-  if (hideAdult) chips.push({ cls: 'mob-chip-adult', label: 'Ocultar +18', clear: () => { hideAdult=false; onFsheetChange(); } });
-  if (fOnlyAdult) chips.push({ cls: 'mob-chip-adult', label: 'Solo +18', clear: () => { fOnlyAdult=false; onFsheetChange(); } });
+  fTags.forEach(t => add('tag', 'Género', tagLabel(t), 'mob-chip-tag', () => { fTags = fTags.filter(x => x !== t); }));
+  fSubgeneros.forEach(t => add('subgenero', 'Subgénero', tagLabel(t), 'mob-chip-tag', () => { fSubgeneros = fSubgeneros.filter(x => x !== t); }));
+  fTropos.forEach(t => add('tropo', 'Tropo', tagLabel(t), 'mob-chip-tag', () => { fTropos = fTropos.filter(x => x !== t); }));
+  fPersonajes.forEach(t => add('personaje', 'Personaje', tagLabel(t), 'mob-chip-tag', () => { fPersonajes = fPersonajes.filter(x => x !== t); }));
+  fAutor.forEach(t => add('autor', 'Autor/a', t, 'mob-chip-tag', () => { fAutor = fAutor.filter(x => x !== t); }));
+  if (fAnio !== 'all') add('anio', 'Año', String(fAnio), 'mob-chip-estado', () => { fAnio = 'all'; });
+  if (hideAdult) add('adult', '+18', 'Ocultar +18', 'mob-chip-adult', () => { hideAdult = false; });
+  if (fOnlyAdult) add('adult', '+18', 'Solo +18', 'mob-chip-adult', () => { fOnlyAdult = false; });
   if (activeSort !== 'recent') {
-    const l = activeSort === 'rating' ? '★ Valorados' : 'A–Z';
-    chips.push({ cls: 'mob-chip-sort', label: l, clear: () => { activeSort='recent'; onFsheetChange(); } });
+    const l = activeSort === 'rating' ? '★ Más valorados' : activeSort === 'spicy' ? '🌶 Más spicy' : activeSort === 'az' ? 'A–Z' : activeSort;
+    add('orden', 'Orden', l, 'mob-chip-sort', () => { activeSort = 'recent'; });
   }
+  return chips;
+}
 
-  chipsWrap.innerHTML = chips.map((c, i) =>
-    `<button class="mob-chip ${c.cls}" data-ci="${i}">${c.label} <span class="mob-chip-x">✕</span></button>`
+function renderActiveFilters() {
+  const chips = activeFilterChips();
+  const hasFilter = chips.length > 0;
+  const undo = !hasFilter && !!_filterUndo;
+
+  // Botón móvil «Filtros»
+  const btn = document.getElementById('mobFilterOpenBtn');
+  const dot = document.getElementById('mobActiveDot');
+  if (btn) btn.classList.toggle('has-active', hasFilter);
+  if (dot) dot.style.display = hasFilter ? 'block' : 'none';
+
+  const html = chips.map((c, i) =>
+    `<button type="button" class="mob-chip ${c.cls}" data-ci="${i}" aria-label="Quitar filtro ${esc(c.key)}: ${esc(c.label)}" title="Quitar">` +
+    `<span class="mob-chip-k">${esc(c.key)}</span> ${esc(c.label)} <span class="mob-chip-x" aria-hidden="true">✕</span></button>`
   ).join('');
-  chipsWrap.querySelectorAll('.mob-chip').forEach((el, i) => {
-    el.addEventListener('click', () => { chips[i].clear(); updateMobBar(); });
+  const tail = (withClear) =>
+    (chips.length >= 2 && withClear ? `<button type="button" class="mob-chip mob-chip-clear" data-act="clear" aria-label="Limpiar todos los filtros">Limpiar todo</button>` : '') +
+    (undo ? `<button type="button" class="mob-chip mob-chip-undo" data-act="undo" aria-label="Deshacer: restaurar los filtros eliminados">↩ Deshacer</button>` : '');
+
+  // La hoja ya tiene su propio «Limpiar todo» en la cabecera
+  [['activeFilters', true], ['mobActiveChips', true], ['fsheetActive', false]].forEach(([id, withClear]) => {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    wrap.innerHTML = html + tail(withClear);
+    wrap.querySelectorAll('button').forEach(el => {
+      el.addEventListener('click', () => {
+        if (el.dataset.act === 'clear') { resetFilterState(); focusAfterChip(id, 0, true); return; }
+        if (el.dataset.act === 'undo') { undoClearFilters(); return; }
+        const i = +el.dataset.ci, c = chips[i];
+        c.clear();
+        announceFilters(`Filtro quitado: ${c.key} ${c.label}`);
+        onFsheetChange();
+        focusAfterChip(id, i, false);
+      });
+    });
   });
 }
+// Tras quitar un filtro el foco pasa al chip vecino (o al botón de filtros), no se pierde
+function focusAfterChip(id, i, cleared) {
+  const wrap = document.getElementById(id);
+  const list = wrap ? wrap.querySelectorAll('button') : [];
+  let target = null;
+  if (!cleared && list.length) target = list[Math.min(i, list.length - 1)];
+  if (!target) target = document.getElementById(id === 'mobActiveChips' ? 'mobFilterOpenBtn' : id === 'fsheetActive' ? 'fsheetReset' : 'filtersMainBtn');
+  if (target && target.focus && !target.disabled) target.focus();
+}
+
+function updateMobBar() { renderActiveFilters(); }
 
 // ── FILTROS badge + per-section active dots + accordion ──────
 function countActiveFilters() {
-  let n = 0;
-  if (fEstado !== 'all') n++;
-  if (fSub !== 'all') n++;
-  if (fDemo !== 'all') n++;
-  if (fShelf !== 'all') n++;
-  if (fAnio !== 'all') n++;
-  if (activeSort !== 'recent') n++;
-  n += fTags.length + fTropos.length + fPersonajes.length + fSubgeneros.length + fAutor.length;
-  return n;
+  return activeFilterChips().length; // incluye +18 y orden (antes la insignia no contaba el +18)
 }
 
 function fsheetFieldHasActive(field) {
@@ -8559,6 +9235,11 @@ function bindFsheetAccordion() {
 }
 
 function onFsheetChange() {
+  _filterUndo = _undoNext; _undoNext = null; // cualquier otro cambio descarta el «Deshacer»
+  syncFilterUI();
+  renderSections(true);
+}
+function syncFilterUI() { // etiquetas, hoja, chips e insignia a partir del estado (sin renderizar el catálogo)
   // Sync desktop dropdowns too
   const sl2 = fSub === 'bib' ? 'Biblioteca' : fSub === 'files' ? 'FILES' : 'Ambos';
   updateDropLabel('dropEstado','valEstado', fEstado === 'all' ? 'Estado' : fEstado, fEstado !== 'all', 'on');
@@ -8584,13 +9265,13 @@ function onFsheetChange() {
   updateMobBar();
   updateFiltersTrigger();
   updateFsheetApplyBtn();
-  renderSections(true);
 }
 
 function updateFsheetApplyBtn() {
   const btn = document.getElementById('fsheetApplyBtn');
   if (!btn) return;
-  const n = allData.filter(e => matches(e)).length;
+  // Mismo total que la cuadrícula: incluye la pestaña de sección activa
+  const n = allData.filter(e => matches(e) && (activeSec === 'all' || activeSec === 'ink_club' || e.seccion === activeSec)).length;
   btn.textContent = n > 0 ? `Ver ${n} resultado${n === 1 ? '' : 's'}` : 'Sin resultados';
   btn.classList.toggle('no-results', n === 0);
 }
@@ -8646,12 +9327,7 @@ function bindFsheetEvents() {
   });
 
   // Reset
-  document.getElementById('fsheetReset').addEventListener('click', () => {
-    fEstado = 'all'; fDemo = 'all'; fSub = 'all'; fShelf = 'all'; fAnio = 'all';
-    fTags = []; fTropos = []; fPersonajes = []; fSubgeneros = []; fAutor = [];
-    hideAdult = false; fOnlyAdult = false; activeSort = 'recent';
-    onFsheetChange();
-  });
+  document.getElementById('fsheetReset').addEventListener('click', () => { if (_filterUndo && !activeFilterChips().length) undoClearFilters(); else resetFilterState(); });
 
 }
 
@@ -8707,9 +9383,7 @@ function renderTop10Mobile() {
   const MEDALS = ['🥇','🥈','🥉'];
   list.innerHTML = ranked.map((e, i) => {
     const r = ratingsMap[e.id];
-    const coverHtml = e.imagen
-      ? `<div class="t10m-cover"><img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=t10m-cover-gen></div>'"></div>`
-      : `<div class="t10m-cover"><div class="t10m-cover-gen"></div></div>`;
+    const coverHtml = coverImgHTML('t10m', e.imagen, e.titulo, { adult: e.adult });
     return `
       <div class="t10m-item" data-id="${e.id}">
         <span class="t10m-rank-num">${i < 3 ? MEDALS[i] : i+1}</span>
@@ -8719,7 +9393,7 @@ function renderTop10Mobile() {
           <div class="t10m-meta">
             <span class="t10m-score">★ ${r.avg}</span>
             <span class="t10m-votes">${r.count}v</span>
-            ${e.adult ? adultChipHTML(false) : ''}
+            ${e.adult ? adultChipHTML() : ''}
           </div>
         </div>
         <span class="t10m-arrow">›</span>
@@ -8840,9 +9514,7 @@ function ruletaSpin() {
   }, 550);
 }
 function ruletaShowResult(e) {
-  const coverHtml = e.imagen
-    ? `<img src="${esc(e.imagen)}" alt="${esc(e.titulo)}" referrerpolicy="no-referrer">`
-    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem">📖</div>`;
+  const coverHtml = coverImgHTML('ruleta', e.imagen, e.titulo, { adult: e.adult });
   const tags = (e.tags||[]).slice(0,3).map(t => `<span class="ctag">${esc(tagLabel(t))}</span>`).join('');
   document.getElementById('ruletaStage').innerHTML = `
     <div class="ruleta-result-card">
@@ -8850,7 +9522,7 @@ function ruletaShowResult(e) {
       <div class="ruleta-result-info">
         <div class="ruleta-result-sec">${esc(e.seccion || '')}</div>
         <div class="ruleta-result-title">${esc(e.titulo)}</div>
-        ${(estadoInfo(e.estado) || e.adult) ? `<div class="ruleta-result-flags">${estadoMetaBadgeHTML(e.estado)}${e.adult ? adultChipHTML(false) : ''}</div>` : ''}
+        ${(estadoInfo(e.estado) || e.adult) ? `<div class="ruleta-result-flags">${estadoMetaBadgeHTML(e.estado)}${e.adult ? adultChipHTML() : ''}</div>` : ''}
         <div class="ruleta-result-tags">${tags}</div>
         <div class="ruleta-result-btns">
           <button class="btn-vote-submit" style="font-size:.9rem;padding:6px 14px" onclick="ruletaOpenBook(${jsArg(e.id)})">Ver ficha</button>
@@ -8887,16 +9559,14 @@ function buildReadingPeriods() {
     if (!start) return; // sin fecha de inicio, no se puede ubicar en el calendario
     const ongoing = status === 'reading';
     const end = ongoing ? todayISO : (dates.end_date || start);
-    periods.push({ bookId: id, title: book.titulo, cover: book.imagen, start, end, ongoing });
+    periods.push({ bookId: id, title: book.titulo, cover: book.imagen, adult: !!book.adult, start, end, ongoing });
   });
   return periods;
 }
 function _calCoverThumbHTML(p) {
   const cls = p.ongoing ? 'dot-reading' : 'dot-read';
   const t = esc(p.title);
-  return p.cover
-    ? `<img class="cal-cover-thumb ${cls}" src="${esc(p.cover)}" alt="" title="${t}" loading="lazy" referrerpolicy="no-referrer">`
-    : `<div class="cal-cover-ph ${cls}" title="${t}">📖</div>`;
+  return coverImgHTML('cal', p.cover, '', { adult: p.adult, cls, ttl: p.title, imgClass: 'cal-cover-thumb ' + cls }).replace(/^<img /, `<img title="${t}" `);
 }
 function renderReadingCalendar() {
   const container = document.getElementById('readingCalendarContainer');
@@ -8944,7 +9614,7 @@ function renderReadingCalendar() {
         <div class="cal-day-panel-title">${dStr}</div>
         ${active.map(p => {
           const rangeStr = `${new Date(p.start + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })} → ${p.ongoing ? 'ahora' : new Date(p.end + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`;
-          const cov = p.cover ? `<img class="cal-panel-cover" src="${esc(p.cover)}" alt="" referrerpolicy="no-referrer">` : `<div class="cal-panel-cover" style="display:flex;align-items:center;justify-content:center">📖</div>`;
+          const cov = coverImgHTML('calpanel', p.cover, '', { adult: p.adult, imgClass: 'cal-panel-cover' });
           return `<div class="cal-panel-book" onclick="ruletaOpenBook(${jsArg(p.bookId)})">
             ${cov}
             <div class="cal-panel-info">

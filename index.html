@@ -1405,6 +1405,26 @@ div.search-box:focus { outline: none; }
 .mh-actions .shelf-btn { flex: 1 1 auto; min-height: 40px; padding: 8px 12px; font-size: var(--fs-small); }
 .mh-actions .shelf-dates-row { margin: 12px 0 0; }
 .mh-actions .shelf-remove-btn { margin-top: 12px; }
+/* FASE LECTURA 3 · Días de lectura (registro manual en reading_days) */
+.rday-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.mh-actions .rday-actions .shelf-btn { flex: 0 1 auto; }
+.rday-pick { display: flex; gap: 8px; flex: 1 1 220px; min-width: 0; }
+.rday-date { flex: 1 1 auto; width: auto; min-width: 0; min-height: 40px; }
+.rday-status { min-height: 1.4em; margin-top: 8px; font-size: var(--fs-small); color: var(--gl-text-muted); }
+.rday-status.ok { color: var(--success); }
+.rday-status.warn { color: var(--gl-text); }
+.rday-status.err { color: var(--error); }
+.rday-note { margin: 0; font-size: var(--fs-small); color: var(--gl-text-muted); }
+.rday-count { margin: 10px 0 0; font-size: var(--fs-meta); color: var(--gl-text-muted); }
+.rday-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; max-height: 168px; overflow-y: auto; }
+.rday-chip { display: inline-flex; align-items: center; gap: 2px; padding: 2px 4px 2px 10px; border: 1px solid var(--border2); border-radius: 999px; background: var(--surface2); font-size: var(--fs-meta); color: var(--gl-text); }
+.rday-chip--new { animation: rdayFlash 1.6s ease-out; }
+@keyframes rdayFlash { from { background: color-mix(in srgb, var(--success) 35%, transparent); border-color: var(--success); } }
+.rday-x { min-width: 32px; min-height: 32px; border: 0; background: transparent; color: var(--gl-text-muted); cursor: pointer; border-radius: 50%; font-size: 16px; line-height: 1; }
+.rday-x:hover:not(:disabled) { color: var(--error); background: var(--error-soft); }
+.rday-x:disabled { opacity: .5; cursor: default; }
+.rday-x:focus-visible { outline: 2px solid var(--ctl-focus); outline-offset: 1px; }
+@media (prefers-reduced-motion: reduce) { .rday-chip--new { animation: none; } }
 .mh-actions .rating-locked-box { display: flex; align-items: center; gap: 12px; padding: 0; text-align: left; }
 .mh-actions .rating-locked-box .rlb-icon { margin: 0; flex: none; }
 .modal-tags { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -2759,6 +2779,40 @@ body.shelf-active .topbar-center { display: none; }
   .cal-stat { padding: 6px 8px; gap: 6px; }
   .cal-day { min-height: 52px; }
   .cal-cover-thumb, .cal-cover-ph { width: 15px; height: 21px; }
+}
+
+/* FASE LECTURA 5 · Resumen e historial de días registrados por historia */
+.rday-count strong { color: var(--gl-text); font-weight: 600; }
+.rday-edit { min-width: 32px; min-height: 32px; border: 0; background: transparent; color: var(--gl-text-muted); cursor: pointer; border-radius: 50%; font-size: 14px; line-height: 1; }
+.rday-edit:hover:not(:disabled) { color: var(--neon3); background: color-mix(in srgb, var(--neon3) 14%, transparent); }
+.rday-edit:disabled { opacity: .5; cursor: default; }
+.rday-edit:focus-visible { outline: 2px solid var(--ctl-focus); outline-offset: 1px; }
+.rday-chip--editing { border-color: var(--neon3); }
+.rday-editbox { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; padding: 10px; border: 1px solid var(--border2); border-radius: 2px; background: var(--surface2); }
+.rday-editbox label { flex: 1 1 100%; font-size: var(--fs-small); color: var(--gl-text-muted); }
+.rday-editbox .rday-date { flex: 1 1 150px; }
+.card-days { display: flex; flex-direction: column; gap: 1px; margin-top: 5px; cursor: pointer; font-size: var(--fs-badge); line-height: 1.3; color: rgba(255,255,255,.88); text-shadow: 0 1px 3px rgba(0,0,0,.85); }
+.card-days:empty { display: none; }
+.card-days:hover .card-days-lbl { text-decoration: underline; }
+.card-days:focus-visible { outline: 2px solid var(--ctl-focus); outline-offset: 2px; }
+.card-days-last { color: rgba(255,255,255,.72); }
+
+/* FASE LECTURA 4 · Días de lectura registrados dentro del calendario (se distinguen de los periodos inicio/fin) */
+.cal-day-head { display: flex; align-items: center; justify-content: space-between; gap: 4px; min-height: 1.1em; }
+.cal-rday-badge { font-size: var(--fs-badge); line-height: 1; color: var(--neon3); font-weight: 700; white-space: nowrap; }
+.cal-day.has-rdays { cursor: pointer; background: color-mix(in srgb, var(--neon3) 9%, var(--surface2)); border-color: color-mix(in srgb, var(--neon3) 45%, transparent); box-shadow: inset 0 -3px 0 var(--neon3); }
+.cal-day.has-rdays:hover { border-color: var(--neon3); background: color-mix(in srgb, var(--neon3) 14%, var(--surface)); }
+.cal-day.has-rdays.is-today { box-shadow: 0 0 0 1px color-mix(in srgb, var(--neon) 25%, transparent) inset, inset 0 -3px 0 var(--neon3); border-color: var(--neon); }
+.cal-day.has-rdays.is-selected { border-color: var(--neon2); background: color-mix(in srgb, var(--neon2) 10%, var(--surface2)); }
+.cal-legend .cal-dot.dot-rday { background: var(--neon3); border-radius: 2px; }
+.cal-nav-btn:disabled { opacity: .4; cursor: default; }
+.cal-nav-btn:disabled:hover { border-color: var(--border2); color: var(--gl-text); }
+.cal-day[role="button"]:focus-visible, .cal-panel-book:focus-visible { outline: 2px solid var(--ctl-focus); outline-offset: 1px; }
+.cal-panel-sub { margin: 12px 0 4px; font-size: var(--fs-label); font-weight: 700; text-transform: uppercase; letter-spacing: var(--ls-label); color: var(--gl-text-muted); }
+.cal-rday-note { margin: 0 0 12px; font-size: var(--fs-small); color: var(--gl-text-muted); }
+.cal-rday-note.err { color: var(--error); }
+@media (max-width: 480px) {
+  .cal-stat { flex-direction: column; align-items: flex-start; gap: 2px; }
 }
 
 /* ── HOME VIEW ───────────────────────────────────────────── */
@@ -5637,7 +5691,7 @@ body:not(.home-active):not(.shelf-active) { padding-top: 52px; }
     <button class="logros-modal-x" onclick="closeCalendarModal()">✕</button>
     <div class="ruleta-modal-body">
       <div class="logros-modal-title">📅 CALENDARIO DE LECTURA</div>
-      <p class="logros-modal-sub">Qué estabas leyendo cada día, según las fechas que guardas en cada ficha.</p>
+      <p class="logros-modal-sub">Qué leíste cada día: los días que registras en cada ficha y los periodos entre tus fechas de inicio y fin.</p>
       <div id="readingCalendarContainer"></div>
     </div>
   </div>
@@ -7229,6 +7283,214 @@ function refreshShelfBadge(id) {
   });
 }
 
+// ── DÍAS DE LECTURA (tabla reading_days) ─────────────────
+// Registro manual de los días en que se lee una historia: solo user_id + book_id + read_date.
+// Es independiente de reading_status (estado y fechas de inicio/fin): no los lee ni los modifica.
+// Textos del resumen de días registrados. Es un recuento de fechas registradas a mano y nada más:
+// no son sesiones, capítulos, páginas ni tiempo leído.
+const RDAY_COUNT_HINT = 'Cada fecha es un día en el que registraste que leíste esta historia. No indica capítulos, páginas ni tiempo de lectura.';
+function rdayCountText(n) { return n + ' día' + (n !== 1 ? 's' : '') + ' registrado' + (n !== 1 ? 's' : ''); }
+let _rdayUid = null;
+let _rdayCache = {}; // { book_id: { state:'idle'|'loading'|'ready'|'error', days:[YYYY-MM-DD, más reciente primero], pick:'', busy:false, flash:'' } }
+function rdayEntry(id) {
+  const uid = currentUser ? currentUser.id : null;
+  if (_rdayUid !== uid) { _rdayUid = uid; _rdayCache = {}; } // otra sesión → no reutilizar datos de la anterior
+  return _rdayCache[id] || (_rdayCache[id] = { state: 'idle', days: [], pick: '', busy: false, flash: '', editing: '', editPick: '' });
+}
+function rdayFmt(iso) {
+  return new Date(iso + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function rdayShowing(id) { return !!(activeModalItem && activeModalItem.id === id); }
+function refreshReadingDaysSection() {
+  const body = document.getElementById('rdayBody');
+  if (body && activeModalItem) body.innerHTML = buildReadingDaysHTML(activeModalItem);
+}
+let _rdayMsgTimer = null;
+function rdaySetMsg(id, text, kind) {
+  if (!rdayShowing(id)) return;
+  const el = document.getElementById('rdayStatus');
+  if (!el) return;
+  clearTimeout(_rdayMsgTimer);
+  el.textContent = text;
+  el.className = 'rday-status' + (kind ? ' ' + kind : '');
+  if (kind === 'ok') _rdayMsgTimer = setTimeout(() => { el.textContent = ''; el.className = 'rday-status'; }, 4000);
+}
+async function rdayLoad(id) {
+  if (!SB_READY || !currentUser) return;
+  const uid = currentUser.id, st = rdayEntry(id);
+  st.state = 'loading';
+  let data = null, error = null;
+  try {
+    ({ data, error } = await sb.from('reading_days').select('read_date').eq('user_id', uid).eq('book_id', id).order('read_date', { ascending: false }));
+  } catch (e) { error = e; }
+  if (_rdayUid !== uid || _rdayCache[id] !== st) return; // la sesión cambió mientras cargaba
+  if (error) { st.state = 'error'; }
+  else { st.days = (data || []).map(r => String(r.read_date).slice(0, 10)); st.state = 'ready'; }
+  if (rdayShowing(id)) refreshReadingDaysSection();
+}
+function rdayRetryLoad() { if (activeModalItem) { rdayLoad(activeModalItem.id); refreshReadingDaysSection(); } }
+
+function buildReadingDaysHTML(e) {
+  if (!currentUser) return `
+      <div class="rating-locked-box">
+        <div class="rlb-icon">🔒</div>
+        <p>Registrar tus días de lectura es solo para personas registradas.<br><a onclick="closeModal();openAuthModal()">Inicia sesión</a> para usarlo.</p>
+      </div>`;
+  const st = rdayEntry(e.id);
+  if (st.state === 'idle') rdayLoad(e.id);
+  if (st.state === 'idle' || st.state === 'loading') return `<p class="rday-note">Cargando tus días de lectura…</p>`;
+  if (st.state === 'error') return `
+      <p class="rday-note" style="color:var(--error)">No se pudieron cargar tus días de lectura. Comprueba tu conexión.</p>
+      <button class="shelf-btn" style="margin-top:8px" onclick="rdayRetryLoad()">Reintentar</button>`;
+  const today = localTodayISO();
+  const hasToday = st.days.includes(today);
+  const dis = st.busy ? ' disabled' : '';
+  const flash = st.flash; st.flash = '';
+  const chips = st.days.map(d => `<li class="rday-chip${d === flash ? ' rday-chip--new' : ''}${d === st.editing ? ' rday-chip--editing' : ''}"><span>${esc(rdayFmt(d))}</span><button type="button" class="rday-edit" aria-label="Cambiar la fecha del ${esc(rdayFmt(d))}" title="Cambiar la fecha de este día" onclick="rdayStartEdit(${jsArg(d)})"${dis}>✎</button><button type="button" class="rday-x" aria-label="Quitar el ${esc(rdayFmt(d))}" title="Quitar este día" onclick="rdayRemove(${jsArg(d)})"${dis}>✕</button></li>`).join('');
+  const editBox = st.editing ? `
+    <div class="rday-editbox" role="group" aria-label="Cambiar la fecha de un día registrado">
+      <label for="rdayEditInput">Cambiar el ${esc(rdayFmt(st.editing))} por:</label>
+      <input type="date" class="gl-input rday-date" id="rdayEditInput" value="${esc(st.editPick)}" min="2000-01-01" max="${today}" onchange="rdayEditPick(this.value)">
+      <button type="button" class="shelf-btn" onclick="rdaySaveEdit()"${dis}>Guardar</button>
+      <button type="button" class="shelf-btn" onclick="rdayCancelEdit()"${dis}>Cancelar</button>
+    </div>` : '';
+  return `
+    <div class="rday-actions">
+      <button type="button" class="shelf-btn rday-today${hasToday ? ' active cs-read' : ''}" onclick="rdayAdd(localTodayISO())"${dis || (hasToday ? ' disabled' : '')}>${hasToday ? '✓ Hoy ya está registrado' : '📖 Leí hoy'}</button>
+      <div class="rday-pick">
+        <input type="date" class="gl-input rday-date" id="rdayDateInput" value="${esc(st.pick)}" min="2000-01-01" max="${today}" aria-label="Elegir otra fecha de lectura" onchange="rdayPickChange(this.value)">
+        <button type="button" class="shelf-btn rday-add" onclick="rdayAddPicked()"${dis}>Añadir día</button>
+      </div>
+    </div>
+    <p class="rday-count" title="${esc(RDAY_COUNT_HINT)}">${st.days.length === 0 ? 'Aún no hay días registrados.' : esc(rdayCountText(st.days.length)) + ' · Última lectura: <strong>' + esc(rdayFmt(st.days[0])) + '</strong>'}</p>
+    ${st.days.length ? `<ul class="rday-list" aria-label="Días registrados">${chips}</ul>` : ''}
+    ${editBox}`;
+}
+
+function rdayPickChange(v) { if (activeModalItem) rdayEntry(activeModalItem.id).pick = v || ''; }
+function rdayAddPicked() {
+  if (!activeModalItem) return;
+  const inp = document.getElementById('rdayDateInput');
+  const v = inp ? inp.value : rdayEntry(activeModalItem.id).pick;
+  if (!v) { rdaySetMsg(activeModalItem.id, 'Elige primero una fecha en el calendario.', 'warn'); return; }
+  rdayAdd(v);
+}
+async function rdayAdd(iso) {
+  if (!SB_READY || !currentUser || !activeModalItem) return;
+  const id = activeModalItem.id, uid = currentUser.id, st = rdayEntry(id);
+  if (st.state !== 'ready' || st.busy) return;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso) || iso < '2000-01-01') { rdaySetMsg(id, 'Esa fecha no es válida.', 'err'); return; }
+  if (iso > localTodayISO()) { rdaySetMsg(id, 'No se pueden registrar días futuros.', 'err'); return; }
+  if (st.days.includes(iso)) { rdaySetMsg(id, 'Ese día ya está registrado (' + rdayFmt(iso) + ').', 'warn'); return; }
+  st.busy = true; refreshReadingDaysSection();
+  let error = null;
+  try { ({ error } = await sb.from('reading_days').insert({ user_id: uid, book_id: id, read_date: iso })); }
+  catch (e) { error = e; }
+  st.busy = false;
+  if (_rdayUid !== uid || _rdayCache[id] !== st) return;
+  if (error && error.code !== '23505') {
+    // No se guardó: la fecha elegida se conserva en el selector para reintentar
+    refreshReadingDaysSection();
+    rdaySetMsg(id, 'No se pudo guardar el ' + rdayFmt(iso) + '. Comprueba tu conexión e inténtalo de nuevo.', 'err');
+    return;
+  }
+  // 23505 = ya estaba registrado (p. ej. desde otra pestaña): se muestra igualmente
+  if (!st.days.includes(iso)) st.days.push(iso);
+  st.days.sort().reverse();
+  calDaysApply(id, iso, true); calAfterDaysChange(); // el calendario refleja el día añadido
+  st.flash = iso;
+  if (st.pick === iso) st.pick = '';
+  refreshReadingDaysSection();
+  rdaySetMsg(id, error ? 'Ese día ya estaba registrado (' + rdayFmt(iso) + ').' : '✓ Día guardado: ' + rdayFmt(iso), error ? 'warn' : 'ok');
+}
+async function rdayRemove(iso) {
+  if (!SB_READY || !currentUser || !activeModalItem) return;
+  const id = activeModalItem.id, uid = currentUser.id, st = rdayEntry(id);
+  if (st.state !== 'ready' || st.busy) return;
+  st.busy = true; refreshReadingDaysSection();
+  let error = null;
+  try { ({ error } = await sb.from('reading_days').delete().eq('user_id', uid).eq('book_id', id).eq('read_date', iso)); }
+  catch (e) { error = e; }
+  st.busy = false;
+  if (_rdayUid !== uid || _rdayCache[id] !== st) return;
+  if (error) {
+    refreshReadingDaysSection();
+    rdaySetMsg(id, 'No se pudo quitar el ' + rdayFmt(iso) + '. Comprueba tu conexión e inténtalo de nuevo.', 'err');
+    return;
+  }
+  st.days = st.days.filter(d => d !== iso);
+  if (st.editing === iso) { st.editing = ''; st.editPick = ''; }
+  calDaysApply(id, iso, false); calAfterDaysChange(); // el calendario refleja el día eliminado
+  refreshReadingDaysSection();
+  rdaySetMsg(id, '✓ Día eliminado: ' + rdayFmt(iso), 'ok');
+}
+
+// Editar un día = cambiar su fecha. Se inserta la fecha nueva y se borra la antigua (las mismas operaciones
+// que ya usan «añadir» y «quitar»); si falla el borrado, se deshace la inserción para no dejar un día de más.
+function rdayStartEdit(iso) {
+  if (!activeModalItem) return;
+  const st = rdayEntry(activeModalItem.id);
+  if (st.state !== 'ready' || st.busy || !st.days.includes(iso)) return;
+  st.editing = iso; st.editPick = iso;
+  refreshReadingDaysSection();
+  const inp = document.getElementById('rdayEditInput'); if (inp) inp.focus();
+}
+function rdayEditPick(v) { if (activeModalItem) rdayEntry(activeModalItem.id).editPick = v || ''; }
+function rdayCancelEdit() {
+  if (!activeModalItem) return;
+  const st = rdayEntry(activeModalItem.id);
+  if (st.busy) return;
+  st.editing = ''; st.editPick = '';
+  refreshReadingDaysSection();
+}
+async function rdaySaveEdit() {
+  if (!SB_READY || !currentUser || !activeModalItem) return;
+  const id = activeModalItem.id, uid = currentUser.id, st = rdayEntry(id);
+  if (st.state !== 'ready' || st.busy || !st.editing) return;
+  const oldIso = st.editing;
+  const inp = document.getElementById('rdayEditInput');
+  const nw = inp ? inp.value : st.editPick;
+  if (!nw) { rdaySetMsg(id, 'Elige primero la nueva fecha.', 'warn'); return; }
+  if (nw === oldIso) { rdayCancelEdit(); return; }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(nw) || nw < '2000-01-01') { rdaySetMsg(id, 'Esa fecha no es válida.', 'err'); return; }
+  if (nw > localTodayISO()) { rdaySetMsg(id, 'No se pueden registrar días futuros.', 'err'); return; }
+  if (st.days.includes(nw)) { rdaySetMsg(id, 'Ese día ya está registrado (' + rdayFmt(nw) + ').', 'warn'); return; }
+  st.editPick = nw;
+  st.busy = true; refreshReadingDaysSection();
+  let error = null, delError = null, undoFailed = false;
+  try { ({ error } = await sb.from('reading_days').insert({ user_id: uid, book_id: id, read_date: nw })); }
+  catch (e) { error = e; }
+  if (!error) {
+    try { ({ error: delError } = await sb.from('reading_days').delete().eq('user_id', uid).eq('book_id', id).eq('read_date', oldIso)); }
+    catch (e) { delError = e; }
+    if (delError) {
+      try { const r = await sb.from('reading_days').delete().eq('user_id', uid).eq('book_id', id).eq('read_date', nw); if (r && r.error) undoFailed = true; }
+      catch (e) { undoFailed = true; }
+    }
+  }
+  st.busy = false;
+  if (_rdayUid !== uid || _rdayCache[id] !== st) return;
+  if (error || delError) {
+    if (undoFailed) { // en la base quedaron las dos fechas: la lista local debe reflejarlo
+      if (!st.days.includes(nw)) st.days.push(nw);
+      st.days.sort().reverse();
+      calDaysApply(id, nw, true); calAfterDaysChange();
+    }
+    refreshReadingDaysSection();
+    rdaySetMsg(id, undoFailed
+      ? 'No se pudo quitar el ' + rdayFmt(oldIso) + ' y la nueva fecha quedó guardada. Quita a mano la que sobre.'
+      : 'No se pudo cambiar el ' + rdayFmt(oldIso) + '. No se ha modificado nada; inténtalo de nuevo.', 'err');
+    return;
+  }
+  st.days = st.days.filter(d => d !== oldIso);
+  if (!st.days.includes(nw)) st.days.push(nw);
+  st.days.sort().reverse();
+  st.editing = ''; st.editPick = ''; st.flash = nw;
+  calDaysApply(id, oldIso, false); calDaysApply(id, nw, true); calAfterDaysChange();
+  refreshReadingDaysSection();
+  rdaySetMsg(id, '✓ Día cambiado: ' + rdayFmt(oldIso) + ' → ' + rdayFmt(nw), 'ok');
+}
+
 // ── MI ESTANTERÍA — VISTA COMPLETA ────────────────────────
 let shelfActive = false;
 let shelfTab = 'all';
@@ -7338,7 +7600,8 @@ function renderShelfView() {
 
   const grid = document.getElementById('shelfGrid');
   grid.innerHTML = '';
-  items.forEach(e => grid.appendChild(buildCard(e, '#111118')));
+  calDaysSync(); if (_calDaysState === 'idle') calDaysLoad(); // los resúmenes de días registrados salen de reading_days
+  items.forEach(e => { const card = buildCard(e, '#111118'); rdayDecorateShelfCard(card, e); grid.appendChild(card); });
 
   const emptyEl = document.getElementById('shelfEmpty');
   const emptyMsg = document.getElementById('shelfEmptyMsg');
@@ -7787,7 +8050,7 @@ async function init() {
           .then(() => { personalLoading = false; renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); })
           .finally(() => { if (personalLoading) { personalLoading = false; if (shelfActive) renderShelfView(); } });
       }
-      else { personalLoading = false; myRatings = {}; myReadingStatus = {}; myReadingDates = {}; mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
+      else { personalLoading = false; myRatings = {}; myReadingStatus = {}; myReadingDates = {}; calDaysReset(); mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
     });
 
     const { data: { session } } = await sb.auth.getSession();
@@ -9121,6 +9384,10 @@ function openModal(e, isRefresh) {
         <div class="mh-act-label">📚 Mi estantería</div>
         <div id="shelfSection">${buildShelfSectionHTML(e)}</div>
       </div>
+      <div class="mh-act mh-act-days">
+        <div class="mh-act-label">📅 Días de lectura</div>
+        <div id="readingDaysSection"><div id="rdayBody">${buildReadingDaysHTML(e)}</div><div id="rdayStatus" class="rday-status" role="status" aria-live="polite"></div></div>
+      </div>
     </div>`;
 
   // FASE 7.4 · información secundaria en bloques: sinopsis, tags, títulos alternativos, personajes e información adicional.
@@ -9234,6 +9501,7 @@ function closeModal() {
   const wasOpen = wrap.classList.contains('open');
   wrap.classList.remove('open');
   document.body.style.overflow = '';
+  Object.values(_rdayCache).forEach(s => { s.editing = ''; s.editPick = ''; }); // no se queda una edición abierta
   activeModalItem = null;
   _preModalUrl = null;
   document.title = 'GL PANELS — カタログ';
@@ -10419,6 +10687,177 @@ function _calCoverThumbHTML(p) {
   const t = esc(p.title);
   return coverImgHTML('cal', p.cover, '', { adult: p.adult, cls, ttl: p.title, imgClass: 'cal-cover-thumb ' + cls }).replace(/^<img /, `<img title="${t}" `);
 }
+// ── FASE LECTURA 4 · Días de lectura (reading_days) dentro del calendario ──
+// Los días de lectura (registro manual, tabla reading_days) viven en myReadingDays y los periodos
+// (fechas de inicio/fin de reading_status) siguen saliendo solo de buildReadingPeriods(): son dos
+// fuentes distintas que se pintan y se listan por separado y que nunca se escriben ni se mezclan.
+// Todas las fechas son cadenas 'YYYY-MM-DD'. Nunca se usa new Date('YYYY-MM-DD') (se interpreta en UTC
+// y puede mostrar el día anterior); para dar formato se usa el mediodía local, como en el resto del archivo.
+const CAL_MIN_YEAR = 2000; // igual que el mínimo permitido al registrar un día
+let myReadingDays = {};      // { 'YYYY-MM-DD': [book_id, …] }  (solo desde reading_days)
+let _calDaysState = 'idle';  // 'idle' | 'loading' | 'ready' | 'error'
+let _calDaysUid = null;      // usuario al que pertenecen los datos cargados
+let _calDaysGen = 0;         // se incrementa al cambiar de sesión para descartar cargas en vuelo
+let _calDaysVer = 0;         // versión del conjunto cargado (invalida el índice por historia)
+let _calDaysMut = 0;         // cambios locales (añadir/quitar) hechos mientras puede haber una carga en vuelo
+function calISO(y, m0, d) {
+  return y + '-' + String(m0 + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+}
+function calLabel(iso, opts) {
+  return new Date(iso + 'T12:00:00').toLocaleDateString('es-ES', opts);
+}
+function calPlural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+function calDaysReset() {
+  _calDaysGen++; _calDaysVer++;
+  myReadingDays = {};
+  _calDaysState = 'idle';
+  _calDaysUid = null;
+}
+function calDaysSync() {
+  const uid = currentUser ? currentUser.id : null;
+  if (_calDaysUid !== uid) { calDaysReset(); _calDaysUid = uid; } // otra sesión → no reutilizar datos de la anterior
+}
+async function calDaysLoad() {
+  if (!SB_READY || !currentUser) return;
+  calDaysSync();
+  if (_calDaysState === 'loading') return;
+  const uid = currentUser.id, gen = _calDaysGen;
+  _calDaysState = 'loading';
+  let rows, error, mut;
+  do {
+    mut = _calDaysMut; rows = []; error = null;
+    try {
+      // Páginas de 1000 filas (límite por defecto de Supabase) con orden estable
+      for (let from = 0; ; from += 1000) {
+        const res = await sb.from('reading_days').select('book_id,read_date').eq('user_id', uid)
+          .order('read_date', { ascending: true }).order('book_id', { ascending: true }).range(from, from + 999);
+        if (gen !== _calDaysGen) return;
+        if (res.error) { error = res.error; break; }
+        const page = res.data || [];
+        rows = rows.concat(page);
+        if (page.length < 1000) break;
+      }
+    } catch (e) { error = e; }
+    if (gen !== _calDaysGen) return;
+  } while (!error && mut !== _calDaysMut); // si se añadió/quitó un día durante la carga, se vuelve a leer
+  if (error) { _calDaysState = 'error'; }
+  else {
+    const map = {};
+    rows.forEach(r => {
+      const d = String(r.read_date).slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+      const list = map[d] || (map[d] = []);
+      if (!list.includes(r.book_id)) list.push(r.book_id);
+    });
+    myReadingDays = map; _calDaysVer++;
+    _calDaysState = 'ready';
+  }
+  calRefreshIfOpen();
+  rdayRefreshSummaries();
+}
+function calDaysEnsure() {
+  if (!SB_READY || !currentUser) return;
+  calDaysSync();
+  if (_calDaysState === 'idle' || _calDaysState === 'error') calDaysLoad();
+}
+function calDaysRetry() {
+  if (_calDaysState === 'error') _calDaysState = 'idle';
+  calDaysEnsure();
+  renderReadingCalendar();
+}
+// Lo llaman rdayAdd/rdayRemove tras guardar en la base: mantiene el calendario al día sin recargar.
+function calDaysApply(bookId, iso, present) {
+  calDaysSync();
+  _calDaysMut++;
+  if (_calDaysState !== 'ready') return; // sin cargar se leerá completo al abrir el calendario; cargando, se relee solo
+  _calDaysVer++;
+  const list = myReadingDays[iso] || [];
+  if (present) { if (!list.includes(bookId)) list.push(bookId); myReadingDays[iso] = list; }
+  else {
+    const rest = list.filter(b => b !== bookId);
+    if (rest.length) myReadingDays[iso] = rest; else delete myReadingDays[iso];
+  }
+}
+function calAfterDaysChange() {
+  if (calSelectedDay && !calDayHasData(calSelectedDay)) calSelectedDay = null;
+  calRefreshIfOpen();
+  rdayRefreshSummaries(); // los resúmenes de Mi estantería salen de los mismos datos
+}
+// FASE LECTURA 5 · Resumen por historia: nº de fechas registradas y la más reciente, solo desde reading_days.
+let _rdayIdx = null, _rdayIdxVer = -1;
+function rdayStatsFor(bookId) {
+  if (_rdayIdxVer !== _calDaysVer || !_rdayIdx) {
+    const idx = {};
+    Object.keys(myReadingDays).forEach(date => myReadingDays[date].forEach(b => {
+      const s = idx[b] || (idx[b] = { n: 0, last: '' });
+      s.n++; if (date > s.last) s.last = date;
+    }));
+    _rdayIdx = idx; _rdayIdxVer = _calDaysVer;
+  }
+  return _rdayIdx[bookId] || { n: 0, last: '' };
+}
+function rdaySummaryHTML(bookId) {
+  if (_calDaysState === 'error') return '<span class="card-days-lbl">Días registrados no disponibles</span>';
+  if (_calDaysState !== 'ready') return ''; // cargando: no se muestra un 0 que podría ser falso
+  const s = rdayStatsFor(bookId);
+  if (!s.n) return '<span class="card-days-lbl">Sin días registrados</span>';
+  return `<span class="card-days-lbl" title="${esc(RDAY_COUNT_HINT)}">📖 ${esc(rdayCountText(s.n))}</span><span class="card-days-last">Última: ${esc(rdayFmt(s.last))}</span>`;
+}
+function rdayRefreshSummaries() {
+  document.querySelectorAll('[data-rday-sum]').forEach(el => { el.innerHTML = rdaySummaryHTML(el.getAttribute('data-rday-sum')); });
+}
+function rdayDecorateShelfCard(card, e) {
+  const info = card.querySelector('.card-info'); if (!info) return;
+  const el = document.createElement('div');
+  el.className = 'card-days';
+  el.setAttribute('data-rday-sum', e.id);
+  el.setAttribute('role', 'button'); el.tabIndex = 0;
+  el.setAttribute('aria-label', 'Ver y editar los días de lectura de ' + e.titulo);
+  el.innerHTML = rdaySummaryHTML(e.id);
+  const open = ev => { ev.stopPropagation(); rdayOpenFromShelf(e.id); };
+  el.addEventListener('click', open);
+  el.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(ev); } });
+  info.appendChild(el);
+}
+// Abre la ficha y lleva la vista a la sección «Días de lectura», donde se editan o eliminan
+function rdayOpenFromShelf(id) {
+  const item = allData.find(x => x.id === id);
+  if (!item) return;
+  openModal(item);
+  setTimeout(() => {
+    const sec = document.getElementById('readingDaysSection');
+    if (sec && sec.scrollIntoView) sec.scrollIntoView({ block: 'center', behavior: (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth' });
+  }, 60);
+}
+function calRefreshIfOpen() {
+  const wrap = document.getElementById('calendarModalWrap');
+  if (wrap && wrap.classList.contains('open')) renderReadingCalendar();
+}
+// Historias con día de lectura registrado en esa fecha (solo las que existen en el catálogo), por título
+function calDiaryBooks(dateStr, byId) {
+  if (_calDaysState !== 'ready') return [];
+  const ids = myReadingDays[dateStr] || [];
+  const out = [];
+  ids.forEach(id => { const b = byId.get(id); if (b) out.push(b); });
+  return out.sort((a, b) => String(a.titulo).localeCompare(String(b.titulo), 'es'));
+}
+function calDayHasData(dateStr) {
+  const byId = new Map(allData.map(b => [b.id, b]));
+  return calDiaryBooks(dateStr, byId).length > 0 || buildReadingPeriods().some(p => p.start <= dateStr && dateStr <= p.end);
+}
+function calKeyActivate(ev, el) {
+  if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); el.click(); }
+}
+function calPanelRowHTML(bookId, title, cover, adult, sub) {
+  const cov = coverImgHTML('calpanel', cover, '', { adult: !!adult, imgClass: 'cal-panel-cover' });
+  return `<div class="cal-panel-book" role="button" tabindex="0" onclick="ruletaOpenBook(${jsArg(bookId)})" onkeydown="calKeyActivate(event,this)">
+            ${cov}
+            <div class="cal-panel-info">
+              <div class="cal-panel-title">${esc(title)}</div>
+              <div class="cal-panel-range">${sub}</div>
+            </div>
+          </div>`;
+}
 function renderReadingCalendar() {
   const container = document.getElementById('readingCalendarContainer');
   if (!container) return;
@@ -10430,7 +10869,12 @@ function renderReadingCalendar() {
       </div>`;
     return;
   }
+  calDaysSync();
+  // Al repintar se pierde el foco: se recuerda qué control lo tenía para devolvérselo
+  const focusKey = (document.activeElement && container.contains(document.activeElement)) ? document.activeElement.getAttribute('data-calfocus') : null;
   const periods = buildReadingPeriods();
+  const byId = new Map(allData.map(b => [b.id, b]));
+  const diaryReady = _calDaysState === 'ready';
   const monthNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const first = new Date(calYear, calMonth, 1);
   const startWeekday = (first.getDay() + 6) % 7; // lunes = 0
@@ -10439,18 +10883,32 @@ function renderReadingCalendar() {
 
   let cells = '';
   let monthReadDays = 0; // M19: días del mes visible cubiertos por algún periodo
+  let monthDiaryDays = 0; // días del mes visible con algún día de lectura registrado
   const monthBookIds = new Set(); // M19: libros distintos con algún día en el mes visible
   for (let i = 0; i < startWeekday; i++) cells += `<div class="cal-day empty-cell"></div>`;
   for (let d = 1; d <= daysInMonthCal; d++) {
-    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const dateStr = calISO(calYear, calMonth, d);
     const active = periods.filter(p => p.start <= dateStr && dateStr <= p.end);
+    const rbooks = calDiaryBooks(dateStr, byId); // una sola celda por fecha aunque haya varias historias
     if (active.length) { monthReadDays++; active.forEach(p => monthBookIds.add(p.bookId)); }
+    if (rbooks.length) monthDiaryDays++;
     const isToday = dateStr === todayISO;
     const isSelected = dateStr === calSelectedDay;
     const covers = active.slice(0, 3).map(p => _calCoverThumbHTML(p)).join('');
     const more = active.length > 3 ? `<span class="cal-day-more">+${active.length - 3}</span>` : '';
-    cells += `<div class="cal-day${active.length ? ' has-books' : ''}${isToday ? ' is-today' : ''}${isSelected ? ' is-selected' : ''}" ${active.length ? `onclick="calSelectDay('${dateStr}')"` : ''}>
-      <span class="cal-day-num">${d}</span>
+    const clickable = active.length > 0 || rbooks.length > 0;
+    const parts = [];
+    if (rbooks.length) parts.push(calPlural(rbooks.length, 'historia con día de lectura registrado', 'historias con día de lectura registrado'));
+    if (active.length) parts.push(calPlural(active.length, 'lectura en periodo', 'lecturas en periodo'));
+    const aria = calLabel(dateStr, { day: 'numeric', month: 'long', year: 'numeric' }) + (parts.length ? ': ' + parts.join(', ') : '');
+    const badge = rbooks.length
+      ? `<span class="cal-rday-badge" title="${esc(calPlural(rbooks.length, 'historia leída', 'historias leídas'))}" aria-hidden="true">📖${rbooks.length > 1 ? ' ' + rbooks.length : ''}</span>`
+      : '';
+    const attrs = clickable
+      ? ` role="button" tabindex="0" data-calfocus="d:${dateStr}" aria-pressed="${isSelected ? 'true' : 'false'}" aria-label="${esc(aria)}" onclick="calSelectDay('${dateStr}')" onkeydown="calKeyActivate(event,this)"`
+      : '';
+    cells += `<div class="cal-day${active.length ? ' has-books' : ''}${rbooks.length ? ' has-rdays' : ''}${isToday ? ' is-today' : ''}${isSelected ? ' is-selected' : ''}"${attrs}>
+      <div class="cal-day-head"><span class="cal-day-num">${d}</span>${badge}</div>
       <div class="cal-day-covers">${covers}${more}</div>
     </div>`;
   }
@@ -10459,54 +10917,84 @@ function renderReadingCalendar() {
   let panelHtml = '';
   if (calSelectedDay) {
     const active = periods.filter(p => p.start <= calSelectedDay && calSelectedDay <= p.end);
-    if (active.length) {
-      const dStr = new Date(calSelectedDay + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
-      panelHtml = `<div class="cal-day-panel">
-        <div class="cal-day-panel-title">${dStr}</div>
-        ${active.map(p => {
-          const rangeStr = `${new Date(p.start + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })} → ${p.ongoing ? 'ahora' : new Date(p.end + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`;
-          const cov = coverImgHTML('calpanel', p.cover, '', { adult: p.adult, imgClass: 'cal-panel-cover' });
-          return `<div class="cal-panel-book" onclick="ruletaOpenBook(${jsArg(p.bookId)})">
-            ${cov}
-            <div class="cal-panel-info">
-              <div class="cal-panel-title">${esc(p.title)}</div>
-              <div class="cal-panel-range">${rangeStr}</div>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>`;
+    const rbooks = calDiaryBooks(calSelectedDay, byId);
+    const dStr = calLabel(calSelectedDay, { day: '2-digit', month: 'long', year: 'numeric' });
+    let inner = '';
+    if (rbooks.length) {
+      inner += `<div class="cal-panel-sub">📖 Día de lectura registrado · ${calPlural(rbooks.length, 'historia', 'historias')}</div>`
+        + rbooks.map(b => calPanelRowHTML(b.id, b.titulo, b.imagen, b.adult, 'Registrado como día de lectura')).join('');
     }
+    if (active.length) {
+      inner += `<div class="cal-panel-sub">Periodo de lectura · según tus fechas de inicio y fin</div>`
+        + active.map(p => {
+          const rangeStr = `${calLabel(p.start, { day: '2-digit', month: 'short' })} → ${p.ongoing ? 'ahora' : calLabel(p.end, { day: '2-digit', month: 'short' })}`;
+          return calPanelRowHTML(p.bookId, p.title, p.cover, p.adult, rangeStr);
+        }).join('');
+    }
+    if (!inner) {
+      inner = `<p class="cal-empty-msg" style="padding:10px 0">${_calDaysState === 'loading' ? 'Cargando tus días de lectura…' : _calDaysState === 'error' ? 'No se pudieron cargar tus días de lectura.' : 'No hay lecturas registradas este día.'}</p>`;
+    }
+    panelHtml = `<div class="cal-day-panel">
+        <div class="cal-day-panel-title">${dStr}</div>
+        ${inner}
+      </div>`;
   }
+
+  const diaryNote = _calDaysState === 'loading'
+    ? `<p class="cal-rday-note" role="status">Cargando tus días de lectura…</p>`
+    : _calDaysState === 'error'
+      ? `<p class="cal-rday-note err" role="status">No se pudieron cargar tus días de lectura. <button type="button" class="cal-today-btn" data-calfocus="retry" onclick="calDaysRetry()">Reintentar</button></p>`
+      : '';
+  const noData = periods.length === 0 && diaryReady && Object.keys(myReadingDays).length === 0;
+  const atMin = calYear <= CAL_MIN_YEAR;
 
   container.innerHTML = `
     <div class="cal-header">
       <div class="cal-title">${monthLabel}</div>
       <div class="cal-nav">
-        <button class="cal-nav-btn" onclick="calChangeMonth(-1)">‹</button>
-        <button class="cal-today-btn" onclick="calGoToday()">Hoy</button>
-        <button class="cal-nav-btn" onclick="calChangeMonth(1)">›</button>
+        <button type="button" class="cal-nav-btn" data-calfocus="py" aria-label="Año anterior" title="Año anterior" onclick="calChangeYear(-1)"${atMin ? ' disabled' : ''}>«</button>
+        <button type="button" class="cal-nav-btn" data-calfocus="pm" aria-label="Mes anterior" title="Mes anterior" onclick="calChangeMonth(-1)"${atMin && calMonth === 0 ? ' disabled' : ''}>‹</button>
+        <button type="button" class="cal-today-btn" data-calfocus="today" onclick="calGoToday()">Hoy</button>
+        <button type="button" class="cal-nav-btn" data-calfocus="nm" aria-label="Mes siguiente" title="Mes siguiente" onclick="calChangeMonth(1)">›</button>
+        <button type="button" class="cal-nav-btn" data-calfocus="ny" aria-label="Año siguiente" title="Año siguiente" onclick="calChangeYear(1)">»</button>
       </div>
     </div>
     <div class="cal-legend">
-      <span><span class="cal-dot dot-reading"></span> Leyendo</span>
-      <span><span class="cal-dot dot-read"></span> Terminado</span>
+      <span title="Periodo entre la fecha de inicio y la de fin de tu estado de lectura"><span class="cal-dot dot-reading"></span> Leyendo</span>
+      <span title="Periodo entre la fecha de inicio y la de fin de tu estado de lectura"><span class="cal-dot dot-read"></span> Terminado</span>
+      <span title="Día que registraste a mano en la ficha de una historia"><span class="cal-dot dot-rday"></span> 📖 Día de lectura registrado</span>
     </div>
     <div class="cal-summary" aria-label="Resumen del mes">
       <div class="cal-stat" title="Días del mes con algún periodo de lectura abierto (entre fecha de inicio y de fin)"><span class="cal-stat-val" id="calStatDays">${monthReadDays}</span><span class="cal-stat-lbl">Días con lectura</span></div>
       <div class="cal-stat" title="Historias distintas con algún día de lectura en el mes; cada una cuenta una sola vez"><span class="cal-stat-val" id="calStatBooks">${monthBookIds.size}</span><span class="cal-stat-lbl">Historias en el mes</span></div>
+      <div class="cal-stat" title="Días del mes en los que registraste a mano una lectura en alguna ficha (no incluye los periodos de inicio y fin)"><span class="cal-stat-val" id="calStatRDays">${diaryReady ? monthDiaryDays : '–'}</span><span class="cal-stat-lbl">Días registrados</span></div>
     </div>
+    ${diaryNote}
     <div class="cal-grid">
       <div class="cal-weekday">L</div><div class="cal-weekday">M</div><div class="cal-weekday">X</div><div class="cal-weekday">J</div><div class="cal-weekday">V</div><div class="cal-weekday">S</div><div class="cal-weekday">D</div>
       ${cells}
     </div>
     ${panelHtml}
-    ${periods.length === 0 ? `<p class="cal-empty-msg">Aún no hay lecturas registradas. Marca un título como «Leyendo» o «Terminado» y ponle fecha de inicio para verlo aquí 📖</p>` : ''}
+    ${noData ? `<p class="cal-empty-msg">Aún no hay lecturas registradas. Marca un título como «Leyendo» o «Terminado» con fecha de inicio, o registra un día de lectura en su ficha, para verlo aquí 📖</p>` : ''}
   `;
+  if (focusKey) {
+    const el = Array.from(container.querySelectorAll('[data-calfocus]')).find(n => n.getAttribute('data-calfocus') === focusKey);
+    if (el && !el.disabled) el.focus();
+  }
 }
 function calChangeMonth(delta) {
-  calMonth += delta;
-  if (calMonth < 0) { calMonth = 11; calYear--; }
-  if (calMonth > 11) { calMonth = 0; calYear++; }
+  let y = calYear, m = calMonth + delta;
+  if (m < 0) { m = 11; y--; }
+  if (m > 11) { m = 0; y++; }
+  if (y < CAL_MIN_YEAR) return;
+  calYear = y; calMonth = m;
+  calSelectedDay = null;
+  renderReadingCalendar();
+}
+function calChangeYear(delta) {
+  const y = calYear + delta;
+  if (y < CAL_MIN_YEAR) return;
+  calYear = y; // se conserva el mes
   calSelectedDay = null;
   renderReadingCalendar();
 }
@@ -10524,6 +11012,7 @@ function calSelectDay(dateStr) {
 function openCalendarModal() {
   document.getElementById('calendarModalWrap').classList.add('open');
   document.body.style.overflow = 'hidden';
+  calDaysEnsure(); // lee reading_days (solo lectura) si aún no está cargado
   renderReadingCalendar();
 }
 function closeCalendarModal() {

@@ -6537,6 +6537,7 @@ function renderLogrosGrid() {
 async function openLogrosModal() {
   if (!currentUser) { openAuthModal(); return; }
   document.getElementById('logrosModalWrap').classList.add('open');
+  setPanelUrl('logros');
   document.body.style.overflow = 'hidden';
   const _lg = document.getElementById('logrosGrid');
   _lg.setAttribute('aria-busy', 'true');
@@ -6548,6 +6549,7 @@ async function openLogrosModal() {
 
 function closeLogrosModal() {
   document.getElementById('logrosModalWrap').classList.remove('open');
+  setPanelUrl(null);
   document.body.style.overflow = '';
 }
 
@@ -7531,7 +7533,7 @@ function openShelf(tab) {
   shelfActive = true;
   if (tab) shelfTab = tab;
   showShelfOverlay();
-  history.pushState(null, '', '?view=shelf');
+  history.pushState(null, '', shelfUrl());
 }
 
 function closeShelf() {
@@ -7545,6 +7547,7 @@ function closeShelf() {
 function setShelfTab(tab) {
   shelfTab = tab;
   renderShelfView();
+  if (shelfActive) setUrlParam('tab', tab !== 'all' ? tab : null); // la pestaña sobrevive a recargar
 }
 
 function shelfEntries() {
@@ -7892,6 +7895,27 @@ let inkCat = 'all'; // active ink club category
    por filtros (replaceState). Una ficha abierta ocupa UNA entrada encima del catálogo
    (state.manga); el scroll se guarda en state.ctx de esa entrada y de la del catálogo. */
 let _modalMangaId = null; // id de la ficha que ocupa la entrada de historial actual
+/* Recargar (F5) debe volver al mismo sitio: además de la ficha (?manga=) y la estantería (?view=shelf), la URL lleva
+   la pestaña de la estantería (&tab=), el panel de perfil abierto (&panel=calendar|logros) y el mes del calendario (&cal=AAAA-MM).
+   Se escriben con replaceState sobre la entrada actual: no añaden pasos al historial. */
+let _openPanel = null, _panelExtra = null; // panel de perfil abierto (calendar | logros) y su detalle
+const URL_PANELS = ['calendar', 'logros'];
+const URL_SHELF_TABS = ['all', 'want', 'reading', 'read'];
+function setUrlParam(k, v) { // cambia/quita un parámetro de la URL actual sin tocar el resto ni el historial
+  try {
+    const p = new URLSearchParams(location.search);
+    if (v === null || v === undefined || v === '') p.delete(k); else p.set(k, v);
+    const qs = p.toString();
+    if ('?' + qs === location.search || (!qs && !location.search)) return;
+    history.replaceState(history.state, '', qs ? '?' + qs : location.pathname);
+  } catch (e) {}
+}
+function setPanelUrl(panel, extra) {
+  if (!panel && !_openPanel) return; // nada abierto: no se toca la URL
+  _openPanel = panel || null; _panelExtra = panel ? (extra || null) : null;
+  setUrlParam('panel', _openPanel); setUrlParam('cal', _panelExtra);
+}
+function shelfUrl() { return '?view=shelf' + (shelfTab && shelfTab !== 'all' ? '&tab=' + shelfTab : ''); }
 function buildCatalogParams() {
   const p = new URLSearchParams();
   if (activeSec !== 'all')  p.set('sec', activeSec);
@@ -7916,6 +7940,7 @@ function pushState() {
   if (homeActive || shelfActive) return; // home/shelf views manage their own URL
   const p = buildCatalogParams();
   if (_modalMangaId) p.set('manga', _modalMangaId); // la ficha abierta (o recargada) conserva su ?manga=
+  if (_openPanel) { p.set('panel', _openPanel); if (_panelExtra) p.set('cal', _panelExtra); } // y el panel de perfil abierto
   const cur = history.state || {};
   const st = {};
   if (cur.ctx) st.ctx = cur.ctx;
@@ -7947,7 +7972,7 @@ function resetCatalogState() {
   hideAdult = false; fOnlyAdult = false; activeSort = 'recent'; fQ = '';
   Object.keys(secPages).forEach(k => delete secPages[k]);
 }
-const _qsKey = p => [...p.entries()].filter(([k]) => k !== 'manga').map(([k, v]) => k + '=' + v).sort().join('&');
+const _qsKey = p => [...p.entries()].filter(([k]) => k !== 'manga' && k !== 'panel' && k !== 'cal').map(([k, v]) => k + '=' + v).sort().join('&');
 // Si la URL de la entrada a la que se navega trae otro estado de catálogo (p. ej. tras cambiar filtros y avanzar), se sincroniza
 function syncCatalogFromUrl() {
   if (homeActive || shelfActive) return false;
@@ -8004,6 +8029,9 @@ async function init() {
   // Capturar ?manga=ID lo antes posible, antes de que pushState() (llamado
   // dentro de renderSections/renderInkClub) pueda sobrescribir la URL y perderlo.
   const _initMangaId = new URLSearchParams(location.search).get('manga');
+  // Recarga: se lee TODA la URL antes de que renderSections()/pushState() la reescriban (antes ?view=shelf se perdía y se caía en Explorar)
+  const _initP = new URLSearchParams(location.search);
+  if (URL_PANELS.includes(_initP.get('panel'))) { _openPanel = _initP.get('panel'); _panelExtra = _initP.get('cal'); }
   // FASE 6.4: recarga sobre la propia entrada de una ficha → se reutiliza (sin entrada nueva)
   const _initState = history.state || {};
   const _initCtx = _initState.ctx || null;
@@ -8056,6 +8084,8 @@ async function init() {
     const { data: { session } } = await sb.auth.getSession();
     if (session) {
       currentUser = session.user;
+      // Recarga sobre «Mi estantería»: se marca ya (antes de renderizar) para que nada reescriba la URL a la del catálogo
+      if (_initP.get('view') === 'shelf') { shelfActive = true; if (URL_SHELF_TABS.includes(_initP.get('tab'))) shelfTab = _initP.get('tab'); }
       // Arrancar las consultas personales en cuanto se conoce la sesión,
       // sin esperar a que termine el catálogo.
       _initialPersonalPromise = Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]);
@@ -8123,9 +8153,16 @@ async function init() {
   bindModalSwipe();
   updateMobBar();
 
-  if (new URLSearchParams(location.search).get('view') === 'shelf' && currentUser) {
+  if (_initP.get('view') === 'shelf' && currentUser) {
     shelfActive = true;
     showShelfOverlay();
+    if (_initMangaId && !activeModalItem) setUrlParam('manga', null); // ficha inexistente: la URL queda solo en la estantería
+  }
+  // Recarga con un panel de perfil abierto (calendario / logros): se reabre; sin sesión se limpia la URL
+  if (_openPanel) {
+    if (currentUser && !activeModalItem && _openPanel === 'calendar') { calRestoreFromUrl(_panelExtra); openCalendarModal(); }
+    else if (currentUser && !activeModalItem && _openPanel === 'logros') openLogrosModal();
+    else setPanelUrl(null);
   }
 
   // Handle browser back/forward
@@ -8163,6 +8200,7 @@ async function init() {
       document.getElementById('shelfView').classList.remove('active');
     } else if (!shelfActive && p.get('view') === 'shelf' && currentUser) {
       shelfActive = true;
+      shelfTab = URL_SHELF_TABS.includes(p.get('tab')) ? p.get('tab') : 'all';
       showShelfOverlay();
       return;
     }
@@ -10989,34 +11027,44 @@ function calChangeMonth(delta) {
   if (y < CAL_MIN_YEAR) return;
   calYear = y; calMonth = m;
   calSelectedDay = null;
-  renderReadingCalendar();
+  renderReadingCalendar(); calUrlSync();
 }
 function calChangeYear(delta) {
   const y = calYear + delta;
   if (y < CAL_MIN_YEAR) return;
   calYear = y; // se conserva el mes
   calSelectedDay = null;
-  renderReadingCalendar();
+  renderReadingCalendar(); calUrlSync();
 }
 function calGoToday() {
   const now = new Date();
   calYear = now.getFullYear();
   calMonth = now.getMonth();
   calSelectedDay = localTodayISO(now);
-  renderReadingCalendar();
+  renderReadingCalendar(); calUrlSync();
 }
 function calSelectDay(dateStr) {
   calSelectedDay = (calSelectedDay === dateStr) ? null : dateStr;
   renderReadingCalendar();
 }
+function calKey() { return calYear + '-' + String(calMonth + 1).padStart(2, '0'); }
+function calUrlSync() { if (_openPanel === 'calendar') setPanelUrl('calendar', calKey()); } // el mes visible sobrevive a recargar
+function calRestoreFromUrl(key) {
+  const m = /^(\d{4})-(\d{2})$/.exec(key || '');
+  if (!m) return;
+  const y = +m[1], mo = +m[2] - 1;
+  if (y >= CAL_MIN_YEAR && y <= 2200 && mo >= 0 && mo <= 11) { calYear = y; calMonth = mo; calSelectedDay = null; }
+}
 function openCalendarModal() {
   document.getElementById('calendarModalWrap').classList.add('open');
+  setPanelUrl('calendar', calKey());
   document.body.style.overflow = 'hidden';
   calDaysEnsure(); // lee reading_days (solo lectura) si aún no está cargado
   renderReadingCalendar();
 }
 function closeCalendarModal() {
   document.getElementById('calendarModalWrap').classList.remove('open');
+  setPanelUrl(null);
   document.body.style.overflow = '';
 }
 function handleCalendarBgClick(e) {

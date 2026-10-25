@@ -5122,6 +5122,76 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
 .sug-title { font-size: var(--fs-small); color: var(--gl-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sug-sub { font-size: var(--fs-label); color: var(--gl-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sug-item .adult-chip { margin-left: auto; }
+
+/* ══════════════════════════════════════════════════════════════
+   NAVEGACIÓN MÓVIL INFERIOR (≤900px) + fila de categorías retirada
+   - La fila de pestañas de categorías (#catTabs) se oculta en todos los tamaños: las categorías
+     ya están en «Categorías» y el Top 10 en «Comunidad». Se mantiene en el DOM porque el JS
+     (contadores, estado activo de la navegación) la sigue usando.
+   - ≤900px: el menú de la cabecera pasa a barra fija inferior: Inicio · Explorar · Categorías · Más.
+     «Más» abre lo de Comunidad (y el interruptor +18). Mismos botones y acciones, solo cambia el aspecto.
+   ══════════════════════════════════════════════════════════════ */
+.cat-tabs-wrap { display: none !important; }
+.nav-lbl-m { display: none; }
+@media (max-width: 900px) {
+  :root { --bn-h: 58px; }
+  .nav-lbl-m { display: inline; }
+  .nav-lbl-d { display: none; }
+  body { padding-bottom: calc(var(--bn-h) + env(safe-area-inset-bottom, 0px)); }
+  .topbar-menu-btn { display: none !important; }
+
+  .topbar .topbar-menu, .topbar.menu-open .topbar-menu {
+    display: block; position: fixed; left: 0; right: 0; top: auto; bottom: 0; width: auto;
+    max-height: none; overflow: visible; padding: 0 0 env(safe-area-inset-bottom, 0px); gap: 0;
+    border: 0; border-top: 1px solid var(--cmp-border-strong); border-radius: 0;
+    background: var(--cmp-surface-2); box-shadow: 0 -6px 20px rgba(0,0,0,.35); z-index: 300;
+  }
+  .topbar .topbar-nav {
+    display: flex; flex-direction: row; align-items: stretch; gap: 0; width: 100%;
+    margin: 0; padding: 0; border: 0;
+  }
+  .topbar .topbar-nav .nav-dd { display: flex; flex: 1 1 0; width: auto; min-width: 0; position: static; }
+  .topbar .topbar-nav > .home-nav-btn, .topbar .topbar-nav .nav-dd-toggle {
+    flex: 1 1 0; width: 100%; min-width: 0; min-height: var(--bn-h); padding: 6px 4px; gap: 3px;
+    flex-direction: column; align-items: center; justify-content: center;
+    border: 0; border-radius: 0; font-size: 20px; line-height: 1;
+  }
+  .topbar .topbar-nav .home-nav-btn .nav-ico { width: auto; font-size: 20px; opacity: 1; }
+  .topbar .topbar-nav .home-nav-btn > span:not(.nav-ico):not(.nav-dot):not(.nav-caret) {
+    font-size: 11px; letter-spacing: .02em; line-height: 1.1;
+  }
+  .topbar .topbar-nav .nav-caret { display: none; }
+  .topbar .topbar-nav .nav-dd-toggle { position: relative; }
+  .topbar .topbar-nav .nav-dd-toggle .nav-dot { position: absolute; top: 9px; left: calc(50% + 8px); margin: 0; }
+  .topbar .topbar-nav .nav-search-btn { display: none !important; }   /* sin «Buscar» abajo: el buscador está en Explorar */
+
+  /* Activo: color de acento + marca arriba (en vez de la barra lateral del menú) */
+  .topbar .topbar-nav .home-nav-btn.active:not(:disabled),
+  .topbar .topbar-nav .nav-dd-toggle[aria-expanded="true"]:not(:disabled) {
+    background: transparent; border: 0; color: var(--ctl-accent-text);
+  }
+  .topbar .topbar-nav .home-nav-btn.active::after {
+    content: ''; position: absolute; top: 0; bottom: auto; left: 25%; right: 25%; width: auto; height: 2px;
+    border-radius: 0 0 3px 3px; background: var(--ctl-accent);
+  }
+
+  /* Paneles: hoja flotante encima de la barra */
+  .topbar .topbar-nav .nav-dd-panel {
+    position: fixed; left: 8px; right: 8px; top: auto; bottom: calc(var(--bn-h) + 6px + env(safe-area-inset-bottom, 0px));
+    width: auto; max-height: min(68vh, calc(100vh - 150px)); max-height: min(68dvh, calc(100dvh - 150px)); overflow-y: auto;
+    margin: 0; padding: 6px; z-index: 310;
+    background: var(--cmp-surface-2); border: 1px solid var(--cmp-border-strong); border-top: 2px solid var(--ctl-accent);
+    border-radius: var(--ctl-radius); box-shadow: var(--cmp-elev-2);
+  }
+  .topbar .topbar-nav .nav-dd-item { min-height: 46px; }
+  .topbar .nav-dd-panel .adult-btn { margin-top: 4px; border-top-color: var(--cmp-border); border-radius: 0 0 var(--ctl-radius-sm) var(--ctl-radius-sm); }
+
+  .scroll-top { bottom: calc(var(--bn-h) + 14px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Top 10: solo visible al entrar por Comunidad › Top 10. Cabecera grande del catálogo (.hero): retirada; Inicio conserva su portada (.hv-hero). */
+body:not(.show-top10) #top10Section, body:not(.show-top10) .top10-divider { display: none !important; }
+.hero { display: none !important; }
 </style>
 </head>
 <body>
@@ -5187,7 +5257,7 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
           </div>
         </div>
         <div class="nav-dd" id="navDdCom">
-          <button type="button" class="home-nav-btn nav-item nav-dd-toggle" id="navDdComBtn" aria-haspopup="true" aria-expanded="false" aria-controls="navDdComPanel"><span class="nav-ico" aria-hidden="true">◈</span> <span>Comunidad</span><span class="nav-caret" aria-hidden="true"></span></button>
+          <button type="button" class="home-nav-btn nav-item nav-dd-toggle" id="navDdComBtn" aria-haspopup="true" aria-expanded="false" aria-controls="navDdComPanel"><span class="nav-ico" aria-hidden="true"><span class="nav-lbl-d">◈</span><span class="nav-lbl-m">⋯</span></span> <span><span class="nav-lbl-d">Comunidad</span><span class="nav-lbl-m">Más</span></span><span class="nav-caret" aria-hidden="true"></span></button>
           <div class="nav-dd-panel" id="navDdComPanel" role="menu" aria-label="Comunidad" hidden>
           <div class="nav-dd-group" role="group" aria-labelledby="navGrpRank">
             <div class="nav-dd-group-label" id="navGrpRank">Rankings</div>
@@ -5212,6 +5282,18 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
     <div id="authArea"></div>
   </div>
 </header>
+<script>
+// ── +18 dentro de «Más» en móvil (≤900px) ─────────────────
+// Con la barra inferior, el interruptor +18 vive en el panel de «Más». Se mueve el propio botón (conserva id y eventos).
+(function placeAdultBtn() {
+  const btn = document.getElementById('adultBtn'), panel = document.getElementById('navDdComPanel'), menu = document.getElementById('topbarMenu');
+  if (!btn || !panel || !menu) return;
+  const mq = window.matchMedia('(max-width: 900px)');
+  const place = () => { if (mq.matches) panel.appendChild(btn); else menu.appendChild(btn); };
+  mq.addEventListener('change', place);
+  place();
+})();
+</script>
 
 <!-- ══════════════════════════════════════════════════════════
      HOME VIEW — se muestra/oculta según activeSec === 'home'
@@ -6156,7 +6238,8 @@ function navRuleta()       { closeNavDropdowns(); openRuletaModal(); }
 // FASE 9B.5 · Rankings (mecanismos que ya existen): el bloque Top 10 de Explorar y el orden «Más valorados / Más spicy»
 function navTop10() {
   closeNavDropdowns(); navLeaveShelf();
-  showCatalog('all'); // el Top 10 solo se muestra en la vista «Todas»
+  showCatalog('all');
+  document.body.classList.add('show-top10'); // el Top 10 solo se muestra al venir de Comunidad › Top 10 (showCatalog lo quita en cualquier otra navegación)
   const sec = document.getElementById('top10Section');
   if (sec && sec.style.display !== 'none') {
     sec.setAttribute('tabindex', '-1');
@@ -7847,6 +7930,7 @@ async function init() {
 // ── HOME VIEW ─────────────────────────────────────────────
 
 function showHome() {
+  document.body.classList.remove('show-top10');
   // FASE 3.4: si «Mi estantería» está abierta, Inicio la cierra (mismo estado que deja popstate);
   // antes la estantería seguía tapando la portada y Inicio parecía no hacer nada.
   if (shelfActive) {
@@ -7865,6 +7949,7 @@ function showHome() {
 }
 
 function showCatalog(sec) {
+  document.body.classList.remove('show-top10');
   const _fromHome = homeActive; // FASE 6.5.5
   // FASE 6.5.5: venir de la portada apila una entrada (antes se reemplazaba y Atrás salía de la web en vez de volver a la portada).
   // Se hace antes de cualquier render: renderSections() reescribe la URL de la entrada actual con replaceState.

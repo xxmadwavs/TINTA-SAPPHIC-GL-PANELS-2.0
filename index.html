@@ -1179,24 +1179,33 @@ div.search-box:focus { outline: none; }
 
 .modal-body { padding: 20px 24px 28px; }
 
+/* FASE 7.2 · cabecera de la ficha: portada protagonista; título y sección a su lado; datos esenciales justo debajo */
 .modal-top {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: 148px minmax(0, 1fr);
+  grid-template-areas: "cover head" "cover body";
+  grid-template-rows: auto 1fr;
+  column-gap: 24px; row-gap: 0;
+  margin-bottom: 22px;
 }
+.modal-cover { grid-area: cover; align-self: start; }
+.mh-head { grid-area: head; min-width: 0; }
+.mh-body { grid-area: body; min-width: 0; align-self: start; }
 .modal-cover img {
-  width: 120px; height: 180px;
+  display: block;
+  width: 148px; height: auto; aspect-ratio: 2 / 3;
   object-fit: cover; border-radius: 1px;
   border: 1px solid var(--border);
 }
 .modal-cover-gen {
-  width: 120px; height: 180px;
+  width: 148px; height: auto; aspect-ratio: 2 / 3;
   background: #1c1c28;
   border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
   border-radius: 1px;
 }
+.modal-top .modal-cover img,
+.modal-top .modal-cover-gen { box-shadow: var(--cmp-elev-2), 0 16px 44px -18px color-mix(in srgb, var(--neon2) 55%, transparent); }
 /* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .modal-cover-gen{background:var(--surface2)}
 .modal-cover-gen span { font-size: 2.5rem; opacity: .2; }
 
@@ -1209,7 +1218,10 @@ div.search-box:focus { outline: none; }
   font-family: var(--font-display);
   font-size: var(--fs-h2); letter-spacing: var(--ls-display);
   line-height: var(--lh-title); margin-bottom: 6px; font-weight:var(--fw-regular);
+  overflow-wrap: break-word; text-wrap: balance;
 }
+.mh-head .modal-sec { margin-bottom: 10px; }
+.mh-head .modal-title { margin-bottom: 0; }
 .modal-alt-titles {
   display: flex; flex-wrap: wrap; gap: 4px;
   margin-bottom: 10px;
@@ -1225,11 +1237,17 @@ div.search-box:focus { outline: none; }
   opacity: .4;
 }
 /* ── modal meta: grupos con jerarquía, no una fila plana de chips ── */
-.modal-meta-groups {
-  display: flex; flex-wrap: wrap; gap: 14px 22px;
-  margin-bottom: 14px; padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
+/* FASE 7.2 · datos esenciales (estado, capítulos, año, clasificación) en una sola fila bajo el título */
+.mh-facts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0 12px; }
+.mh-facts .mbadge { font-size: var(--fs-small); padding: 5px 12px; }
+.mh-facts .mb-caps, .mh-facts .mb-year { --bd-text: var(--gl-text); }
+/* datos secundarios: más pequeños y atenuados para no competir con portada y título */
+.mh-extra { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.mh-extra .meta-group { flex-direction: row; align-items: center; gap: 8px; }
+.mh-extra .mbadge { font-size: var(--fs-label); padding: 3px 8px; }
+.mh-body .modal-alt-titles { margin-bottom: 6px; }
+.mh-body .modal-autor { margin-bottom: 8px; }
+.mh-body .modal-adult-warn { margin-bottom: 0; margin-top: 4px; }
 .meta-group { display: flex; flex-direction: column; gap: 6px; }
 .meta-glabel {
   font-size: var(--fs-label); letter-spacing: var(--ls-label); text-transform: uppercase;
@@ -1255,7 +1273,7 @@ div.search-box:focus { outline: none; }
 }
 .mb-adult { background: rgba(255,71,163,0.12); color: var(--neon2); border: 1px solid rgba(255,71,163,0.25); }
 /* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mb-adult{background:rgba(var(--neon2-rgb),0.12);border:1px solid rgba(var(--neon2-rgb),0.25)}
-.mb-caps { background: rgba(245,240,232,0.06); color: var(--gl-text-muted); border: 1px solid rgba(245,240,232,0.15); }
+.mb-caps, .mb-year { background: rgba(245,240,232,0.06); color: var(--gl-text-muted); border: 1px solid rgba(245,240,232,0.15); }
 .mb-spicy { background: rgba(255,71,163,0.14); color: var(--neon2); border: 1px solid rgba(255,71,163,0.3); font-weight: 700; }
 /* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .mb-spicy{background:rgba(var(--neon2-rgb),0.14);border:1px solid rgba(var(--neon2-rgb),0.3)}
 .modal-autor {
@@ -1358,6 +1376,37 @@ div.search-box:focus { outline: none; }
 }
 /* theme-seasonal */:where(body.theme-halloween,body.theme-christmas) .modal-read-link{background:rgba(var(--neon3-rgb),0.1);border:1px solid rgba(var(--neon3-rgb),0.35)}
 .modal-read-link:hover { background: var(--neon3); color: #08110f; }
+/* FASE 7.3 · acciones principales de la ficha (leer y mi estantería), justo bajo la cabecera */
+.mh-actions {
+  display: flex; flex-direction: column;
+  margin: 0 0 18px; padding: 14px 16px;
+  background: color-mix(in srgb, var(--gl-text) 4%, transparent);
+  border: 1px solid var(--cmp-border-strong); border-radius: var(--cmp-r-block);
+}
+.mh-act + .mh-act { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.mh-act-label { font-family: var(--font-ui); font-size: var(--fs-small); font-weight: var(--fw-semibold); color: var(--gl-text); margin-bottom: 10px; }
+.mh-actions .modal-read-links { gap: 8px; }
+.mh-actions .modal-read-link {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 8px 16px;
+  font-size: var(--fs-small); font-weight: var(--fw-semibold);
+  color: var(--cmp-teal);
+  background: color-mix(in srgb, var(--cmp-teal) 18%, transparent);
+  border-color: color-mix(in srgb, var(--cmp-teal) 65%, transparent);
+}
+.mh-actions .modal-read-link:hover { background: var(--cmp-teal); color: #08110f; }
+.mh-actions .modal-read-link:focus-visible { outline: 2px solid var(--cmp-teal); outline-offset: 2px; }
+/* FASE 7.5 · enlace oficial: nombre del destino + dominio real + indicador de pestaña nueva */
+.mh-actions .modal-read-link { gap: 8px; max-width: 100%; }
+.mh-actions .modal-read-link .olink-name { min-width: 0; overflow-wrap: anywhere; }
+.mh-actions .modal-read-link .olink-host { font-size: var(--fs-label); font-weight: var(--fw-regular); opacity: .8; overflow-wrap: anywhere; }
+.mh-actions .modal-read-link .olink-host::before { content: '· '; }
+.mh-actions .modal-read-link .olink-ico { flex: none; }
+.mh-actions .shelf-btns-row { gap: 8px; margin-bottom: 0; }
+.mh-actions .shelf-btn { flex: 1 1 auto; min-height: 40px; padding: 8px 12px; font-size: var(--fs-small); }
+.mh-actions .shelf-dates-row { margin: 12px 0 0; }
+.mh-actions .shelf-remove-btn { margin-top: 12px; }
+.mh-actions .rating-locked-box { display: flex; align-items: center; gap: 12px; padding: 0; text-align: left; }
+.mh-actions .rating-locked-box .rlb-icon { margin: 0; flex: none; }
 .modal-tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .mtag {
   font-size: var(--fs-label); padding: 3px 9px;
@@ -1378,6 +1427,51 @@ div.search-box:focus { outline: none; }
 .modal-extra-label { font-size: var(--fs-label); letter-spacing: var(--ls-label); color: var(--gl-text-muted); text-transform: uppercase; margin-right: 2px; }
 .modal-extra-locked { font-size: var(--fs-meta); color: var(--gl-text-muted); font-style: italic; }
 .modal-extra-locked a { color: var(--neon3); cursor: pointer; text-decoration: underline; font-style: normal; }
+/* FASE 7.3 · metadatos en filas etiqueta + valores; solo se pinta lo que existe */
+.mh-meta { margin: 0 0 18px; padding-top: 14px; border-top: 1px solid var(--border); gap: 12px; }
+.mh-meta .modal-extra-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 6px 12px; align-items: start; }
+.mh-meta .modal-extra-label { margin: 0; padding-top: 4px; }
+
+/* FASE 7.6 · textos largos sin espacios (autor, títulos alternativos, insignias) no deben ensanchar la cabecera de la ficha */
+.modal-top .modal-autor, .modal-top .modal-alt-title { overflow-wrap: anywhere; min-width: 0; }
+.mh-facts .mbadge, .mh-extra .mbadge { white-space: normal; max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+.mh-facts, .mh-extra, .mh-extra .meta-group, .mh-extra .meta-row { min-width: 0; max-width: 100%; }
+/* FASE 7.4 · información secundaria de la ficha en bloques (sinopsis, tags, títulos alternativos, personajes, información adicional) */
+.mh-details { display: flex; flex-direction: column; gap: 14px; margin: 0 0 18px; }
+.mh-block { padding: 14px 16px; background: color-mix(in srgb, var(--gl-text) 3%, transparent); border: 1px solid var(--border); border-radius: var(--cmp-r-block, 8px); min-width: 0; }
+.mh-block-title { margin: 0 0 10px; font-family: var(--font-ui); font-size: var(--fs-label); font-weight: var(--fw-semibold); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--gl-text-muted); }
+.mh-synopsis { max-width: 68ch; }
+.mh-synopsis p { margin: 0; font-family: var(--font-ui); font-size: var(--fs-body); line-height: var(--lh-long); color: var(--gl-text); overflow-wrap: break-word; hyphens: auto; }
+.mh-synopsis p + p { margin-top: .85em; }
+.mh-block--tags { display: flex; flex-direction: column; gap: 0; }
+.mh-block--tags .mh-block-title { margin-bottom: 12px; }
+.mh-tag-group + .mh-tag-group { margin-top: 12px; }
+.mh-tag-label { margin-bottom: 6px; font-family: var(--font-ui); font-size: var(--fs-label); font-weight: var(--fw-medium); color: var(--gl-text-muted); }
+.mh-chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.mh-block .mh-chips .mtag.mh-tag { --tg-c: var(--gl-text); display: inline-flex; align-items: center; max-width: 100%; padding: 5px 11px; font-family: var(--font-ui); font-size: var(--fs-small); font-weight: var(--fw-medium); line-height: 1.25; letter-spacing: 0; overflow-wrap: anywhere; color: var(--gl-text); background: color-mix(in srgb, var(--tg-c) 9%, transparent); border: 1px solid color-mix(in srgb, var(--tg-c) 30%, transparent); border-radius: var(--cmp-r-badge, 6px); }
+.mh-block .mh-chips .mtag.mh-tag--genre { --tg-c: var(--cmp-yellow); }
+.mh-block .mh-chips .mtag.mh-tag--sub { --tg-c: var(--cmp-teal); }
+.mh-block .mh-chips .mtag.mh-tag--trope { --tg-c: var(--cmp-pink); }
+.mh-block .mh-chips .mtag.mh-tag--char { --tg-c: var(--cmp-teal); }
+.mh-block .mh-chips .mtag.mh-tag--adult { --tg-c: var(--cmp-pink); color: var(--cmp-pink); }
+.mh-block .mh-chips .mtag.mh-tag--info { --tg-c: var(--gl-text); }
+.mh-alt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mh-alt-list li { position: relative; padding-left: 14px; font-family: var(--font-ui); font-size: var(--fs-small); line-height: var(--lh-body); color: var(--gl-text-secondary); font-style: italic; overflow-wrap: anywhere; }
+.mh-alt-list li::before { content: ''; position: absolute; left: 0; top: .6em; width: 6px; height: 1px; background: var(--gl-text-muted); }
+.mh-block .modal-extra-locked { margin: 0; font-size: var(--fs-small); line-height: var(--lh-body); }
+.mh-info-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 6px 12px; align-items: start; }
+.mh-info-row + .mh-info-row { margin-top: 10px; }
+.mh-info-row .mh-tag-label { margin: 0; padding-top: 6px; }
+@media (max-width: 600px) {
+  .mh-details { gap: 12px; }
+  .mh-block { padding: 12px; }
+  .mh-synopsis { max-width: none; }
+  .mh-synopsis p { font-size: 1rem; line-height: 1.75; }
+  .mh-info-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .mh-info-row .mh-tag-label { padding-top: 0; }
+  .mh-block .mh-chips .mtag.mh-tag { padding: 6px 11px; }
+}
+.mh-chips { display: flex; flex-wrap: wrap; gap: 5px; min-width: 0; }
 
 /* ── SCROLL TOP ───────────────────────────────────────── */
 .scroll-top {
@@ -1563,10 +1657,17 @@ div.search-box:focus { outline: none; }
     border-left: none; border-right: none; border-bottom: none;
   }
   .modal::before { border-radius: 16px 16px 0 0; }
-  .modal-top { grid-template-columns: 80px 1fr; gap: 14px; }
-  .modal-cover img { width: 80px; height: 120px; }
-  .modal-cover-gen { width: 80px; height: 120px; }
+  .modal-top { grid-template-columns: 104px minmax(0, 1fr); grid-template-areas: "cover head" "body body"; grid-template-rows: auto auto; column-gap: 14px; margin-bottom: 18px; }
+  .modal-cover img { width: 104px; height: auto; }
+  .modal-cover-gen { width: 104px; height: auto; }
   .modal-title { font-size: var(--fs-h3); }
+  .mh-body { margin-top: 14px; }
+  .mh-facts { margin-top: 0; gap: 6px; }
+  .mh-facts .mbadge { padding: 4px 10px; }
+  .mh-actions { padding: 12px; margin-bottom: 16px; }
+  .mh-actions .shelf-btn { padding: 8px 8px; font-size: var(--fs-label); }
+  .mh-meta .modal-extra-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .mh-meta .modal-extra-label { padding-top: 0; }
   .modal-body { padding: 14px 16px 20px; }
 
   /* ── Scroll top ── */
@@ -1579,6 +1680,12 @@ div.search-box:focus { outline: none; }
 /* ══════════════════════════════════════════════════════════
    RESPONSIVE — TINY  ≤ 380px
 ══════════════════════════════════════════════════════════ */
+/* FASE 7.2 · pantallas muy estrechas: portada algo menor y título más contenido para que no se apile en columna */
+@media (max-width: 380px) {
+  .modal-top { grid-template-columns: 88px minmax(0, 1fr); column-gap: 12px; }
+  .modal-cover img, .modal-cover-gen { width: 88px; }
+  .modal-title { font-size: var(--fs-h4); }
+}
 @media (max-width: 380px) {
   .hero-h1 { font-size: 2.6rem; }
   .grid { grid-template-columns: repeat(3, 1fr); gap: 2px; }
@@ -1717,7 +1824,7 @@ div.search-box:focus { outline: none; }
   background: #16161f;
   border-top: 1px solid var(--border2);
   border-radius: 20px 20px 0 0;
-  padding: 0 0 env(safe-area-inset-bottom, 16px);
+  padding: 0; /* FASE 6.5.4: la zona segura inferior la suma ya .fsheet-footer (antes se duplicaba en iPhone con barra de inicio) */
   transform: translateY(100%);
   transition: transform .32s cubic-bezier(0.32, 0.72, 0, 1);
   max-height: 85vh;
@@ -1773,6 +1880,18 @@ div.search-box:focus { outline: none; }
 }
 .fsheet-apply:active { transform: scale(.98); }
 .fsheet-apply.no-results { opacity: .5; }
+/* FASE 6.5.4 · panel móvil: «Limpiar todo» (23 px) y «Ver N» (42 px) con zona táctil de 44 px sin cambiar la altura de la cabecera;
+   en pantallas bajas (móvil apaisado) los chips activos ocupaban 96 px y dejaban 39 px a la lista. */
+@media (max-width: 600px) {
+  .fsheet-reset { min-height: 44px; margin: -10px -8px -10px 0; }
+  .fsheet-apply { min-height: 44px; }
+}
+@media (max-width: 600px) and (max-height: 500px) {
+  .fsheet { max-height: 96vh; }
+  .fsheet-active { max-height: 44px; padding-top: 6px; padding-bottom: 6px; }
+  .fsheet-header { padding-top: 6px; padding-bottom: 6px; }
+  .fsheet-footer { padding-top: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+}
 .fsheet-section {
   padding: 0 20px;
   border-bottom: 1px solid var(--border);
@@ -4190,7 +4309,7 @@ img.gl-cover, .gl-cover > img { width: 100%; height: 100%; object-fit: cover; }
 /* 5.6 · Ubicación y datos neutros (el icono o el texto distingue, no el color:
    así no compiten con los colores de estado). .gl-badge ya es neutra por defecto. */
 .gl-badge--loc, .gl-badge--neutral { --bd-c: var(--gl-text); }
-.mb-bib, .mb-files, .mb-caps, .b-bib, .b-files { --bd-c: var(--gl-text); --bd-text: var(--gl-text-secondary); --bd-bg-mix: 7%; --bd-line-mix: 18%; }
+.mb-bib, .mb-files, .mb-caps, .mb-year, .b-bib, .b-files { --bd-c: var(--gl-text); --bd-text: var(--gl-text-secondary); --bd-bg-mix: 7%; --bd-line-mix: 18%; }
 .sbib, .sfiles, .t10-medal.normal { --bd-c: var(--cmp-on-cover); --bd-text: var(--cmp-on-cover-muted); --bd-bg-mix: 8%; --bd-line-mix: 24%; }
 
 /* 5.7 · INK, contenido +18 y spicy */
@@ -4622,6 +4741,156 @@ tr.row-dup > td:first-child { box-shadow: inset 3px 0 0 var(--row-c); }
 }
 
 /* ══════════════════════════════════════════════════════════════
+   GL PANELS · FASE 9B.2 — NAVEGACIÓN PRINCIPAL REORGANIZADA
+   Inicio · Explorar · Categorías ▾ · Comunidad ▾ · Búsqueda · Mi perfil.
+   Reutiliza .home-nav-btn para los accesos de primer nivel (hereda estados, foco y
+   tokens de las fases 2 y 3) y añade solo el desplegable (.nav-dd). Sin cambios de datos ni de lógica.
+   ══════════════════════════════════════════════════════════════ */
+.topbar .nav-ico { font-size: var(--fs-small); line-height: 1; opacity: .9; }
+.nav-dd { position: relative; display: inline-flex; }
+.topbar .nav-dd-toggle { cursor: pointer; }
+.nav-caret {
+  width: 6px; height: 6px; margin: -3px 0 0 2px; flex-shrink: 0;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); opacity: .75;
+  transition: transform var(--ctl-dur) var(--ctl-ease), margin var(--ctl-dur) var(--ctl-ease);
+}
+.nav-dd-toggle[aria-expanded="true"] .nav-caret { transform: rotate(225deg); margin-top: 3px; }
+.topbar .nav-dd-toggle[aria-expanded="true"]:not(.active):not(:disabled) {
+  background: var(--ctl-bg-hover); color: var(--gl-text);
+}
+.nav-dd-panel {
+  position: absolute; top: calc(100% + 10px); left: 0; z-index: 400;
+  min-width: 230px; max-height: calc(100vh - 96px); max-height: calc(100dvh - 96px); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2px; padding: 6px; box-sizing: border-box;
+  background: var(--cmp-surface-2); border: 1px solid var(--cmp-border-strong); border-top: 2px solid var(--ctl-accent);
+  border-radius: var(--ctl-radius); box-shadow: var(--cmp-elev-2);
+}
+.nav-dd-panel[hidden] { display: none; }
+.nav-dd-item {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 38px; padding: 0 12px;
+  box-sizing: border-box; border: 1px solid transparent; border-radius: var(--ctl-radius-sm);
+  background: transparent; color: var(--gl-text); text-align: left; cursor: pointer;
+  font: inherit; font-size: var(--fs-small); letter-spacing: var(--ls-ui);
+  transition: background-color var(--ctl-dur) var(--ctl-ease), color var(--ctl-dur) var(--ctl-ease);
+}
+.nav-dd-item:hover, .nav-dd-item:focus-visible { background: var(--ctl-bg-hover); }
+.nav-dd-item[aria-current="true"] {
+  background: color-mix(in srgb, var(--ctl-accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--ctl-accent) 45%, transparent); color: var(--ctl-accent-text);
+}
+.nav-dd-item--ink { color: var(--neon2); }
+.nav-dd-ico { width: 20px; flex-shrink: 0; text-align: center; font-size: var(--fs-small); }
+.nav-dd-lbl { flex: 1 1 auto; min-width: 0; }
+.nav-dd-count {
+  flex-shrink: 0; padding: 1px 7px; border-radius: 999px;
+  background: rgba(245,240,232,.08); color: var(--gl-text-muted); font-size: var(--fs-badge);
+}
+.nav-dd-count:empty { display: none; }
+.nav-dd-item[aria-current="true"] .nav-dd-count { background: color-mix(in srgb, var(--ctl-accent) 26%, transparent); color: var(--ctl-accent-text); }
+/* «Buscar»: solo existe donde el buscador está oculto (portada y estantería). !important: debe ganar al display de las reglas de la cabecera. */
+body:not(.home-active):not(.shelf-active) .topbar .nav-search-btn { display: none !important; }
+/* Etiqueta de «Mi perfil» en el desplegable de cuenta */
+.user-dropdown-label {
+  padding: 8px 10px 0; font-size: var(--fs-badge); letter-spacing: var(--ls-label);
+  text-transform: uppercase; color: var(--gl-text-muted);
+}
+
+/* ≥901px: orden Inicio · Explorar · Categorías · Comunidad · Búsqueda · (+18) · Mi perfil */
+@media (min-width: 901px) {
+  .topbar-right { display: contents; }
+  .topbar .logo { order: 0; }
+  .topbar .topbar-nav { order: 1; }
+  .topbar .topbar-center { order: 2; }
+  .topbar .adult-btn { order: 3; margin-left: auto; }
+  .topbar #authArea { order: 4; }
+  .topbar .topbar-nav .nav-dd { align-items: center; }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .topbar { gap: 10px; }
+  .topbar .topbar-nav .nav-ico { display: none; }
+  .topbar .topbar-nav :is(.home-nav-btn) { padding: 0 8px; gap: 4px; }
+  .topbar .topbar-nav { margin-right: 0; }
+  .topbar .topbar-nav::after { display: none; }
+  .topbar .topbar-center { min-width: 120px; }
+  .topbar .auth-topbar-btn { padding: 0 14px; }
+}
+@media (min-width: 1101px) { .topbar .adult-btn { white-space: nowrap; flex-shrink: 0; } }
+@media (min-width: 901px) and (pointer: coarse) {
+  .nav-dd-item { min-height: 44px; }
+}
+
+/* ≤900px: dentro del menú compacto los desplegables se abren en línea (acordeón) */
+@media (max-width: 900px) {
+  .topbar .topbar-nav .nav-dd { display: block; width: 100%; }
+  .topbar .topbar-menu .nav-dd-toggle .nav-caret { margin-left: auto; }
+  .topbar .topbar-menu .nav-ico { width: 20px; text-align: center; }
+  .topbar .topbar-menu :is(.home-nav-btn).nav-item:hover:not(:disabled) { background: var(--ctl-bg-hover); }
+  .topbar .nav-dd-panel {
+    position: static; min-width: 0; max-height: none; overflow: visible; margin: 2px 0 4px 20px; padding: 2px 0 2px 8px;
+    background: transparent; border: 0; border-left: 2px solid color-mix(in srgb, var(--ctl-accent) 45%, transparent);
+    border-radius: 0; box-shadow: none;
+  }
+  .topbar .nav-dd-item { min-height: 44px; }
+  body.shelf-active .topbar .topbar-menu .nav-dd-toggle.active:not(:disabled) { background: transparent; border-color: transparent; color: var(--gl-text); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-caret, .nav-dd-item { transition: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GL PANELS · FASE 9B.3 — EXPLORAR: CATÁLOGO UNIFICADO
+   Una sola vista para todas las historias; la categoría es un filtro (pestañas + chip),
+   no una página aparte. Solo presentación de la cabecera y de la etiqueta de tipo.
+   ══════════════════════════════════════════════════════════════ */
+.explore-head { flex-wrap: wrap; gap: 8px 12px; }
+.explore-head .explore-cat-chip { margin-left: auto; align-self: center; }
+.card-type {
+  margin-bottom: 3px; font-size: var(--fs-badge); letter-spacing: var(--ls-label); text-transform: uppercase;
+  color: var(--gl-text-secondary); line-height: 1.2;
+}
+.cat-tabs-sep { flex: 0 0 1px; align-self: stretch; margin: 4px 4px; background: var(--cmp-border-strong, rgba(245,240,232,.18)); }
+.nav-dot { display: none; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--ctl-accent); box-shadow: 0 0 6px var(--ctl-accent); }
+.nav-has-filter .nav-dot { display: inline-block; }
+@media (max-width: 900px) { .topbar .topbar-menu .nav-dd-toggle .nav-dot { margin-left: 4px; } }
+
+/* ══════════════════════════════════════════════════════════════
+   GL PANELS · FASE 9B.4 — MENÚ «CATEGORÍAS» AGRUPADO
+   Mismas categorías y mismo mecanismo (navCategory → showCatalog → ?sec=), agrupadas visualmente.
+   ══════════════════════════════════════════════════════════════ */
+/* FASE 9B.5 · Comunidad: mismo tratamiento que Categorías; el destino del Top 10 queda libre de las barras fijas */
+#navDdComPanel { min-width: 240px; max-width: min(320px, calc(100vw - 16px)); }
+.top10-section { scroll-margin-top: 160px; }
+.top10-section:focus { outline: none; }
+@media (max-width: 600px) { .top10-section { scroll-margin-top: 210px; } }
+@media (max-width: 900px) { .topbar #navDdComPanel { min-width: 0; max-width: none; } }
+
+/* FASE 9B.6 · Mi perfil: acciones agrupadas (Mi lectura · Mi progreso · Mi cuenta) */
+.user-dropdown { max-height: calc(100vh - 72px); max-height: calc(100dvh - 72px); overflow-y: auto; }
+.user-dropdown-group { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--cmp-border); }
+.user-dropdown-glabel { padding: 6px 10px 3px; font-size: var(--fs-badge); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--gl-text-muted); }
+.user-dropdown-info { display: flex; align-items: baseline; gap: 8px; min-width: 0; padding: 4px 10px 6px; font-size: var(--fs-label); color: var(--gl-text-muted); }
+.user-dropdown-info-k { flex-shrink: 0; }
+.user-dropdown-info-v { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gl-text-secondary); }
+@media (pointer: coarse) { .user-dropdown-item { min-height: 44px; } }
+#navDdCatPanel { min-width: 250px; max-width: min(320px, calc(100vw - 16px)); }
+.nav-dd-panel--end { left: auto; right: 0; }
+.nav-dd-group[hidden], .nav-dd-item[hidden] { display: none; }
+.nav-dd-group { display: flex; flex-direction: column; gap: 2px; }
+.nav-dd-group + .nav-dd-group, .nav-dd-item--all + .nav-dd-group { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--cmp-border); }
+.nav-dd-group-label {
+  padding: 6px 12px 3px; font-size: var(--fs-badge); letter-spacing: var(--ls-label); text-transform: uppercase;
+  color: var(--gl-text-muted);
+}
+.nav-dd-item[aria-current="true"]::after { content: '✓'; flex-shrink: 0; margin-left: 2px; font-size: var(--fs-small); color: var(--ctl-accent-text); }
+@media (max-width: 900px) {
+  .topbar #navDdCatPanel { min-width: 0; max-width: none; }
+  .topbar .nav-dd-group-label { padding-left: 4px; }
+  .topbar .nav-dd-group + .nav-dd-group, .topbar .nav-dd-item--all + .nav-dd-group { border-top-color: transparent; }
+}
+@media (pointer: coarse) { .nav-dd-item { min-height: 44px; } }
+
+/* ══════════════════════════════════════════════════════════════
    GL PANELS · FASE 4.3 — INDICADORES VISUALES DE TARJETAS
    Estado de publicación (Finalizado · Continúa · Hiatus · Cancelado;
    cualquier otro valor se muestra neutro con su texto) y +18.
@@ -4723,6 +4992,26 @@ img[data-cover] {
 @media (prefers-reduced-motion: reduce) { img[data-cover] { animation: none; } }
 img[data-cover][data-loaded] { animation: none; background-image: none; }
 
+/* ── FASE 8.2 · Skeletons e indicadores de carga ──────────────────────
+   Solo existen mientras hay una operación real en curso: se insertan al empezar la carga y se
+   retiran cuando termina. Reutilizan el brillo de las portadas (gl-cover-shimmer) y las
+   proporciones de .card / .t10-card, de modo que el contenido real ocupa el mismo sitio.
+   El fundido con retardo (glSkelIn) evita el parpadeo cuando la carga acaba casi al instante:
+   solo retrasa la aparición del skeleton, nunca el contenido real. */
+@keyframes glSkelIn { from { opacity: 0; } to { opacity: 1; } }
+.skel-shim, .card.skel-shim, .t10-card.skel-shim {
+  background-color: var(--gl-surface-2, #1c1c28);
+  background-image: linear-gradient(105deg, transparent 30%, color-mix(in srgb, var(--gl-text, #f5f0e8) 8%, transparent) 50%, transparent 70%);
+  background-size: 220% 100%;
+  animation: gl-cover-shimmer 1.4s linear infinite, glSkelIn .2s ease-out 150ms both;
+}
+.card.card-skel, .t10-card.t10-skel, .t10m-skel { cursor: progress; pointer-events: none; }
+.card.card-skel, .t10-card.t10-skel { border-color: rgba(245,240,232,0.07); }
+.skel-line { height: 10px; border-radius: 3px; margin: 6px 0; }
+.cat-skel-meta { display: inline-block; width: 64px; height: 1em; border-radius: 3px; vertical-align: middle; }
+.skel-delay { animation: glSkelIn .2s ease-out 150ms both; }
+@media (prefers-reduced-motion: reduce) { .skel-shim, .card.skel-shim, .t10-card.skel-shim, .skel-delay { animation: none; } }
+
 /* Placeholders sin imagen (fallo o portada inexistente) */
 .ruleta-result-ph, .cal-panel-ph, .similar-noimg, .cal-cover-ph {
   display: flex; align-items: center; justify-content: center;
@@ -4803,6 +5092,7 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
 }
 .empty-btn:hover { border-color: var(--ctl-accent, var(--neon)); background: color-mix(in srgb, var(--ctl-accent, var(--neon)) 8%, transparent); }
 .empty-btn:focus-visible { outline: 2px solid var(--ctl-accent, var(--neon)); outline-offset: 2px; }
+.empty-btn--primary { border-color: var(--ctl-accent, var(--neon)); }
 
 /* ── FASE 5.4: sugerencias del buscador ── */
 .search-suggest {
@@ -4871,10 +5161,48 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
   <div class="topbar-right">
     <button type="button" class="topbar-menu-btn" id="topbarMenuBtn" aria-label="Menú" aria-expanded="false" aria-controls="topbarMenu" onclick="toggleTopbarMenu()"><span class="topbar-menu-ico" aria-hidden="true"></span></button>
     <div class="topbar-menu" id="topbarMenu">
-      <nav class="topbar-nav" aria-label="Navegación principal">
+      <nav class="topbar-nav" id="mainNav" aria-label="Navegación principal">
         <button class="home-nav-btn" id="homeNavBtn" onclick="showHome()">⌂ <span id="homeNavLbl">Inicio</span></button>
-        <button class="ruleta-nav-btn" id="ruletaNavBtn" onclick="openRuletaModal()">🎲 <span id="ruletaNavLbl">Ruleta</span></button>
-        <button class="ruleta-nav-btn" id="calendarNavBtn" onclick="openCalendarModal()">📅 <span id="calendarNavLbl">Calendario</span></button>
+        <button type="button" class="home-nav-btn nav-item" id="exploreNavBtn" onclick="navExplore()"><span class="nav-ico" aria-hidden="true">✦</span> <span>Explorar</span></button>
+        <div class="nav-dd" id="navDdCat">
+          <button type="button" class="home-nav-btn nav-item nav-dd-toggle" id="navDdCatBtn" aria-haspopup="true" aria-expanded="false" aria-controls="navDdCatPanel"><span class="nav-ico" aria-hidden="true">▦</span> <span>Categorías</span><span class="nav-dot" aria-hidden="true"></span><span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-dd-panel" id="navDdCatPanel" role="menu" aria-label="Categorías" hidden>
+          <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item nav-dd-item--all" data-sec="all" data-count="tc-all" onclick="navCategory('all')"><span class="nav-dd-ico" aria-hidden="true">✦</span><span class="nav-dd-lbl">Todas las categorías</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+          <div class="nav-dd-group" role="group" aria-labelledby="navGrpOrigen">
+            <div class="nav-dd-group-label" id="navGrpOrigen">Por origen</div>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-sec="Manhwa" data-count="tc-Manhwa" onclick="navCategory('Manhwa')"><span class="nav-dd-ico" aria-hidden="true">🇰🇷</span><span class="nav-dd-lbl">Manhwa</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-sec="Manga" data-count="tc-Manga" onclick="navCategory('Manga')"><span class="nav-dd-ico" aria-hidden="true">🇯🇵</span><span class="nav-dd-lbl">Manga</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-sec="Manhua" data-count="tc-Manhua" onclick="navCategory('Manhua')"><span class="nav-dd-ico" aria-hidden="true">🇨🇳</span><span class="nav-dd-lbl">Manhua</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+          </div>
+          <div class="nav-dd-group" role="group" aria-labelledby="navGrpFormato">
+            <div class="nav-dd-group-label" id="navGrpFormato">Por formato</div>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-sec="Webtoon" data-count="tc-Webtoon" onclick="navCategory('Webtoon')"><span class="nav-dd-ico" aria-hidden="true">📱</span><span class="nav-dd-lbl">Webtoon</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-sec="Cómic" data-count="tc-Comic" onclick="navCategory('Cómic')"><span class="nav-dd-ico" aria-hidden="true">💥</span><span class="nav-dd-lbl">Cómic</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-sec="Novela Gráfica" data-count="tc-Novela_Grafica" onclick="navCategory('Novela Gráfica')"><span class="nav-dd-ico" aria-hidden="true">📗</span><span class="nav-dd-lbl">Novela Gráfica</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+          </div>
+          <div class="nav-dd-group" role="group" aria-labelledby="navGrpOtras">
+            <div class="nav-dd-group-label" id="navGrpOtras">Otras</div>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-sec="Sin Clasificación" data-count="tc-Sin_Clasificacion" onclick="navCategory('Sin Clasificación')"><span class="nav-dd-ico" aria-hidden="true">📂</span><span class="nav-dd-lbl">Sin Clasificación</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+          </div>
+          </div>
+        </div>
+        <div class="nav-dd" id="navDdCom">
+          <button type="button" class="home-nav-btn nav-item nav-dd-toggle" id="navDdComBtn" aria-haspopup="true" aria-expanded="false" aria-controls="navDdComPanel"><span class="nav-ico" aria-hidden="true">◈</span> <span>Comunidad</span><span class="nav-caret" aria-hidden="true"></span></button>
+          <div class="nav-dd-panel" id="navDdComPanel" role="menu" aria-label="Comunidad" hidden>
+          <div class="nav-dd-group" role="group" aria-labelledby="navGrpRank">
+            <div class="nav-dd-group-label" id="navGrpRank">Rankings</div>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-need="ratings" onclick="navTop10()"><span class="nav-dd-ico" aria-hidden="true">★</span><span class="nav-dd-lbl">Top 10</span></button>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-need="ratings" data-sort="rating" onclick="navRanking('rating')"><span class="nav-dd-ico" aria-hidden="true">⭐</span><span class="nav-dd-lbl">Más valoradas</span></button>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" data-need="spicy" data-sort="spicy" onclick="navRanking('spicy')"><span class="nav-dd-ico" aria-hidden="true">🌶</span><span class="nav-dd-lbl">Más spicy</span></button>
+          </div>
+          <div class="nav-dd-group" role="group" aria-labelledby="navGrpClub">
+            <div class="nav-dd-group-label" id="navGrpClub">Club y descubrimiento</div>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item nav-dd-item--ink" data-sec="ink_club" data-count="tc-ink_club" onclick="navInkClub()"><span class="nav-dd-ico" aria-hidden="true">📖</span><span class="nav-dd-lbl">INK CLUB</span><span class="nav-dd-count" aria-hidden="true"></span></button>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" id="ruletaNavBtn" onclick="navRuleta()"><span class="nav-dd-ico" aria-hidden="true">🎲</span><span class="nav-dd-lbl">Ruleta</span></button>
+          </div>
+          </div>
+        </div>
+        <button type="button" class="home-nav-btn nav-item nav-search-btn" id="navSearchBtn" onclick="navSearch()"><span class="nav-ico" aria-hidden="true">⌕</span> <span>Buscar</span></button>
       </nav>
       <button class="adult-btn" id="adultBtn">
         <span class="pill"></span>
@@ -5268,9 +5596,8 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
 <div class="filter-strip">
   <!-- ROW 1: category pills (static fallback + JS fills counts) -->
   <div class="cat-tabs-wrap">
-  <div class="cat-tabs" id="catTabs">
+  <div class="cat-tabs" id="catTabs" role="group" aria-label="Filtrar por categoría">
     <button class="ctab on" data-sec="all"><span class="ctab-icon">✦</span> Todas <span class="ctab-count" id="tc-all">—</span></button>
-    <button class="ctab" data-sec="ink_club" style="border-color:rgba(255,71,163,0.3);color:var(--neon2)"><span class="ctab-icon">📖</span> INK CLUB <span class="ctab-count" id="tc-ink_club">—</span></button>
     <button class="ctab" data-sec="Manhwa"><span class="ctab-icon">🇰🇷</span> Manhwa <span class="ctab-count" id="tc-Manhwa">—</span></button>
     <button class="ctab" data-sec="Manga"><span class="ctab-icon">🇯🇵</span> Manga <span class="ctab-count" id="tc-Manga">—</span></button>
     <button class="ctab" data-sec="Manhua"><span class="ctab-icon">🇨🇳</span> Manhua <span class="ctab-count" id="tc-Manhua">—</span></button>
@@ -5278,6 +5605,8 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
     <button class="ctab" data-sec="Sin Clasificación"><span class="ctab-icon">📂</span> Sin Clasificación <span class="ctab-count" id="tc-Sin_Clasificacion">—</span></button>
     <button class="ctab" data-sec="Cómic"><span class="ctab-icon">💥</span> Cómic <span class="ctab-count" id="tc-Comic">—</span></button>
     <button class="ctab" data-sec="Novela Gráfica"><span class="ctab-icon">📗</span> Novela Gráfica <span class="ctab-count" id="tc-Novela_Grafica">—</span></button>
+    <span class="cat-tabs-sep" aria-hidden="true"></span>
+    <button class="ctab" data-sec="ink_club" style="border-color:rgba(255,71,163,0.3);color:var(--neon2)"><span class="ctab-icon">📖</span> INK CLUB <span class="ctab-count" id="tc-ink_club">—</span></button>
   </div>
   </div><!-- /cat-tabs-wrap -->
 
@@ -5686,25 +6015,37 @@ function renderAuthArea() {
     const uname = (currentUser.user_metadata && currentUser.user_metadata.telegram) || (currentUser.email || '?').split('@')[0];
     const initials = uname.slice(0, 2).toUpperCase();
     area.innerHTML = `
-      <div class="user-chip-top" id="userChipTop" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Cuenta de @${esc(uname)}" onclick="toggleUserMenu(event)">
+      <div class="user-chip-top" id="userChipTop" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="Mi perfil: cuenta de @${esc(uname)}" title="Mi perfil" onclick="toggleUserMenu(event)">
         <div class="user-avatar-top">${initials}</div>
         <span class="user-email-top">@${esc(uname)}</span>
-        <div class="user-dropdown" id="userDropdown">
+        <div class="user-dropdown" id="userDropdown" role="group" aria-label="Mi perfil" onclick="event.stopPropagation()">
+          <div class="user-dropdown-label">Mi perfil</div>
           <div class="user-dropdown-head">
             <div class="user-dropdown-avatar">${initials}</div>
             <div class="user-dropdown-name">@${esc(uname)}</div>
           </div>
-          <div class="user-dropdown-div"></div>
-          <button class="user-dropdown-item" onclick="event.stopPropagation();openShelf('all')">📚 Mi estantería</button>
-          <button class="user-dropdown-item" onclick="event.stopPropagation();openLogrosModal()">🏅 Mis logros</button>
-          <button class="user-dropdown-item danger" onclick="event.stopPropagation();signOut()">Cerrar sesión</button>
+          <div class="user-dropdown-group" role="group" aria-labelledby="udgRead">
+            <div class="user-dropdown-glabel" id="udgRead">Mi lectura</div>
+            <button type="button" class="user-dropdown-item" onclick="event.stopPropagation();closeUserMenu();openShelf('all')">📚 Mi estantería</button>
+            <button type="button" class="user-dropdown-item" onclick="event.stopPropagation();closeUserMenu();openCalendarModal()">📅 Calendario de lectura</button>
+          </div>
+          <div class="user-dropdown-group" role="group" aria-labelledby="udgProg">
+            <div class="user-dropdown-glabel" id="udgProg">Mi progreso</div>
+            <button type="button" class="user-dropdown-item" onclick="event.stopPropagation();closeUserMenu();openLogrosModal()">🏅 Mis logros</button>
+          </div>
+          <div class="user-dropdown-group" role="group" aria-labelledby="udgAcc">
+            <div class="user-dropdown-glabel" id="udgAcc">Mi cuenta</div>
+            ${currentUser.email ? `<div class="user-dropdown-info" title="Email de la cuenta"><span class="user-dropdown-info-k">Email</span><span class="user-dropdown-info-v">${esc(currentUser.email)}</span></div>` : ''}
+            <button type="button" class="user-dropdown-item danger" onclick="event.stopPropagation();closeUserMenu();signOut()">Cerrar sesión</button>
+          </div>
         </div>
       </div>`;
   } else {
-    area.innerHTML = `<button class="auth-topbar-btn" onclick="openAuthModal()">ENTRAR</button>`;
+    area.innerHTML = `<button class="auth-topbar-btn" onclick="openAuthModal()" aria-label="Entrar: acceso a Mi perfil" title="Entrar para acceder a Mi perfil">ENTRAR</button>`;
   }
 }
 
+function closeUserMenu() { document.getElementById('userDropdown')?.classList.remove('open'); }
 function toggleUserMenu(e) {
   e.stopPropagation();
   document.getElementById('userDropdown')?.classList.toggle('open');
@@ -5723,6 +6064,26 @@ document.addEventListener('keydown', (e) => {
   if (!chip) return;
   if (e.target === chip && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleUserMenu(e); return; }
   const dd = document.getElementById('userDropdown');
+  // FASE 9B.6: flechas, Inicio y Fin recorren las acciones del menú de cuenta
+  if (dd && chip.contains(e.target) && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) {
+    const items = [...dd.querySelectorAll('.user-dropdown-item')];
+    if (!items.length) return;
+    if (!dd.classList.contains('open')) {
+      if (e.target !== chip) return;
+      e.preventDefault(); dd.classList.add('open');
+      (e.key === 'ArrowUp' || e.key === 'End' ? items[items.length - 1] : items[0]).focus();
+      return;
+    }
+    e.preventDefault();
+    const i = items.indexOf(document.activeElement);
+    let n;
+    if (e.key === 'Home') n = 0;
+    else if (e.key === 'End') n = items.length - 1;
+    else if (e.key === 'ArrowDown') n = i < 0 ? 0 : (i + 1) % items.length;
+    else n = i < 0 ? items.length - 1 : (i - 1 + items.length) % items.length;
+    items[n].focus();
+    return;
+  }
   if (e.key === 'Escape' && dd && dd.classList.contains('open') && chip.contains(e.target)) {
     dd.classList.remove('open'); chip.focus();
   }
@@ -5744,7 +6105,7 @@ document.addEventListener('focusin', (e) => {
 
 // ── MENÚ COMPACTO DE LA CABECERA (≤900px) ─────────────────
 // Solo abre/cierra el contenedor #topbarMenu, que agrupa los controles que ya existen
-// (Inicio, Ruleta, Calendario y +18). No cambia sus acciones ni la URL.
+// (Inicio, Explorar, Categorías, Comunidad y +18). No cambia sus acciones ni la URL.
 function setTopbarMenu(open) {
   const tb = document.querySelector('.topbar');
   const btn = document.getElementById('topbarMenuBtn');
@@ -5756,11 +6117,11 @@ function toggleTopbarMenu() {
   document.getElementById('userDropdown')?.classList.remove('open');
   setTopbarMenu(!document.querySelector('.topbar')?.classList.contains('menu-open'));
 }
-// Captura: cierra el menú al pulsar fuera o al activar Inicio/Ruleta/Calendario (la acción sigue
+// Captura: cierra el menú al pulsar fuera o al activar un destino (Inicio, Explorar, una categoría, INK CLUB, Ruleta, Buscar; la acción sigue
 // ejecutándose). El botón del menú se gestiona solo, y +18 lo deja abierto para ver el cambio.
 document.addEventListener('click', (e) => {
   if (!document.querySelector('.topbar')?.classList.contains('menu-open')) return;
-  if (e.target.closest('#topbarMenuBtn, #adultBtn')) return;
+  if (e.target.closest('#topbarMenuBtn, #adultBtn, .nav-dd-toggle')) return;
   if (e.target.closest('#topbarMenu') && !e.target.closest('#topbarMenu button')) return;
   setTopbarMenu(false);
 }, true);
@@ -5775,6 +6136,183 @@ document.addEventListener('focusin', (e) => {
 });
 window.matchMedia('(max-width: 900px)').addEventListener('change', (e) => { if (!e.matches) setTopbarMenu(false); });
 window.addEventListener('popstate', () => setTopbarMenu(false));
+// ── NAVEGACIÓN PRINCIPAL (FASE 9B.2) ──────────────────────
+// Inicio · Explorar · Categorías ▾ · Comunidad ▾ · Búsqueda · Mi perfil. Solo llama a funciones que ya
+// existen (showHome, showCatalog, openRuletaModal, openShelf…): no toca el catálogo, los filtros ni la URL.
+// Desplegables: clic/Enter/Espacio abren y cierran; ↑ ↓ Inicio Fin se mueven; Escape cierra y devuelve el foco;
+// clic fuera o salir con Tab los cierran. Con ≤900px se despliegan en línea dentro del menú compacto.
+function navLeaveShelf() {
+  // Igual que showHome(): si «Mi estantería» tapa el catálogo, se cierra antes de ir a otro destino
+  if (typeof shelfActive !== 'undefined' && shelfActive) {
+    shelfActive = false;
+    document.body.classList.remove('shelf-active');
+    document.getElementById('shelfView')?.classList.remove('active');
+  }
+}
+function navExplore()      { closeNavDropdowns(); navLeaveShelf(); showCatalog('all'); }
+function navCategory(sec)  { closeNavDropdowns(); navLeaveShelf(); showCatalog(sec); }
+function navInkClub()      { closeNavDropdowns(); navLeaveShelf(); showCatalog('ink_club'); }
+function navRuleta()       { closeNavDropdowns(); openRuletaModal(); }
+// FASE 9B.5 · Rankings (mecanismos que ya existen): el bloque Top 10 de Explorar y el orden «Más valorados / Más spicy»
+function navTop10() {
+  closeNavDropdowns(); navLeaveShelf();
+  showCatalog('all'); // el Top 10 solo se muestra en la vista «Todas»
+  const sec = document.getElementById('top10Section');
+  if (sec && sec.style.display !== 'none') {
+    sec.setAttribute('tabindex', '-1');
+    requestAnimationFrame(() => {
+      sec.scrollIntoView({ behavior: 'auto', block: 'start' });
+      sec.focus({ preventScroll: true });
+    });
+  }
+}
+function navRanking(sort) {
+  closeNavDropdowns(); navLeaveShelf();
+  activeSort = sort;                 // mismo estado que usan el desplegable de orden y la hoja de filtros
+  showCatalog('all');
+  syncFilterUI();                    // etiquetas, chip «Orden» y hoja de filtros coherentes con el estado
+}
+function navSearch() {
+  // Solo se muestra cuando el buscador está oculto (portada o estantería): lleva al catálogo y enfoca el buscador
+  closeNavDropdowns();
+  const fromHome = typeof homeActive !== 'undefined' && homeActive;
+  navLeaveShelf();
+  showCatalog(fromHome ? 'all' : undefined);
+  const f = ['srch', 'srchMobile'].map(id => document.getElementById(id)).find(el => el && el.getClientRects().length);
+  if (f) {
+    f.focus();
+    const r = document.createRange(); r.selectNodeContents(f); r.collapse(false);
+    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+}
+
+const NAV_CAT_SECS = ['Manhwa','Manga','Manhua','Webtoon','Sin Clasificación','Cómic','Novela Gráfica'];
+function navDdItems(dd) {
+  return [...dd.querySelectorAll('.nav-dd-item')].filter(b => !b.hidden);
+}
+function setNavDd(dd, open) {
+  const btn = dd.querySelector('.nav-dd-toggle'), panel = dd.querySelector('.nav-dd-panel');
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  panel.hidden = !open;
+  // FASE 9B.4: en escritorio el panel nunca se sale por la derecha; si no cabe, se alinea al borde derecho del botón
+  panel.classList.remove('nav-dd-panel--end');
+  if (open && window.matchMedia('(min-width: 901px)').matches) {
+    if (panel.getBoundingClientRect().right > window.innerWidth - 8) panel.classList.add('nav-dd-panel--end');
+  }
+}
+function closeNavDropdowns(except) {
+  document.querySelectorAll('.nav-dd').forEach(dd => { if (dd !== except) setNavDd(dd, false); });
+}
+// Contadores (los mismos de las pestañas, ya filtrados), categorías vacías ocultas y categoría actual marcada
+function syncNavDd(dd) {
+  let sec = null;
+  try { sec = (!homeActive && !shelfActive) ? activeSec : null; } catch (_) {}
+  dd.querySelectorAll('.nav-dd-item[data-sec]').forEach(b => {
+    const tab = document.querySelector('.ctab[data-sec="' + b.dataset.sec + '"]');
+    b.hidden = !!(tab && tab.style.display === 'none');
+    const c = b.querySelector('.nav-dd-count'), src = document.getElementById(b.dataset.count);
+    if (c && src && src.textContent.trim() && src.textContent.trim() !== '—') c.textContent = src.textContent.trim();
+    if (sec === b.dataset.sec) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+  });
+  // FASE 9B.5: rankings solo si hay datos reales (valoraciones / votos spicy); el orden activo se marca
+  const hasRatings = !catalogLoading && allData.some(e => ratingsMap[e.id] && ratingsMap[e.id].count > 0);
+  const hasSpicy = !catalogLoading && allData.some(e => spicyMap[e.id] && spicyMap[e.id].avg > 0);
+  let curSort = null;
+  try { curSort = (!homeActive && !shelfActive && activeSec === 'all') ? activeSort : null; } catch (_) {}
+  dd.querySelectorAll('.nav-dd-item[data-need]').forEach(b => {
+    b.hidden = !(b.dataset.need === 'ratings' ? hasRatings : hasSpicy);
+    if (b.dataset.sort && curSort === b.dataset.sort) b.setAttribute('aria-current', 'true');
+    else b.removeAttribute('aria-current');
+  });
+  // FASE 9B.4: un grupo sin categorías visibles no se muestra
+  dd.querySelectorAll('.nav-dd-group').forEach(g => { g.hidden = ![...g.querySelectorAll('.nav-dd-item')].some(b => !b.hidden); });
+}
+function syncNavActive() {
+  let sec, home, shelf;
+  try { sec = activeSec; home = homeActive; shelf = shelfActive; } catch (_) { return; }
+  const inCatalog = !home && !shelf;
+  const mark = (el, on, current) => {
+    if (!el) return;
+    el.classList.toggle('active', on);
+    if (on) el.setAttribute('aria-current', current); else el.removeAttribute('aria-current');
+  };
+  // FASE 9B.3: Explorar es el catálogo unificado (con o sin categoría); la categoría elegida se indica en «Categorías»
+  mark(document.getElementById('exploreNavBtn'), inCatalog && sec !== 'ink_club', 'page');
+  const catBtn = document.getElementById('navDdCatBtn');
+  if (catBtn) {
+    const hasCat = inCatalog && NAV_CAT_SECS.includes(sec);
+    catBtn.classList.toggle('nav-has-filter', hasCat);
+    if (hasCat) catBtn.setAttribute('aria-label', 'Categorías, filtro activo: ' + sec); else catBtn.removeAttribute('aria-label');
+  }
+  document.querySelectorAll('#catTabs .ctab').forEach(t => t.setAttribute('aria-pressed', t.classList.contains('on') ? 'true' : 'false'));
+  mark(document.getElementById('navDdComBtn'), inCatalog && sec === 'ink_club', 'true');
+  document.querySelectorAll('.nav-dd').forEach(syncNavDd);
+}
+(() => {
+  document.querySelectorAll('.nav-dd').forEach(dd => {
+    const btn = dd.querySelector('.nav-dd-toggle'), panel = dd.querySelector('.nav-dd-panel');
+    const openAndFocus = (last) => {
+      document.getElementById('userDropdown')?.classList.remove('open');
+      closeNavDropdowns(dd); syncNavDd(dd); setNavDd(dd, true);
+      const it = navDdItems(dd); (last ? it[it.length - 1] : it[0])?.focus();
+    };
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      document.getElementById('userDropdown')?.classList.remove('open');
+      closeNavDropdowns(dd);
+      if (!open) syncNavDd(dd);
+      setNavDd(dd, !open);
+    });
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); openAndFocus(false); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); openAndFocus(true); }
+    });
+    panel.addEventListener('keydown', (e) => {
+      const it = navDdItems(dd), i = it.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') { e.preventDefault(); it[(i + 1) % it.length]?.focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); it[(i - 1 + it.length) % it.length]?.focus(); }
+      else if (e.key === 'Home') { e.preventDefault(); it[0]?.focus(); }
+      else if (e.key === 'End') { e.preventDefault(); it[it.length - 1]?.focus(); }
+    });
+  });
+  // Clic o toque fuera (captura: el chip de cuenta detiene la propagación; pointerdown cubre los toques en iOS,
+  // donde un clic sobre un área sin acción no siempre llega al documento)
+  const outside = (e) => { if (!e.target.closest('.nav-dd')) closeNavDropdowns(); };
+  document.addEventListener('click', outside, true);
+  document.addEventListener('pointerdown', outside, true);
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.nav-dd').forEach(dd => { if (!dd.querySelector('.nav-dd-panel').hidden) setNavDd(dd, true); });
+  });
+  // Escape en captura: cierra primero el desplegable (y devuelve el foco a su botón) sin cerrar a la vez el menú compacto
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = [...document.querySelectorAll('.nav-dd')].find(dd => !dd.querySelector('.nav-dd-panel').hidden);
+    if (!open) return;
+    e.stopPropagation();
+    const hadFocus = open.contains(document.activeElement);
+    setNavDd(open, false);
+    if (hadFocus) open.querySelector('.nav-dd-toggle').focus();
+  }, true);
+  // Al salir con Tab (o al enfocar otro control) se cierran
+  document.addEventListener('focusin', (e) => {
+    if (!e.target.closest('.nav-dd')) closeNavDropdowns();
+  });
+  window.addEventListener('popstate', () => closeNavDropdowns());
+  window.matchMedia('(max-width: 900px)').addEventListener('change', () => closeNavDropdowns());
+  // Cierra los desplegables si se cierra el menú compacto
+  const tb = document.querySelector('.topbar');
+  if (tb) new MutationObserver(() => { if (!tb.classList.contains('menu-open')) closeNavDropdowns(); })
+    .observe(tb, { attributes: true, attributeFilter: ['class'] });
+  // Estado activo: sigue a la vista (body) y a la pestaña de sección activa
+  const sync = () => syncNavActive();
+  new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  const tabs = document.getElementById('catTabs');
+  if (tabs) new MutationObserver(sync).observe(tabs, { subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+  window.addEventListener('popstate', () => setTimeout(sync, 0));
+  window.addEventListener('load', sync);
+  setTimeout(sync, 0);
+})();
+
 // Sección activa también para tecnologías de apoyo: espeja .active de Inicio en aria-current
 (() => {
   const b = document.getElementById('homeNavBtn');
@@ -5855,8 +6393,11 @@ async function openLogrosModal() {
   if (!currentUser) { openAuthModal(); return; }
   document.getElementById('logrosModalWrap').classList.add('open');
   document.body.style.overflow = 'hidden';
-  document.getElementById('logrosGrid').innerHTML = '<div class="logros-empty">Cargando…</div>';
-  await Promise.all([loadLogrosCatalog(), loadUserLogros()]);
+  const _lg = document.getElementById('logrosGrid');
+  _lg.setAttribute('aria-busy', 'true');
+  _lg.innerHTML = '<div class="logros-empty gl-loading skel-delay" role="status"><span class="gl-spinner" aria-hidden="true"></span>Cargando…</div>';
+  try { await Promise.all([loadLogrosCatalog(), loadUserLogros()]); }
+  finally { _lg.removeAttribute('aria-busy'); }
   renderLogrosGrid();
 }
 
@@ -5890,13 +6431,15 @@ async function handleAuth() {
   const errEl = document.getElementById('authErrorM');
   const btn   = document.getElementById('authSubmitBtn');
   if (!email || !pass) { errEl.textContent = 'Rellena email y contraseña.'; return; }
-  btn.disabled = true; btn.textContent = '…';
+  btn.disabled = true;
   const telegram = (document.getElementById('authTelegram')?.value || '').trim().replace(/^@/, '');
   if (authModeState === 'register' && !telegram) { errEl.textContent = 'Introduce tu usuario de Telegram.'; btn.disabled = false; btn.textContent = 'REGISTRARSE'; return; }
-  const { error } = authModeState === 'login'
-    ? await sb.auth.signInWithPassword({ email, password: pass })
-    : await sb.auth.signUp({ email, password: pass, options: { data: { telegram } } });
-  btn.disabled = false;
+  let error;
+  try {
+    ({ error } = await withBusy([btn], () => authModeState === 'login'
+      ? sb.auth.signInWithPassword({ email, password: pass })
+      : sb.auth.signUp({ email, password: pass, options: { data: { telegram } } })));
+  } finally { btn.disabled = false; }
   btn.textContent = authModeState === 'login' ? 'ENTRAR' : 'REGISTRARSE';
   if (error) { errEl.textContent = error.message; return; }
   if (authModeState === 'register') {
@@ -6130,9 +6673,9 @@ async function submitVote() {
   if (submitBtn) submitBtn.disabled = true;
   if (delBtn)    delBtn.disabled    = true;
   const existing = myRatings[activeModalItem.id];
-  const { error } = existing
-    ? await sb.from('ratings').update({ score: pendingStar }).eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id)
-    : await sb.from('ratings').insert({ user_id: currentUser.id, manga_id: activeModalItem.id, score: pendingStar });
+  const { error } = await withBusy([submitBtn], () => existing
+    ? sb.from('ratings').update({ score: pendingStar }).eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id)
+    : sb.from('ratings').insert({ user_id: currentUser.id, manga_id: activeModalItem.id, score: pendingStar }));
   if (error) {
     const fb = document.getElementById('voteFeedbackM');
     if (fb) fb.textContent = 'Error al guardar.';
@@ -6159,7 +6702,7 @@ async function deleteVote() {
   const delBtn    = document.getElementById('voteDelBtn');
   if (submitBtn) submitBtn.disabled = true;
   if (delBtn)    delBtn.disabled    = true;
-  const { error } = await sb.from('ratings').delete().eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id);
+  const { error } = await withBusy([delBtn], () => sb.from('ratings').delete().eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id));
   if (error) { if (submitBtn) submitBtn.disabled = false; if (delBtn) delBtn.disabled = false; return; }
   const r        = ratingsMap[activeModalItem.id];
   const oldScore = myRatings[activeModalItem.id];
@@ -6249,9 +6792,9 @@ async function submitSpicyVote() {
   if (submitBtn) submitBtn.disabled = true;
   if (delBtn)    delBtn.disabled    = true;
   const existing = mySpicyVotes.hasOwnProperty(activeModalItem.id) ? mySpicyVotes[activeModalItem.id] : undefined;
-  const { error } = existing !== undefined
-    ? await sb.from('spicy_votes').update({ score: pendingSpicy }).eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id)
-    : await sb.from('spicy_votes').insert({ user_id: currentUser.id, manga_id: activeModalItem.id, score: pendingSpicy });
+  const { error } = await withBusy([submitBtn], () => existing !== undefined
+    ? sb.from('spicy_votes').update({ score: pendingSpicy }).eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id)
+    : sb.from('spicy_votes').insert({ user_id: currentUser.id, manga_id: activeModalItem.id, score: pendingSpicy }));
   if (error) {
     const fb = document.getElementById('spicyFeedbackM');
     if (fb) fb.textContent = 'Error al guardar.';
@@ -6278,7 +6821,7 @@ async function deleteSpicyVote() {
   const delBtn    = document.getElementById('spicyDelBtn');
   if (submitBtn) submitBtn.disabled = true;
   if (delBtn)    delBtn.disabled    = true;
-  const { error } = await sb.from('spicy_votes').delete().eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id);
+  const { error } = await withBusy([delBtn], () => sb.from('spicy_votes').delete().eq('user_id', currentUser.id).eq('manga_id', activeModalItem.id));
   if (error) { if (submitBtn) submitBtn.disabled = false; if (delBtn) delBtn.disabled = false; return; }
   const r        = spicyMap[activeModalItem.id];
   const oldScore = mySpicyVotes[activeModalItem.id];
@@ -6374,6 +6917,10 @@ function rdSelectSpicy(n) {
   });
 }
 async function saveReadDoneModal() {
+  // FASE 8.2: el botón GUARDAR muestra el indicador mientras duran las peticiones (y evita dobles envíos)
+  return withBusy([document.querySelector('#rdWrap .rd-btn-save')], _saveReadDoneModal);
+}
+async function _saveReadDoneModal() {
   if (!SB_READY || !currentUser || !activeModalItem) { closeReadDoneModal(); return; }
   const id = activeModalItem.id;
   // Valoración por estrellas (solo si se ha elegido alguna)
@@ -6683,6 +7230,19 @@ function renderShelfView() {
   const items = sortShelfItems(shelfEntries());
 
   document.getElementById('shelfMainTitle').textContent = SHELF_TAB_LABELS[shelfTab] || 'Todos los libros';
+
+  // FASE 8.2: sin catálogo o sin datos personales todavía no se puede saber si la estantería está vacía → skeleton
+  const _shelfGrid = document.getElementById('shelfGrid');
+  if (catalogLoading || personalLoading) {
+    ['all', 'want', 'reading', 'read'].forEach(k => { const el = document.getElementById('snc-' + k); if (el) el.textContent = '—'; });
+    document.getElementById('shelfMainCount').textContent = '—';
+    _shelfGrid.innerHTML = skelCardsHTML(12);
+    _shelfGrid.style.display = '';
+    _shelfGrid.setAttribute('aria-busy', 'true');
+    document.getElementById('shelfEmpty').style.display = 'none';
+    return;
+  }
+  _shelfGrid.removeAttribute('aria-busy');
   document.getElementById('shelfMainCount').textContent = `${items.length} historia${items.length !== 1 ? 's' : ''}`;
 
   const grid = document.getElementById('shelfGrid');
@@ -6918,6 +7478,57 @@ let homeActive = false; // home view state — set by init()
 const PER_PAGE = 25;
 const secPages = {}; // current page per section key
 
+/* ── FASE 8.2: estados de carga reales ─────────────────────────────────
+   catalogLoading: carga inicial del catálogo (manga_data.json + datos públicos). Es true hasta que
+     init() la termina, con éxito o con error; mientras tanto el catálogo muestra skeletons en vez de
+     «Sin resultados».
+   personalLoading: carga de datos personales tras iniciar sesión (Mi estantería).
+   Las operaciones puntuales (votar, guardar, entrar, logros) usan indicadores propios, ligados a la petición. */
+let catalogLoading = true;
+let personalLoading = false;
+
+function skelCardsHTML(n) {
+  return '<div class="card card-skel skel-shim" aria-hidden="true"></div>'.repeat(n);
+}
+const SKEL_T10M = '<div class="t10m-item t10m-skel" data-skel aria-hidden="true"><span class="t10m-rank-num"></span><div class="t10m-cover skel-shim"></div><div class="t10m-info"><div class="skel-line skel-shim" style="width:70%"></div><div class="skel-line skel-shim" style="width:35%"></div></div></div>';
+function showCatalogSkeleton() {
+  const main = document.getElementById('mainContent');
+  if (!main) return;
+  main.style.display = '';
+  const old = document.getElementById('catSkeleton');
+  if (old) old.remove();
+  // Misma estructura que una sección real (cabecera + rejilla + hueco de paginación) para no mover el diseño al llegar los datos
+  const head = `<div class="section-head explore-head"><div class="section-title-wrap" style="border-left-color:var(--neon2)"><div class="section-title"><span class="sec-icon">✦</span>Explorar</div><div class="section-meta"><span class="cat-skel-meta skel-shim"></span></div></div></div>`;
+  const sec = document.createElement('div');
+  sec.className = 'section';
+  sec.id = 'catSkeleton';
+  sec.setAttribute('aria-busy', 'true');
+  sec.innerHTML = `${head}<div class="grid">${skelCardsHTML(PER_PAGE)}</div><div class="pag-info-sec"></div><div class="pag-wrap"></div>`;
+  main.insertBefore(sec, document.getElementById('emptyState'));
+  // Cifras de la cabecera: mismos rótulos que buildStats(), con «—» hasta tener datos
+  const hs = document.getElementById('heroStats');
+  if (hs && !hs.children.length) {
+    hs.innerHTML = ['HISTORIAS', 'BIBLIOTECA', 'FILES', '+18']
+      .map(l => `<div class="hstat"><div class="hstat-n">—</div><div class="hstat-l">${l}</div></div>`).join('');
+  }
+  // Top 10: huecos con la forma de las tarjetas reales (se sustituyen en renderTop10 / renderTop10Mobile)
+  const t = document.getElementById('top10Track');
+  if (t && !t.children.length) t.innerHTML = '<div class="t10-card t10-skel skel-shim" data-skel aria-hidden="true"></div>'.repeat(10);
+  const m = document.getElementById('top10MobList');
+  if (m && !m.children.length) m.innerHTML = SKEL_T10M.repeat(10);
+}
+function hideCatalogSkeleton() {
+  const s = document.getElementById('catSkeleton');
+  if (s) s.remove();
+  document.querySelectorAll('#top10Track [data-skel], #top10MobList [data-skel]').forEach(n => n.remove());
+}
+// Indicador de «operación en curso» sobre botones: se pone al empezar la petición y se quita siempre al terminar
+async function withBusy(btns, fn) {
+  btns.forEach(b => { if (b) { b.classList.add('is-loading'); b.setAttribute('aria-busy', 'true'); } });
+  try { return await fn(); }
+  finally { btns.forEach(b => { if (b) { b.classList.remove('is-loading'); b.removeAttribute('aria-busy'); } }); }
+}
+
 // INK CLUB state
 let inkCat = 'all'; // active ink club category
 
@@ -7022,7 +7633,7 @@ function loadState() {
   if (p.get('adult') === '1') hideAdult = true;
   if (p.has('sort'))  activeSort = p.get('sort');
   if (p.get('only18') === '1') fOnlyAdult = true;
-  if (p.has('q')) fQ = p.get('q');
+  if (p.has('q')) fQ = p.get('q').trim(); // 6.5.6: espacios sobrantes en ?q= no deben alterar los resultados
   // restore per-section pages
   p.forEach((v, k) => { if (k.startsWith('p_')) secPages[k.slice(2)] = parseInt(v) || 1; });
 }
@@ -7045,8 +7656,9 @@ async function init() {
   if (_initMangaId && _initState.manga && String(_initState.manga) === String(_initMangaId)) _modalMangaId = _initMangaId;
 
   // Default to HOME only on fresh load (no URL params at all)
-  if (!location.search) homeActive = true;
   loadState();
+  // 9B.7: loadState() deja homeActive=false cuando no hay ?view=home; la portada por defecto se aplica después
+  if (!location.search) homeActive = true;
 
   // If home view, show it immediately (skeleton)
   if (homeActive) {
@@ -7056,6 +7668,9 @@ async function init() {
     // Push ?view=home so refresh stays on home
     if (!location.search) history.replaceState(null, '', '?view=home');
   }
+
+  // FASE 8.2: skeleton solo si el catálogo es la vista visible (en la portada los contadores ya muestran «—»)
+  if (!homeActive) showCatalogSkeleton();
 
   // Iniciar cuanto antes las cargas independientes de catálogo y datos públicos.
   // Mantenerlas en una única Promise.all conserva el fallback actual si alguna falla.
@@ -7075,8 +7690,13 @@ async function init() {
       // No volver a cargar aquí los datos personales ni renderizar antes del catálogo.
       if (_e === 'INITIAL_SESSION') return;
 
-      if (currentUser) Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]).then(() => { renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); });
-      else { myRatings = {}; myReadingStatus = {}; myReadingDates = {}; mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
+      if (currentUser) {
+        personalLoading = true;
+        Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()])
+          .then(() => { personalLoading = false; renderSections(false); if (shelfActive) renderShelfView(); if (activeModalItem) openModal(activeModalItem, true); })
+          .finally(() => { if (personalLoading) { personalLoading = false; if (shelfActive) renderShelfView(); } });
+      }
+      else { personalLoading = false; myRatings = {}; myReadingStatus = {}; myReadingDates = {}; mySpicyVotes = {}; if (shelfActive) closeShelf(); renderSections(false); if (activeModalItem) openModal(activeModalItem, true); }
     });
 
     const { data: { session } } = await sb.auth.getSession();
@@ -7100,7 +7720,11 @@ async function init() {
     console.warn('No se pudo cargar manga_data.json:', e.message);
     allData = [];
   }
-  await _initialPersonalPromise;
+  try { await _initialPersonalPromise; }
+  catch (e) { console.warn('No se pudieron cargar los datos personales:', e && e.message || e); }
+  // FASE 8.2: fin de la carga inicial (con datos o con error): los skeletons se retiran antes de pintar lo real
+  catalogLoading = false;
+  hideCatalogSkeleton();
 
   buildStats();
   buildCatTabs();
@@ -7110,6 +7734,7 @@ async function init() {
   buildPersonajeFilter();
   buildAnioFilter();
   buildShelfSeccionOptions();
+  if (shelfActive) renderShelfView(); // FASE 8.2: la estantería abierta durante la carga sustituye su skeleton
   updateAuthGatedUI();
   if (fAutor.length > 0) buildAutorFilter();
   applyStateToUI();
@@ -7129,7 +7754,7 @@ async function init() {
 
   // Abrir modal directamente si la URL tenía ?manga=ID (capturado al inicio de init())
   if (_initMangaId && allData.length) {
-    const _initEntry = allData.find(e => e.id === _initMangaId);
+    const _initEntry = allData.find(e => String(e.id) === String(_initMangaId));
     if (_initEntry) {
       if (!homeActive) restoreCatalogScroll(_initCtx);
       openModal(_initEntry);
@@ -7208,9 +7833,14 @@ async function init() {
       renderSections(false);
     }
     if (!homeActive && !shelfActive) { syncCatalogFromUrl(); restoreCatalogScroll(st.ctx); }
+    if (mid && !entry && !homeActive && !shelfActive) pushState(); // ?manga= con un id que ya no existe: se limpia la URL (replaceState)
   });
   // FASE 6.4: guarda la posición del catálogo al salir de la página o pasar a segundo plano
   window.addEventListener('pagehide', saveCatalogContext);
+  // FASE 6.5.5: en una recarga el estado escrito durante «pagehide» no se conserva (Chromium), así que la recarga perdía el scroll.
+  // Se guarda también al dejar de hacer scroll (debounce); saveCatalogContext ya ignora portada, estantería y entradas de ficha.
+  let _scrollSaveT = null;
+  window.addEventListener('scroll', () => { clearTimeout(_scrollSaveT); _scrollSaveT = setTimeout(saveCatalogContext, 200); }, { passive: true });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveCatalogContext(); });
 }
 
@@ -7231,10 +7861,14 @@ function showHome() {
   // Update URL (FASE 3.4: no apilar una entrada más si ya estamos en ?view=home)
   if (location.search !== '?view=home') history.pushState(null, '', '?view=home');
   // Populate real stats and INK CLUB categories if data is loaded
-  if (allData.length) renderHomeStats();
+  if (!catalogLoading) renderHomeStats(); // FASE 8.2: tras la carga siempre se rellenan los «—» (también con 0 si no hay datos)
 }
 
 function showCatalog(sec) {
+  const _fromHome = homeActive; // FASE 6.5.5
+  // FASE 6.5.5: venir de la portada apila una entrada (antes se reemplazaba y Atrás salía de la web en vez de volver a la portada).
+  // Se hace antes de cualquier render: renderSections() reescribe la URL de la entrada actual con replaceState.
+  if (_fromHome && new URLSearchParams(location.search).get('view') === 'home') history.pushState(null, '', location.href);
   homeActive = false;
   document.getElementById('homeView').classList.remove('active');
   document.body.classList.remove('home-active');
@@ -7711,6 +8345,7 @@ function getInkCategories() {
 }
 
 function renderInkClub() {
+  if (catalogLoading) return; // FASE 8.2: sin datos todavía (el skeleton lo gestiona renderSections)
   const inkData = getInkData();
   const section = document.getElementById('inkSection');
 
@@ -7811,7 +8446,7 @@ function applyStateToUI() {
     document.getElementById('onlyAdultBtn').classList.add('on');
   }
   if (activeSort !== 'recent') {
-    const label = activeSort === 'rating' ? '★ Más valorados' : 'Az A–Z';
+    const label = activeSort === 'rating' ? '★ Más valorados' : activeSort === 'spicy' ? '🌶 Más spicy' : 'Az A–Z';
     updateDropLabel('dropSort', 'valSort', label, true, 'on');
     document.querySelectorAll('#panelSort .dopt').forEach(o => {
       o.classList.toggle('on', o.dataset.v === activeSort);
@@ -7897,6 +8532,25 @@ function buildCatTabs() {
   });
 }
 
+/* ── FASE 6.5.2: contadores de pestañas coherentes con los filtros ──
+   Todas las pestañas de sección y «Todas» muestran cuántas obras cumplen los filtros y la búsqueda actuales
+   (antes solo se actualizaba la pestaña activa y el resto conservaba totales o valores de visitas anteriores). */
+function updateTabCounts() {
+  const per = {};
+  let total = 0;
+  allData.forEach(e => {
+    if (!matches(e)) return;
+    total++;
+    per[e.seccion] = (per[e.seccion] || 0) + 1;
+  });
+  const tcAll = document.getElementById('tc-all');
+  if (tcAll) tcAll.textContent = total;
+  SECTION_ORDER.forEach(s => {
+    const el = document.getElementById('tc-' + sl(s));
+    if (el) el.textContent = per[s] || 0;
+  });
+}
+
 /* ── RENDER ─────────────────────────────────────────────── */
 function sortItems(items) {
   if (activeSort === 'recent') {
@@ -7963,6 +8617,19 @@ function announceSearch(total) {
     ? `Sin resultados para «${fQ}»`
     : `${total} resultado${total !== 1 ? 's' : ''} para «${fQ}»`;
 }
+// FASE 8.3: «Quitar filtros» del estado vacío. Quita los filtros y el +18 (los mismos que muestran los chips)
+// pero conserva la búsqueda, la pestaña y el orden. Deja el «Deshacer» disponible como «Limpiar todo».
+function clearFiltersKeepSort() {
+  if (activeFilterChips().some(c => c.kind !== 'orden')) _undoNext = filterSnapshot();
+  fEstado = 'all'; fDemo = 'all'; fSub = 'all'; fShelf = 'all'; fAnio = 'all';
+  fTags = []; fTropos = []; fPersonajes = []; fSubgeneros = []; fAutor = [];
+  hideAdult = false; fOnlyAdult = false;
+  onFsheetChange();
+  if (_filterUndo) announceFilters('Filtros eliminados. Puedes deshacer.');
+}
+/* FASE 8.3: el estado vacío distingue la causa. Cuenta qué devolvería cada parte por separado (solo búsqueda,
+   solo filtros, otras categorías) con los datos ya cargados: sin red ni esperas. «Sin resultados» no es un error;
+   solo «catálogo sin datos» (carga fallida) se presenta como tal. */
 function updateEmptyState(show) {
   if (!show) return;
   const msg = document.getElementById('emptyMsg');
@@ -7971,31 +8638,87 @@ function updateEmptyState(show) {
   if (!msg || !act) return;
   const q = (fQ && searchNormQuery(fQ)) ? fQ : '';
   const filt = hasActiveFilters();
-  // El texto de la consulta se inserta como texto (nunca como HTML)
-  msg.textContent = '';
-  if (q) {
-    msg.append('Sin resultados para «');
-    const strong = document.createElement('span');
-    strong.className = 'empty-q'; strong.textContent = q;
-    msg.append(strong, filt ? '» con los filtros actuales.' : '».');
-  } else {
-    msg.textContent = 'Sin resultados con los filtros actuales.';
-  }
-  if (hint) {
-    const t = q ? (filt ? 'Prueba a cambiar la búsqueda o a quitar algún filtro.' : 'Revisa la ortografía o prueba con otro término.') : '';
-    hint.textContent = t; hint.hidden = !t;
-  }
-  act.textContent = '';
-  const mk = (label, fn) => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'empty-btn'; b.textContent = label;
-    b.addEventListener('click', fn); act.appendChild(b);
+  const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+  const qSpan = () => { // el texto de la consulta se inserta como texto (nunca como HTML)
+    const s = document.createElement('span');
+    s.className = 'empty-q'; s.textContent = q;
+    return s;
   };
-  if (q) mk('Limpiar búsqueda', () => { if (window.GLSearch) window.GLSearch.clear(true); });
-  if (filt) mk('Quitar filtros', resetFilterState);
+  const inTab = SECTION_ORDER.includes(activeSec);
+  const pool = inTab ? allData.filter(e => e.seccion === activeSec) : allData;
+  const nOther = inTab ? allData.filter(matches).length : 0;      // coincidencias con búsqueda + filtros en cualquier categoría
+  const nQ = q ? pool.filter(matchesQuery).length : 0;            // solo la búsqueda
+  const nF = filt ? pool.filter(matchesFilters).length : 0;       // solo los filtros
+  const bQ = ['Limpiar búsqueda', () => { if (window.GLSearch) window.GLSearch.clear(true); }];
+  const bF = ['Quitar filtros', clearFiltersKeepSort];
+  const bAll = ['Ver en todas las categorías', () => {
+    const t = document.querySelector('.ctab[data-sec="all"]');
+    if (t) t.click();
+  }];
+  let parts, hintText = '', buttons;
+  if (!allData.length) {
+    // Sin datos: no es «sin coincidencias», el catálogo no se ha podido cargar
+    parts = ['No se ha podido cargar el catálogo.'];
+    hintText = 'Comprueba tu conexión e inténtalo de nuevo.';
+    buttons = [['Reintentar', () => location.reload()]];
+  } else if (inTab && !q && !filt) {
+    parts = ['No hay obras en «' + activeSec + '» por ahora.'];
+    buttons = [['Ver todas las categorías', bAll[1]]];
+  } else if (inTab && nOther > 0) {
+    // La causa es la categoría: en otras sí hay resultados con la misma búsqueda y filtros
+    parts = q
+      ? ['Sin resultados para «', qSpan(), '» en ' + activeSec + (filt ? ' con los filtros actuales.' : '.')]
+      : ['Ninguna obra de ' + activeSec + ' cumple los filtros actuales.'];
+    hintText = 'Hay ' + plural(nOther, 'resultado', 'resultados') + ' en otras categorías.';
+    buttons = [bAll].concat(q ? [bQ] : [], filt ? [bF] : []);
+  } else if (q && filt) {
+    parts = ['Sin resultados para «', qSpan(), '» con los filtros actuales.'];
+    if (nQ > 0 && nF > 0) hintText = 'Solo con la búsqueda hay ' + plural(nQ, 'obra', 'obras') + '; solo con los filtros, ' + nF + '.';
+    else if (nQ > 0) hintText = 'Sin los filtros habría ' + plural(nQ, 'resultado', 'resultados') + '.';
+    else if (nF > 0) hintText = 'Sin la búsqueda habría ' + plural(nF, 'obra', 'obras') + ' con estos filtros.';
+    else hintText = 'Ni la búsqueda ni los filtros devuelven obras por separado: prueba con otro término y quita algún filtro.';
+    buttons = (nQ > 0 && nF === 0) ? [bF, bQ] : [bQ, bF]; // primero la acción que sí devuelve resultados
+  } else if (q) {
+    parts = ['Sin resultados para «', qSpan(), '».'];
+    hintText = 'Revisa la ortografía o prueba con otro término.';
+    buttons = [bQ];
+  } else if (filt) {
+    parts = ['Ninguna obra cumple los filtros actuales.'];
+    hintText = 'Prueba a quitar algún filtro.';
+    buttons = [bF];
+  } else {
+    parts = ['No hay obras para mostrar.'];
+    buttons = [];
+  }
+  msg.textContent = '';
+  parts.forEach(p => msg.append(p));
+  if (hint) { hint.textContent = hintText; hint.hidden = !hintText; }
+  act.textContent = '';
+  buttons.forEach(([label, fn], i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'empty-btn' + (i === 0 ? ' empty-btn--primary' : ''); b.textContent = label;
+    b.addEventListener('click', fn); act.appendChild(b);
+  });
+  if (!q && allData.length) announceFilters(msg.textContent); // con búsqueda ya lo anuncia announceSearch()
+}
+
+// FASE 9B.3: cabecera común de Explorar (también en «Todas»); con una categoría activa añade su chip para quitarla
+function exploreHeadHTML(key, cat) {
+  const chip = cat
+    ? `<button type="button" class="mob-chip mob-chip-estado explore-cat-chip" id="exploreCatChip" aria-label="Quitar filtro Categoría: ${esc(cat)}" title="Ver todas las categorías"><span class="mob-chip-k">Categoría</span> ${SECTION_ICONS[cat] || ''} ${esc(cat)} <span class="mob-chip-x" aria-hidden="true">✕</span></button>`
+    : '';
+  return `<div class="section-head explore-head"><div class="section-title-wrap" style="border-left-color:var(--neon2)"><div class="section-title"><span class="sec-icon">✦</span>Explorar</div><div class="section-meta" id="meta-${key}"></div></div>${chip}</div>`;
 }
 
 function renderSections(resetPages, opts) {
+  // FASE 8.2: mientras la carga inicial sigue en curso no hay datos que filtrar → skeleton, nunca «Sin resultados»
+  if (catalogLoading) {
+    showCatalogSkeleton();
+    const _t10 = document.getElementById('top10Section');
+    if (_t10) _t10.style.display = activeSec === 'all' ? '' : 'none';
+    document.getElementById('emptyState').classList.remove('show');
+    return;
+  }
   // opts.search: la llamada viene solo de escribir en el buscador; INK CLUB y la
   // colección de temporada no dependen de la consulta, así que no se reconstruyen.
   const fromSearch = !!(opts && opts.search);
@@ -8018,6 +8741,12 @@ function renderSections(resetPages, opts) {
     seasonRenderCollection(); // colección de temporada (solo con un tema activo)
   }
 
+  // FASE 6.5.2: contadores que dependen solo del estado (pestañas, insignia «Filtros» y botón «Ver N»),
+  // también cuando el render no viene de onFsheetChange (+18, «Solo +18», cambio de pestaña, búsqueda).
+  updateTabCounts();
+  updateFiltersTrigger();
+  updateFsheetApplyBtn();
+
   // ── TAB "INK CLUB" ───────────────────────────────────────
   if (activeSec === 'ink_club') {
     empty.classList.remove('show');
@@ -8028,76 +8757,47 @@ function renderSections(resetPages, opts) {
     return;
   }
 
-  // ── TAB "Todas": single merged grid ──────────────────────
-  if (activeSec === 'all') {
-    const key = 'all';
-    if (resetPages) secPages[key] = 1;
-    if (!secPages[key]) secPages[key] = 1;
-
-    const allMatched = sortItems(allData.filter(e => matches(e)));
+  // ── EXPLORAR (FASE 9B.3): una sola vista de catálogo ─────────
+  // «Todas» y cada categoría usan la misma cuadrícula, el mismo orden, los mismos filtros, la misma búsqueda y la misma
+  // paginación: la categoría es un filtro más (antes cada una montaba una sección aparte). Las claves de paginación
+  // se conservan (?p_all, ?p_Manga…), así que los enlaces anteriores siguen funcionando.
+  {
+    const isAll = activeSec === 'all';
+    const pool  = isAll ? allData : allData.filter(e => e.seccion === activeSec);
+    const key   = isAll ? 'all' : sl(activeSec);
+    const allMatched = sortItems(pool.filter(e => matches(e)));
     const totalVis   = allMatched.length;
 
-    const sec = document.createElement('div');
-    sec.className = 'section';
-    sec.id = 'sec-all';
-    sec.innerHTML = `
-      <div class="grid" id="grid-all"></div>
-      <div class="pag-info-sec" id="paginfo-all"></div>
-      <div class="pag-wrap" id="pag-all"></div>`;
-    main.insertBefore(sec, empty);
-
-    renderSecPage('__all__', allMatched);
-
-    empty.classList.toggle('show', totalVis === 0);
-    updateEmptyState(totalVis === 0);
-    announceSearch(totalVis);
-    const fc = document.getElementById('filterCount');
-    if (fc) fc.textContent = `${totalVis} historia${totalVis !== 1 ? 's' : ''}`;
-
-    // update "Todas" tab count
-    const tcAll = document.getElementById('tc-all');
-    if (tcAll) tcAll.textContent = totalVis;
-
-  // ── Specific section tab: normal per-section view ────────
-  } else {
-    let totalVis = 0;
-    const sectionsToShow = SECTION_ORDER.filter(s => s === activeSec && groups[s]);
-
-    sectionsToShow.forEach((s) => {
-      const key = sl(s);
+    // ?sec= desconocido o categoría sin obras: sin cuadrícula, solo el estado vacío (como antes)
+    if (isAll || pool.length > 0) {
       if (resetPages) secPages[key] = 1;
       if (!secPages[key]) secPages[key] = 1;
-
-      const entries    = groups[s];
-      const allMatched = sortItems(entries.filter(e => matches(e)));
-      totalVis += allMatched.length;
 
       const sec = document.createElement('div');
       sec.className = 'section';
       sec.id = `sec-${key}`;
       sec.innerHTML = `
-        <div class="section-head">
-          <div class="section-title-wrap" style="border-left-color:var(--neon2)">
-            <div class="section-title"><span class="sec-icon">${SECTION_ICONS[s]||''}</span>${s}</div>
-            <div class="section-meta" id="meta-${key}"></div>
-          </div>
-        </div>
+        ${exploreHeadHTML(key, isAll ? null : activeSec)}
         <div class="grid" id="grid-${key}"></div>
         <div class="pag-info-sec" id="paginfo-${key}"></div>
         <div class="pag-wrap" id="pag-${key}"></div>`;
       main.insertBefore(sec, empty);
 
-      renderSecPage(s, allMatched);
+      renderSecPage(isAll ? '__all__' : activeSec, allMatched);
 
-      sec.style.display = allMatched.length === 0 && fQ ? 'none' : '';
+      sec.style.display = totalVis === 0 && fQ ? 'none' : '';
 
-      const adultCount = entries.filter(e => e.adult).length;
+      const adultCount = pool.filter(e => e.adult).length;
       const meta = sec.querySelector(`#meta-${key}`);
-      meta.innerHTML = `<strong>${allMatched.length}</strong> de ${entries.length}${adultCount ? ` · <span style="color:var(--neon2)">${adultCount} +18</span>` : ''}`;
+      meta.innerHTML = `<strong>${totalVis}</strong> de ${pool.length}${isAll ? ' historias · todas las categorías' : ' en ' + esc(activeSec)}${adultCount ? ` · <span style="color:var(--neon2)">${adultCount} +18</span>` : ''}`;
 
-      const tc = document.getElementById(`tc-${key}`);
-      if (tc) tc.textContent = allMatched.length;
-    });
+      // El filtro de categoría se quita desde su propio chip (misma acción que la pestaña «Todas»)
+      const chip = sec.querySelector('#exploreCatChip');
+      if (chip) chip.addEventListener('click', () => {
+        const t = document.querySelector('.ctab[data-sec="all"]');
+        if (t) t.click();
+      });
+    }
 
     empty.classList.toggle('show', totalVis === 0);
     updateEmptyState(totalVis === 0);
@@ -8115,7 +8815,7 @@ function renderSecPage(s, matched) {
   const page = secPages[key] || 1;
   const total = matched.length;
   const pages = Math.max(1, Math.ceil(total / PER_PAGE));
-  const safePage = Math.min(page, pages);
+  const safePage = Math.max(1, Math.min(page, pages));
   secPages[key] = safePage;
 
   const start = (safePage - 1) * PER_PAGE;
@@ -8126,7 +8826,7 @@ function renderSecPage(s, matched) {
   if (!grid) return;
   grid.innerHTML = '';
   pageItems.forEach((e, idx) => {
-    grid.appendChild(buildCard(e, palList[(start + idx) % palList.length]));
+    grid.appendChild(buildCard(e, palList[(start + idx) % palList.length], { showType: s === '__all__' }));
   });
 
   // pagination info
@@ -8188,7 +8888,7 @@ function pagRange(cur, total) {
 }
 
 /* ── CARD ───────────────────────────────────────────────── */
-function buildCard(e, bgColor) {
+function buildCard(e, bgColor, opts) {
   const d = document.createElement('div');
   d.className = 'card';
   d.dataset.id = e.id;
@@ -8215,6 +8915,7 @@ function buildCard(e, bgColor) {
     <div class="card-overlay"></div>
     <div class="card-info">
       ${shelfBadge}
+      ${opts && opts.showType && e.seccion ? `<div class="card-type">${esc(e.seccion)}</div>` : ''}
       <div class="card-title">${esc(e.titulo)}</div>
       <div class="card-tags">${tags}</div>
     </div>
@@ -8246,15 +8947,35 @@ function getSimilarBooks(e, limit) {
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, limit).map(s => s.item);
 }
+/* FASE 7.5 · enlaces oficiales: solo URLs absolutas http(s) reales, sin duplicados y con etiqueta legible.
+   El destino es el original (no se reescribe); lo que no es un enlace válido simplemente no se pinta. */
+function safeHttpUrl(raw) {
+  if (typeof raw !== 'string') return null;
+  const t = raw.trim();
+  if (!t) return null;
+  let u;
+  try { u = new URL(t); } catch (_) { return null; }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+  return { href: t, key: u.href, host: u.hostname.replace(/^www\./i, '') };
+}
+function officialLinksFor(e) {
+  const raw = Array.isArray(e && e.enlaces_lectura) ? e.enlaces_lectura : [];
+  const seen = new Set(), out = [];
+  raw.forEach(l => {
+    if (!l) return;
+    const u = safeHttpUrl(l.url);
+    if (!u || seen.has(u.key)) return;
+    seen.add(u.key);
+    const name = (typeof l.label === 'string' && l.label.trim()) || u.host;
+    out.push({ href: u.href, name, host: u.host });
+  });
+  return out;
+}
 function openModal(e, isRefresh) {
   activeModalItem = e;
   pendingStar = myRatings[e.id] || 0;
   pendingSpicy = mySpicyVotes.hasOwnProperty(e.id) ? mySpicyVotes[e.id] : -1;
 
-  const capsTxt = e.capitulos_totales ? ` · ${e.capitulos_totales} cap.` : '';
-  const lecturaBadge = estadoInfo(e.estado)
-    ? estadoMetaBadgeHTML(e.estado, capsTxt)
-    : (e.capitulos_totales ? `<span class="mbadge mb-caps">${e.capitulos_totales} cap.</span>` : '');
   const tags = (e.tags||[]).map(t =>
     '<span class="mtag' + (t.toLowerCase()==='erotica' ? ' adult' : '') + '">' + esc(tagLabel(t)) + '</span>').join('');
   const coverHtml = coverImgHTML('modal', e.imagen, e.titulo);
@@ -8266,77 +8987,100 @@ function openModal(e, isRefresh) {
   };
   const crBadgeData = CR_INFO[e.content_rating];
 
+  // FASE 7.2 · cabecera: datos esenciales en una fila (solo los que existen) y datos secundarios aparte
+  const factChips = [];
+  if (estadoInfo(e.estado)) factChips.push(estadoMetaBadgeHTML(e.estado));
+  if (e.capitulos_totales) factChips.push(`<span class="mbadge mb-caps">${esc(String(e.capitulos_totales))} cap.</span>`);
+  if (e.anio_inicio) factChips.push(`<span class="mbadge mb-year" title="Año de inicio">${esc(String(e.anio_inicio))}</span>`);
+  // el aviso grande de +18 ya va debajo (modal-adult-warn); +18 suelto solo si no hay rating de contenido que ya lo comunique.
+  if (crBadgeData) factChips.push(`<span class="mbadge mb-cr mb-cr-${esc(e.content_rating)}">${crBadgeData.icon} ${crBadgeData.label}</span>`);
+  else if (e.adult) factChips.push('<span class="mbadge mb-adult">+18</span>');
+  if (e.adaptacion) factChips.push(`<span class="mbadge mb-adapt">🎬 ${esc(typeof e.adaptacion === 'string' ? e.adaptacion : 'Tiene adaptación')}</span>`);
+  const autoresArr = Array.isArray(e.autor) ? e.autor : (e.autor ? [e.autor] : []);
+  const autorStr = autoresArr.join(', ');
+  const spicyR = spicyMap[e.id];
+  const extraGroups = [
+    (e.in_biblioteca || e.in_files) ? `<div class="meta-group">
+        <span class="meta-glabel">Dónde</span>
+        <div class="meta-row">
+          ${e.in_biblioteca ? '<span class="mbadge mb-bib">📚 Biblioteca</span>' : ''}
+          ${e.in_files ? '<span class="mbadge mb-files">📁 Files</span>' : ''}
+        </div>
+      </div>` : '',
+    (spicyR && spicyR.count) ? `<div class="meta-group">
+        <span class="meta-glabel">Spicy</span>
+        <div class="meta-row">
+          <span class="mbadge mb-spicy" title="${spicyR.count} voto${spicyR.count === 1 ? '' : 's'} de la comunidad">🌶 ${spicyR.avg}/5</span>
+        </div>
+      </div>` : ''
+  ].join('');
+
+  // FASE 7.3/7.5 · acciones: leer (solo si hay enlaces válidos) y mi estantería, con el mismo bloque y los mismos permisos de siempre
+  const readLinks = officialLinksFor(e);
+  const actionsHTML = `
+    <div class="mh-actions">
+      ${readLinks.length ? `
+      <div class="mh-act mh-act-read">
+        <div class="mh-act-label">📖 Leer oficialmente en</div>
+        <div class="modal-read-links">${readLinks.map(l => `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer" class="modal-read-link" aria-label="${esc(l.name)}${l.name !== l.host ? ' (' + esc(l.host) + ')' : ''}, se abre en una pestaña nueva"><span class="olink-name">${esc(l.name)}</span>${l.name !== l.host ? `<span class="olink-host">${esc(l.host)}</span>` : ''}<span class="olink-ico" aria-hidden="true">↗</span></a>`).join('')}</div>
+      </div>` : ''}
+      <div class="mh-act mh-act-shelf">
+        <div class="mh-act-label">📚 Mi estantería</div>
+        <div id="shelfSection">${buildShelfSectionHTML(e)}</div>
+      </div>
+    </div>`;
+
+  // FASE 7.4 · información secundaria en bloques: sinopsis, tags, títulos alternativos, personajes e información adicional.
+  // Solo se pinta cada bloque si el campo real tiene contenido. Tropes y personajes siguen reservados a personas registradas.
+  const asArr = v => Array.isArray(v) ? v.filter(Boolean) : (v ? [v] : []);
+  const mhChip = (txt, kind) => `<span class="mtag mh-tag mh-tag--${kind}">${esc(txt)}</span>`;
+  const mhLocked = what => `<div class="modal-extra-locked">🔒 ${what} solo para personas registradas. <a onclick="closeModal();openAuthModal()">Inicia sesión</a></div>`;
+  const mhGroup = (label, chips) => chips ? `<div class="mh-tag-group"><div class="mh-tag-label">${label}</div><div class="mh-chips">${chips}</div></div>` : '';
+  const mhBlock = (cls, title, inner) => inner ? `<section class="mh-block mh-block--${cls}" aria-label="${title}"><h3 class="mh-block-title">${title}</h3>${inner}</section>` : '';
+
+  const synopsisParas = (typeof e.desc === 'string' ? e.desc.trim() : '').split(/\n{2,}/).map(x => x.trim()).filter(Boolean);
+  const synopsisHTML = mhBlock('synopsis', 'Sinopsis', synopsisParas.length ? `<div class="mh-synopsis">${synopsisParas.map(x => `<p>${esc(x)}</p>`).join('')}</div>` : '');
+
+  const tropoArr = asArr(e.tropos), persArr = asArr(e.personajes);
+  const tagsInner =
+    mhGroup('Géneros', (e.tags || []).map(t => mhChip(tagLabel(t), String(t).toLowerCase() === 'erotica' ? 'adult' : 'genre')).join('')) +
+    mhGroup('Subgéneros', asArr(e.subgeneros).map(t => mhChip(tagLabel(t), 'sub')).join('')) +
+    (tropoArr.length ? (currentUser ? mhGroup('Tropes', tropoArr.map(t => mhChip(tagLabel(t), 'trope')).join('')) : mhLocked('Los tropes están disponibles')) : '');
+  const tagsHTML = mhBlock('tags', 'Tags', tagsInner);
+
+  const altArr = asArr(e.titulos_alt);
+  const altHTML = mhBlock('alt', 'Títulos alternativos', altArr.length ? `<ul class="mh-alt-list">${altArr.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : '');
+
+  const persHTML = mhBlock('chars', 'Personajes', persArr.length ? (currentUser ? `<div class="mh-chips">${persArr.map(t => mhChip(tagLabel(t), 'char')).join('')}</div>` : mhLocked('Los personajes están disponibles')) : '');
+
+  const infoRow = (label, chips) => chips ? `<div class="mh-info-row"><div class="mh-tag-label">${label}</div><div class="mh-chips">${chips}</div></div>` : '';
+  const infoHTML = mhBlock('info', 'Información adicional',
+    infoRow('País o cultura', asArr(e.pais_cultura).map(t => mhChip(String(t), 'info')).join('')) +
+    infoRow('Demográfico', e.demografico ? mhChip(demoLabel(e.demografico), 'info') : ''));
+
+  const detailsHTML = (synopsisHTML + tagsHTML + altHTML + persHTML + infoHTML);
+
   document.getElementById('modalBody').innerHTML = `
     <div class="modal-top">
       <div class="modal-cover">${coverHtml}</div>
-      <div>
+      <div class="mh-head">
         <div class="modal-sec">${esc(e.seccion)}</div>
         <div class="modal-title">${esc(e.titulo)}</div>
-        ${e.titulos_alt && e.titulos_alt.length ? `<div class="modal-alt-titles">${e.titulos_alt.map(t=>`<span class="modal-alt-title">${esc(t)}</span>`).join('')}</div>` : ''}
-        ${(() => { const autores = Array.isArray(e.autor) ? e.autor : (e.autor ? [e.autor] : []); const autorStr = autores.join(', '); return autorStr ? `<div class="modal-autor">✍️ ${esc(autorStr)}${e.anio_inicio ? ' · ' + esc(String(e.anio_inicio)) : ''}</div>` : (e.anio_inicio ? `<div class="modal-autor">${esc(String(e.anio_inicio))}</div>` : ''); })()}
+      </div>
+      <div class="mh-body">
+        ${factChips.length ? `<div class="mh-facts" role="group" aria-label="Datos de publicación">${factChips.join('')}</div>` : ''}
+        ${autorStr ? `<div class="modal-autor">✍️ ${esc(autorStr)}</div>` : ''}
         ${e.adult ? '<div class="modal-adult-warn">🔞 Contenido para mayores de 18 años</div>' : ''}
-        <div class="modal-meta-groups">
-          ${lecturaBadge ? `<div class="meta-group">
-            <span class="meta-glabel">Lectura</span>
-            <div class="meta-row">
-              ${lecturaBadge}
-            </div>
-          </div>` : ''}
-          ${(e.in_biblioteca || e.in_files) ? `
-          <div class="meta-group">
-            <span class="meta-glabel">Dónde</span>
-            <div class="meta-row">
-              ${e.in_biblioteca ? '<span class="mbadge mb-bib">📚 Biblioteca</span>' : ''}
-              ${e.in_files ? '<span class="mbadge mb-files">📁 Files</span>' : ''}
-            </div>
-          </div>` : ''}
-          ${(() => {
-            const chips = [];
-            // el aviso grande de +18 ya va arriba (modal-adult-warn); aquí no lo repetimos.
-            // solo mostramos +18 suelto si no hay rating de contenido que ya lo comunique.
-            if (crBadgeData) chips.push(`<span class="mbadge mb-cr mb-cr-${esc(e.content_rating)}">${crBadgeData.icon} ${crBadgeData.label}</span>`);
-            else if (e.adult) chips.push('<span class="mbadge mb-adult">+18</span>');
-            if (e.adaptacion) chips.push(`<span class="mbadge mb-adapt">🎬 ${esc(typeof e.adaptacion === 'string' ? e.adaptacion : 'Tiene adaptación')}</span>`);
-            if (!chips.length) return '';
-            return `<div class="meta-group">
-              <span class="meta-glabel">Clasificación</span>
-              <div class="meta-row">${chips.join('')}</div>
-            </div>`;
-          })()}
-          ${(() => {
-            const r = spicyMap[e.id];
-            if (!r || !r.count) return '';
-            return `<div class="meta-group">
-              <span class="meta-glabel">Spicy</span>
-              <div class="meta-row">
-                <span class="mbadge mb-spicy" title="${r.count} voto${r.count === 1 ? '' : 's'} de la comunidad">🌶 ${r.avg}/5</span>
-              </div>
-            </div>`;
-          })()}
-        </div>
+        ${extraGroups ? `<div class="mh-extra">${extraGroups}</div>` : ''}
       </div>
     </div>
+    ${actionsHTML}
     ${e.advertencias && e.advertencias.length ? `
     <div class="modal-cw-box">
       <div class="modal-cw-title">⚠️ Advertencias de contenido</div>
       <div class="modal-cw-tags">${e.advertencias.map(a => `<span class="cw-tag">${esc(a)}</span>`).join('')}</div>
     </div>` : ''}
-    ${e.desc ? '<div class="modal-desc">' + esc(e.desc) + '</div>' : '<div class="modal-desc" style="opacity:.35;font-style:italic">Sin descripción.</div>'}
-    ${e.enlaces_lectura && e.enlaces_lectura.length ? `
-    <div class="modal-read-box">
-      <div class="modal-read-title">📖 Leer oficialmente en</div>
-      <div class="modal-read-links">${e.enlaces_lectura.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" class="modal-read-link">${esc(l.label)} ↗</a>`).join('')}</div>
-    </div>` : ''}
-    <div class="modal-tags">${tags}</div>
-    ${((e.tropos && e.tropos.length) || (e.personajes && e.personajes.length)) ? `
-    <div class="modal-extra-block">
-      ${currentUser ? `
-        ${e.tropos && e.tropos.length ? `<div class="modal-extra-row"><span class="modal-extra-label">🪢 Tropes</span>${e.tropos.map(t=>'<span class="mtag mtag-tropo">'+esc(tagLabel(t))+'</span>').join('')}</div>` : ''}
-        ${e.personajes && e.personajes.length ? `<div class="modal-extra-row"><span class="modal-extra-label">🦋 Personajes</span>${e.personajes.map(t=>'<span class="mtag mtag-personaje">'+esc(tagLabel(t))+'</span>').join('')}</div>` : ''}
-      ` : `
-        <div class="modal-extra-locked">🔒 Tropes y personajes solo para personas registradas. <a onclick="closeModal();openAuthModal()">Inicia sesión</a></div>
-      `}
-    </div>` : ''}
+    ${detailsHTML ? `<div class="mh-details">${detailsHTML}</div>` : ''}
     ${(() => { const sim = getSimilarBooks(e); return sim.length ? `
     <div class="similar-block">
       <div class="similar-title">Historias similares</div>
@@ -8347,10 +9091,6 @@ function openModal(e, isRefresh) {
           <div class="similar-card-title">${esc(s.titulo)}</div>
         </div>`).join('')}</div>
     </div>` : ''; })()}
-    <div class="rating-block shelf-block">
-      <div class="rating-block-title">📚 Mi estantería</div>
-      <div id="shelfSection">${buildShelfSectionHTML(e)}</div>
-    </div>
     <div class="rating-spicy-row">
       <div class="rating-block rating-block-half">
         <div class="rating-block-title">Valoraciones de la comunidad</div>
@@ -8394,7 +9134,7 @@ function openModal(e, isRefresh) {
     const ctx = saveCatalogContext();
     history.pushState(ctx ? { manga: e.id, ctx } : { manga: e.id }, '', '?' + mangaParams.toString());
   }
-  document.title = esc(e.titulo) + ' — GL PANELS';
+  document.title = e.titulo + ' — GL PANELS'; // FASE 6.5.5: sin esc() (es texto, no HTML)
 }
 function closeModal() {
   const wrap = document.getElementById('modalWrap');
@@ -8411,9 +9151,9 @@ function closeModal() {
 }
 async function shareBook() {
   if (!activeModalItem) return;
-  const params = new URLSearchParams(location.search);
-  params.set('manga', activeModalItem.id);
-  const url = location.origin + location.pathname + '?' + params.toString();
+  // Enlace compartible canónico: solo ?manga=<id>. No arrastra filtros, páginas ni vistas (home/estantería) de quien comparte,
+  // y sigue siendo el mismo formato que ya abre la ficha directamente (los enlaces antiguos con más parámetros también funcionan).
+  const url = location.origin + location.pathname + '?' + new URLSearchParams({ manga: String(activeModalItem.id) }).toString();
   const btn = document.getElementById('modalShareBtn');
   if (navigator.share) {
     try {
@@ -8433,6 +9173,7 @@ async function shareBook() {
     }
   } catch (err) {
     console.error('No se pudo copiar el enlace:', err);
+    window.prompt('Copia el enlace de esta ficha:', url);
   }
 }
 
@@ -8517,7 +9258,10 @@ function matchesFilters(e) {
 }
 // Filtros + texto de búsqueda. (FASE 5.4: matchesFilters se reutiliza para las sugerencias.)
 function matches(e) {
-  if (!matchesFilters(e)) return false;
+  return matchesFilters(e) && matchesQuery(e);
+}
+// FASE 8.3: solo el texto de búsqueda (sin filtros); matches() sigue siendo filtros + texto
+function matchesQuery(e) {
   if (fQ) {
     const q = searchNormQuery(fQ);
     if (q) {
@@ -8767,7 +9511,7 @@ function bindEvents() {
     document.getElementById('adultLbl').textContent = hideAdult ? '+18 oculto' : '+18 visible';
     document.getElementById('adultPillBtn').classList.toggle('on', hideAdult);
     document.getElementById('adultPillLbl').textContent = hideAdult ? '+18 oculto' : 'Ocultar +18';
-    renderSections(true);
+    onFsheetChange(); // FASE 6.5.3
   });
 
   // Category tabs
@@ -8847,7 +9591,7 @@ function bindEvents() {
         if (f === 'sort')   { activeSort = v; const sl = {'recent':'Recientes','rating':'★ Más valorados','spicy':'🌶 Más spicy','az':'Az A–Z'}; updateDropLabel('dropSort','valSort', sl[v], v !== 'recent', 'on'); }
         if (f === 'shelf')  { fShelf = v; const shl = {'all':'📚 Mi estantería','want':'＋ Quiero leer','reading':'📖 Leyendo','read':'✓ Terminado'}; updateDropLabel('dropShelf','valShelf', shl[v], v !== 'all', 'on'); }
         drop.classList.remove('open');
-        renderSections(true);
+        onFsheetChange(); // FASE 6.5.3: mismo camino que la hoja (sincroniza controles y descarta un «Deshacer» antiguo)
       } else {
         // toggle the dropdown open/closed
         const wasOpen = drop.classList.contains('open');
@@ -8893,7 +9637,7 @@ function toggleAdult() {
   const pb = document.getElementById('adultPillBtn');
   pb.classList.toggle('on', hideAdult);
   document.getElementById('adultPillLbl').textContent = hideAdult ? '+18 oculto' : 'Ocultar +18';
-  renderSections(true);
+  onFsheetChange(); // FASE 6.5.3
 }
 
 function updateDropLabel(dropId, valId, label, active, activeCls) {
@@ -9248,6 +9992,15 @@ function syncFilterUI() { // etiquetas, hoja, chips e insignia a partir del esta
   const shl2 = {'want':'＋ Quiero leer','reading':'📖 Leyendo','read':'✓ Terminado'};
   updateDropLabel('dropShelf','valShelf', fShelf === 'all' ? '📚 Mi estantería' : (shl2[fShelf] || fShelf), fShelf !== 'all', 'on');
   updateDropLabel('dropAnio','valAnio', fAnio === 'all' ? 'Año' : fAnio, fAnio !== 'all', 'on');
+  // FASE 6.5.3: opción marcada en los desplegables de escritorio según el estado real
+  // (antes solo cambiaba al elegir dentro del propio desplegable, no al usar la hoja, un chip o «Limpiar todo»)
+  [['panelEstado', fEstado, 'on'], ['panelDemo', fDemo, 'on'], ['panelSub', fSub, 'on-teal'],
+   ['panelShelf', fShelf, 'on'], ['panelAnio', String(fAnio), 'on'], ['panelSort', activeSort, 'on']].forEach(([id, val, cls]) => {
+    document.querySelectorAll(`#${id} .dopt`).forEach(o => {
+      o.classList.remove('on', 'on-teal', 'on-pink');
+      if (o.dataset.v === val) o.classList.add(cls);
+    });
+  });
   updateTagDropUI();
   updateSubgeneroDropUI();
   updateTropoDropUI();
@@ -9270,8 +10023,11 @@ function syncFilterUI() { // etiquetas, hoja, chips e insignia a partir del esta
 function updateFsheetApplyBtn() {
   const btn = document.getElementById('fsheetApplyBtn');
   if (!btn) return;
-  // Mismo total que la cuadrícula: incluye la pestaña de sección activa
-  const n = allData.filter(e => matches(e) && (activeSec === 'all' || activeSec === 'ink_club' || e.seccion === activeSec)).length;
+  // Mismo total que la cuadrícula: incluye la pestaña de sección activa.
+  // INK CLUB no aplica los filtros del catálogo: cuenta las obras que su cuadrícula muestra (según su categoría).
+  const n = activeSec === 'ink_club'
+    ? getInkData().filter(e => inkCat === 'all' || (e.ink_categories || [e.seccion]).includes(inkCat)).length
+    : allData.filter(e => matches(e) && (activeSec === 'all' || e.seccion === activeSec)).length;
   btn.textContent = n > 0 ? `Ver ${n} resultado${n === 1 ? '' : 's'}` : 'Sin resultados';
   btn.classList.toggle('no-results', n === 0);
 }
@@ -9334,6 +10090,8 @@ function bindFsheetEvents() {
 /* swipe down to close bottom sheet */
 function bindFsheetSwipe() {
   const sheet = document.getElementById('fsheet');
+  if (sheet._swipeBound) return; // FASE 6.5.4: openFsheet() la llama en cada apertura; sin esto los listeners se acumulaban
+  sheet._swipeBound = true;
   const handle = document.getElementById('fsheetHandle');
   let startY = 0, dragging = false;
   const onStart = e => {
@@ -9956,8 +10714,10 @@ document.addEventListener('keydown', function(e) {
     var row = document.getElementById('officialLinksRow');
     var zone = document.getElementById('officialLinksZone');
     if (!row || !zone) return;
+    links = links.filter(function(l) { return l && typeof safeHttpUrl === 'function' && safeHttpUrl(l.url); });
+    if (!links.length) return;
     row.innerHTML = links.map(function(l) {
-      return '<a href="' + l.url + '" target="_blank" rel="noopener noreferrer" class="hv-footer-link">&#128279; ' + l.label + '</a>';
+      return '<a href="' + esc(l.url.trim()) + '" target="_blank" rel="noopener noreferrer" class="hv-footer-link">&#128279; ' + esc(l.label || safeHttpUrl(l.url).host) + '</a>';
     }).join('');
     zone.style.display = 'block';
   }

@@ -5192,6 +5192,14 @@ body.hide-adult .cal-panel-cover[data-adult="1"] { --adult-blur: 5px; }
 /* Top 10: solo visible al entrar por Comunidad › Top 10. Cabecera grande del catálogo (.hero): retirada; Inicio conserva su portada (.hv-hero). */
 body:not(.show-top10) #top10Section, body:not(.show-top10) .top10-divider { display: none !important; }
 .hero { display: none !important; }
+/* El .hero hacía de separador bajo la cabecera fija (padding-top); sin él, el catálogo reserva ese hueco para no quedar tapado por la barra de filtros. */
+body:not(.home-active):not(.shelf-active) { padding-top: 52px; }
+@media (max-width: 600px) {
+  body:not(.home-active):not(.shelf-active) { padding-top: 48px; }          /* altura de la cabecera móvil */
+  body:not(.home-active):not(.shelf-active) .mobile-search { top: 0 !important; } /* antes se desplazaba 48px con position:relative para librar la cabecera; ahora lo hace el padding */
+  /* Sin la fila de categorías, en móvil la franja de filtros queda vacía (solo su borde de 1px, pegajoso): se oculta para que no aparezca una línea fija sobre el contenido. Los filtros móviles son .mob-filter-bar, que no depende de ella. */
+  .filter-strip { display: none; }
+}
 </style>
 </head>
 <body>

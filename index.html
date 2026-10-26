@@ -8,6 +8,7 @@
 <meta name="sb-url" content="https://zspzauuebkmrxqwzxuut.supabase.co">
 <meta name="sb-key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzcHphdXVlYmttcnhxd3p4dXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MTQyMTcsImV4cCI6MjA5MzQ5MDIxN30.bJpUwhZs2Z9-h8pzT1ZmzjOG4ldXRHR8i8n_mK8ZcWM">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preload" href="manga_data.json" as="fetch" crossorigin="anonymous">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
@@ -6700,6 +6701,7 @@ async function handleResetPasswordM() {
 //   reintenta una vez y después devuelve error en vez de datos incompletos.
 // - Nunca lanza: devuelve { ok, rows, error }.
 const VOTES_PAGE_SIZE = 1000;
+const VOTES_PARALLEL = 6; // páginas simultáneas (tras la primera) al leer votos
 // Tope de páginas por intento: red de seguridad contra bucles sin fin, no un límite de uso.
 // 10000 páginas × 1000 filas = 10 millones de filas, muy por encima de lo que se puede agregar en el
 // cliente; una tabla legítima nunca se acerca. Superarlo es un error (sin reintento).
@@ -6716,6 +6718,9 @@ async function fetchAllVoteRows(table, opts = {}) {
     let from = 0;
     let pages = 0;
     lastError = null;
+    // Intento 1: tras la 1ª página (que trae el count) el resto se pide EN PARALELO (antes: una página tras otra, y el
+    // primer pintado esperaba a todas). Intento 2 (si el recuento no cuadra): el recorrido secuencial de siempre.
+    const parallel = attempt === 0;
     try {
       while (true) {
         if (pages++ >= VOTES_MAX_PAGES) {
@@ -6737,6 +6742,28 @@ async function fetchAllVoteRows(table, opts = {}) {
         for (let i = 0; i < got; i++) rows.push(data[i]);
         from += got;
         if (rows.length >= total) break;
+        if (parallel && from === got && got === VOTES_PAGE_SIZE) {
+          // Solo si la API devolvió la página completa (si su «Max Rows» es menor, el paralelo dejaría huecos → secuencial)
+          const starts = [];
+          for (let f = from; f < total; f += VOTES_PAGE_SIZE) starts.push(f);
+          const parts = new Array(starts.length);
+          let next = 0, failed = null;
+          const worker = async () => {
+            while (!failed && next < starts.length) {
+              const k = next++;
+              let qq = sb.from(table).select('manga_id,score');
+              if (personal) qq = qq.eq('user_id', opts.userId);
+              const r = await qq.order('user_id', { ascending: true }).order('manga_id', { ascending: true })
+                .range(starts[k], starts[k] + VOTES_PAGE_SIZE - 1);
+              if (r.error) { failed = r.error; return; }
+              parts[k] = r.data || [];
+            }
+          };
+          await Promise.all(Array.from({ length: Math.min(VOTES_PARALLEL, starts.length) }, worker));
+          if (failed) { lastError = failed; break; }
+          for (const part of parts) for (let i = 0; i < part.length; i++) rows.push(part[i]);
+          break; // el recuento total se verifica abajo (rows.length !== total → reintento secuencial)
+        }
       }
     } catch (e) {
       lastError = e;
@@ -6780,7 +6807,9 @@ async function loadMyRatings() {
   return true;
 }
 
+const LOADING_NOTE = '<div style="font-size:12px;color:var(--dim);font-style:italic;padding:4px 0" role="status">Cargando…</div>';
 function buildCommunityRowHTML(e) {
+  if (publicVotesLoading) return LOADING_NOTE;
   const r = ratingsMap[e.id] || { avg: 0, count: 0 };
   if (!r.count) return `<div style="font-size:12px;color:var(--dim);font-style:italic;padding:4px 0">Sin valoraciones aún. ¡Sé la primera!</div>`;
   const stars = [1,2,3,4,5].map(i => `<span class="sm ${i <= Math.round(r.avg) ? 'on' : 'off'}">★</span>`).join('');
@@ -6788,6 +6817,7 @@ function buildCommunityRowHTML(e) {
 }
 function buildVoteSectionHTML(e) {
   if (!currentUser) return `<p class="login-prompt-m">Para votar, <a onclick="closeModal();openAuthModal()">inicia sesión</a>.</p>`;
+  if (votesPending()) return LOADING_NOTE;
   const myScore = myRatings[e.id] || 0;
   const stars = [1,2,3,4,5].map(n => `<button class="sstar${n <= pendingStar ? ' lit' : ''}" data-n="${n}" onclick="selectStar(${n})">★</button>`).join('');
   return `
@@ -6892,6 +6922,7 @@ async function loadMySpicy() {
   return true;
 }
 function buildSpicyCommunityRowHTML(e) {
+  if (publicVotesLoading) return LOADING_NOTE;
   const r = spicyMap[e.id] || { avg: 0, count: 0 };
   if (!r.count) return `<div style="font-size:12px;color:var(--dim);font-style:italic;padding:4px 0">Sin votos de nivel spicy aún. ¡Sé la primera!</div>`;
   const rounded = Math.round(r.avg);
@@ -6902,6 +6933,7 @@ function buildSpicyCommunityRowHTML(e) {
 }
 function buildSpicyVoteSectionHTML(e) {
   if (!currentUser) return `<p class="login-prompt-m">Para votar el nivel spicy, <a onclick="closeModal();openAuthModal()">inicia sesión</a>.</p>`;
+  if (votesPending()) return LOADING_NOTE;
   const myScore = mySpicyVotes.hasOwnProperty(e.id) ? mySpicyVotes[e.id] : null;
   const zeroBtn = `<button class="schile zero${pendingSpicy === 0 ? ' lit' : ''}" data-s="0" title="${SPICY_LABELS[0]}" onclick="selectSpicy(0)">🚫 Sin steam</button>`;
   const chiles = [1,2,3,4,5].map(n => `<button class="schile${n <= pendingSpicy ? ' lit' : ''}" data-s="${n}" title="${SPICY_LABELS[n]}" onclick="selectSpicy(${n})">🌶</button>`).join('');
@@ -7009,7 +7041,8 @@ function refreshCardSpicyBadge(id) {
 ══════════════════════════════════ */
 let rdStar = 0, rdSpicy = -1;
 
-function openReadDoneModal() {
+async function openReadDoneModal() {
+  if (publicVotesLoading) { const _it = activeModalItem; await _publicVotesPromiseG; if (activeModalItem !== _it) return; } // sus votos se suman a las medias ya cargadas
   if (!activeModalItem) return;
   rdStar  = myRatings[activeModalItem.id] || 0;
   rdSpicy = mySpicyVotes.hasOwnProperty(activeModalItem.id) ? mySpicyVotes[activeModalItem.id] : -1;
@@ -7177,6 +7210,7 @@ async function loadMyReadingStatus() {
 }
 
 function buildShelfSectionHTML(e) {
+  if (currentUser && personalLoading) return '<div style="font-size:12px;color:var(--dim);font-style:italic;padding:4px 0" role="status">Cargando tu estantería…</div>';
   if (!currentUser) return `
       <div class="rating-locked-box">
         <div class="rlb-icon">🔒</div>
@@ -7836,13 +7870,33 @@ const PER_PAGE = 25;
 const secPages = {}; // current page per section key
 
 /* ── FASE 8.2: estados de carga reales ─────────────────────────────────
-   catalogLoading: carga inicial del catálogo (manga_data.json + datos públicos). Es true hasta que
+   catalogLoading: carga inicial del catálogo (manga_data.json; los votos tardíos se refrescan solos). Es true hasta que
      init() la termina, con éxito o con error; mientras tanto el catálogo muestra skeletons en vez de
      «Sin resultados».
    personalLoading: carga de datos personales tras iniciar sesión (Mi estantería).
    Las operaciones puntuales (votar, guardar, entrar, logros) usan indicadores propios, ligados a la petición. */
 let catalogLoading = true;
 let personalLoading = false;
+// Los votos públicos (medias de ratings/spicy) ya NO bloquean el primer pintado: si no llegan en LOAD_GRACE_MS, el catálogo se pinta
+// sin ellos y se refresca al llegar. Mientras tanto no se puede votar (evita mezclar un voto nuevo con datos a medio cargar).
+let publicVotesLoading = false;
+let _publicVotesPromiseG = Promise.resolve();
+const LOAD_GRACE_MS = 700;
+let _lateTimer = null;
+function votesPending() { return publicVotesLoading || personalLoading; }
+function lateDataRefresh() { // datos (votos públicos / personales) que llegaron DESPUÉS del primer pintado
+  if (catalogLoading) return;
+  clearTimeout(_lateTimer);
+  _lateTimer = setTimeout(() => {
+    renderTop10(); renderTop10Mobile();
+    if (homeActive) renderHomeStats(); else renderSections(false);
+    if (shelfActive) renderShelfView();
+    if (activeModalItem) openModal(activeModalItem, true);
+    const cw = document.getElementById('calendarModalWrap');
+    if (cw && cw.classList.contains('open')) renderReadingCalendar();
+    updateAuthGatedUI();
+  }, 0);
+}
 
 function skelCardsHTML(n) {
   return '<div class="card card-skel skel-shim" aria-hidden="true"></div>'.repeat(n);
@@ -8054,11 +8108,13 @@ async function init() {
   // FASE 8.2: skeleton solo si el catálogo es la vista visible (en la portada los contadores ya muestran «—»)
   if (!homeActive) showCatalogSkeleton();
 
-  // Iniciar cuanto antes las cargas independientes de catálogo y datos públicos.
-  // Mantenerlas en una única Promise.all conserva el fallback actual si alguna falla.
-  const _catalogPublicPromise = Promise.all(
-    SB_READY ? [fetch(DATA), loadRatings(), loadSpicy()] : [fetch(DATA)]
-  );
+  // Iniciar cuanto antes las cargas independientes: el catálogo (manga_data.json) es lo único que bloquea el primer pintado.
+  const _catalogPublicPromise = Promise.all([fetch(DATA)]);
+  // Votos públicos en paralelo; ya no bloquean (ver LOAD_GRACE_MS). Nunca rechaza: loadRatings/loadSpicy devuelven false si fallan.
+  publicVotesLoading = !!SB_READY;
+  _publicVotesPromiseG = SB_READY
+    ? Promise.all([loadRatings(), loadSpicy()]).catch(() => {}).then(() => { publicVotesLoading = false; })
+    : Promise.resolve();
 
   let _initialPersonalPromise = Promise.resolve();
   if (SB_READY) {
@@ -8088,7 +8144,9 @@ async function init() {
       if (_initP.get('view') === 'shelf') { shelfActive = true; if (URL_SHELF_TABS.includes(_initP.get('tab'))) shelfTab = _initP.get('tab'); }
       // Arrancar las consultas personales en cuanto se conoce la sesión,
       // sin esperar a que termine el catálogo.
-      _initialPersonalPromise = Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()]);
+      personalLoading = true;
+      _initialPersonalPromise = Promise.all([loadMyRatings(), loadMyReadingStatus(), loadMySpicy()])
+        .finally(() => { personalLoading = false; });
       // La consulta arranca antes de la carga del catálogo; marca su rechazo como
       // manejado mientras init() sigue coordinando ambos flujos.
       _initialPersonalPromise.catch(() => {});
@@ -8104,11 +8162,24 @@ async function init() {
     console.warn('No se pudo cargar manga_data.json:', e.message);
     allData = [];
   }
-  try { await _initialPersonalPromise; }
-  catch (e) { console.warn('No se pudieron cargar los datos personales:', e && e.message || e); }
+  // ?shelf=… filtra por estado de lectura: sin los datos personales saldría una lista vacía → en ese caso se espera (como antes)
+  if (fShelf !== 'all') {
+    try { await _initialPersonalPromise; }
+    catch (e) { console.warn('No se pudieron cargar los datos personales:', e && e.message || e); }
+  }
+  // Margen corto para votos y datos personales: en conexión normal llegan a tiempo y no hay parpadeo; si tardan, se pinta ya.
+  await Promise.race([
+    Promise.all([_publicVotesPromiseG, _initialPersonalPromise.catch(() => {})]),
+    new Promise(r => setTimeout(r, LOAD_GRACE_MS))
+  ]);
+  _initialPersonalPromise.catch(e => console.warn('No se pudieron cargar los datos personales:', e && e.message || e));
   // FASE 8.2: fin de la carga inicial (con datos o con error): los skeletons se retiran antes de pintar lo real
   catalogLoading = false;
   hideCatalogSkeleton();
+
+  // Lo que no llegó dentro del margen se refresca al llegar (se registra aquí: personalLoading/publicVotesLoading ya se bajan solos antes)
+  if (publicVotesLoading) _publicVotesPromiseG.then(lateDataRefresh);
+  if (personalLoading) _initialPersonalPromise.then(lateDataRefresh, lateDataRefresh);
 
   buildStats();
   buildCatTabs();

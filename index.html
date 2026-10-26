@@ -5331,6 +5331,12 @@ body:not(.home-active):not(.shelf-active) { padding-top: 52px; }
 .home-reading-a{font-size:.74rem;color:var(--gl-text-muted)}
 .home-reading-since{font-size:.7rem;color:var(--hc-accent2);font-weight:600}
 .home-reading-empty{margin:0;font-size:.82rem;line-height:1.55;color:var(--gl-text-muted);font-style:italic;padding:.25rem 0}
+.home-reading-today{align-self:flex-start;margin-top:.35rem;border:1px solid var(--border2);background:var(--hc-soft);color:var(--hc-accent);border-radius:999px;padding:.35rem .85rem;font:600 .74rem var(--font-ui);cursor:pointer;transition:background .16s,border-color .16s}
+.home-reading-today:hover:not(:disabled){background:var(--hc-surface3);border-color:var(--hc-accent)}
+.home-reading-today:focus-visible{outline:2px solid var(--hc-accent);outline-offset:3px}
+.home-reading-today:disabled{cursor:default;opacity:.75}
+.home-reading-today.is-done{color:var(--neon3);border-color:rgba(var(--neon3-rgb,71,255,224),.4);background:rgba(var(--neon3-rgb,71,255,224),.08);opacity:1}
+.home-reading-today.is-err{color:var(--hc-accent2);border-color:var(--hc-accent2)}
 .home-journey-pick{display:block;margin:.7rem auto 0;border:1px solid var(--border2);background:var(--hc-soft);color:var(--hc-accent);border-radius:999px;padding:.4rem .95rem;font:600 .76rem var(--font-ui);cursor:pointer;transition:background .16s,border-color .16s}
 .home-journey-pick:hover{background:var(--hc-surface3);border-color:var(--hc-accent)}
 
@@ -8491,6 +8497,40 @@ function homeNextSet(id) {
   try { const k = homeNextKey(); if (!k) return; if (id) localStorage.setItem(k, String(id)); else localStorage.removeItem(k); } catch (err) {}
 }
 
+/* «He leído hoy» desde Leyendo ahora: mismo registro que el de la ficha (tabla reading_days), sin abrirla. */
+const _homeTodayBusy = new Set();
+function homeTodayDone(id) {
+  return _calDaysState === 'ready' && (myReadingDays[localTodayISO()] || []).includes(id);
+}
+function homeTodayBtnHTML(id) {
+  const sid = esc(String(id));
+  if (homeTodayDone(id)) return `<button type="button" class="home-reading-today is-done" disabled>✓ Leído hoy</button>`;
+  const busy = _homeTodayBusy.has(id);
+  return `<button type="button" class="home-reading-today" data-home-today="${sid}"${busy ? ' disabled' : ''}>${busy ? 'Guardando…' : '📖 He leído hoy'}</button>`;
+}
+async function homeReadToday(id) {
+  if (!SB_READY || !currentUser || _homeTodayBusy.has(id) || homeTodayDone(id)) return;
+  const uid = currentUser.id, iso = localTodayISO();
+  _homeTodayBusy.add(id); renderHomeStats();
+  let error = null;
+  try { ({ error } = await sb.from('reading_days').insert({ user_id: uid, book_id: id, read_date: iso })); }
+  catch (e) { error = e; }
+  _homeTodayBusy.delete(id);
+  if (!currentUser || currentUser.id !== uid) return;
+  if (error && error.code !== '23505') { // no se guardó
+    renderHomeStats();
+    const b = document.querySelector(`[data-home-today="${CSS.escape(String(id))}"]`);
+    if (b) { b.textContent = 'No se pudo guardar · reintentar'; b.classList.add('is-err'); }
+    return;
+  }
+  // 23505 = ya estaba registrado (p. ej. desde otra pestaña): se da por bueno
+  const st = (typeof _rdayCache !== 'undefined') && _rdayCache[id];
+  if (st && st.state === 'ready' && !st.days.includes(iso)) { st.days.push(iso); st.days.sort().reverse(); }
+  calDaysApply(id, iso, true);
+  calAfterDaysChange(); // calendario y resúmenes de la estantería al día
+  renderHomeStats();
+}
+
 function homeJourneyBookHTML(e, dateLabel) {
   const t = esc(e.titulo || 'Sin título'), a = esc(homeAuthor(e));
   return `<button type="button" class="home-journey-book" data-home-open="${esc(String(e.id))}" aria-label="Abrir la ficha de ${t}">${homeCover(e)}<span class="home-journey-book-title">${t}</span>${a ? `<span class="home-journey-book-author">${a}</span>` : ''}${dateLabel ? `<span class="home-journey-book-date">${esc(dateLabel)}</span>` : ''}</button>`;
@@ -8500,6 +8540,7 @@ function homeJourneyRender(byId) {
   const entries = Object.keys(myReadingStatus || {})
     .map(id => ({ id, e: byId.get(String(id)), st: myReadingStatus[id] }))
     .filter(x => x.e);
+  if (_calDaysState === 'idle') calDaysEnsure(); // para saber qué días ya están registrados hoy
   const dateOf = (id, f) => (myReadingDates[id] && myReadingDates[id][f]) || '';
   const el = id => document.getElementById(id);
 
@@ -8520,6 +8561,7 @@ function homeJourneyRender(byId) {
           <button type="button" class="home-reading-t" data-home-open="${sid}">${t}</button>
           ${a ? `<div class="home-reading-a">${a}</div>` : ''}
           ${sd ? `<div class="home-reading-since">Desde el ${esc(homeFmtDate(sd))}</div>` : ''}
+          ${homeTodayBtnHTML(x.e.id)}
         </div>
       </article>`;
     }).join('');
@@ -8635,6 +8677,8 @@ document.addEventListener('click', e => {
   if (it) { homeNextPickDone(it.dataset.homeNextId); return; }
   if (e.target.closest('[data-home-next-clear]')) { homeNextPickDone(''); return; }
   if (e.target.closest('[data-home-next-close]')) { const d = document.getElementById('homeNextDlg'); if (d) d.close(); return; }
+  const today = e.target.closest('[data-home-today]');
+  if (today) { homeReadToday(today.dataset.homeToday); return; }
   const open = e.target.closest('[data-home-open]');
   if (open) { const item = allData.find(x => String(x.id) === open.dataset.homeOpen); if (item) openModal(item); }
 });
@@ -11028,26 +11072,23 @@ function ruletaOpenBook(id) {
 }
 
 // ── CALENDARIO DE LECTURA ──────────────────────────────────
-// Construye los "periodos de lectura" a partir de myReadingStatus + myReadingDates.
-// Si la lectura sigue en curso (estado 'reading' sin fecha de fin), el tramo se extiende hasta hoy.
+// El calendario ya NO rellena los días entre «empecé» y «terminé» (no implican que se leyera cada día):
+// la lectura diaria sale solo de los días registrados (reading_days). De las fechas de estado solo se
+// usa el día de fin de las historias «Terminado», como marca de un único día.
 // Fecha de hoy en formato YYYY-MM-DD según la zona horaria LOCAL (toISOString() usa UTC y puede cambiar el día cerca de medianoche).
 function localTodayISO(d = new Date()) {
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 function buildReadingPeriods() {
   const periods = [];
-  const todayISO = localTodayISO();
   Object.keys(myReadingStatus).forEach(id => {
     const status = myReadingStatus[id];
-    if (status !== 'reading' && status !== 'read') return;
+    if (status !== 'read') return;
     const book = allData.find(b => b.id === id);
     if (!book) return;
-    const dates = myReadingDates[id] || {};
-    const start = dates.start_date;
-    if (!start) return; // sin fecha de inicio, no se puede ubicar en el calendario
-    const ongoing = status === 'reading';
-    const end = ongoing ? todayISO : (dates.end_date || start);
-    periods.push({ bookId: id, title: book.titulo, cover: book.imagen, adult: !!book.adult, start, end, ongoing });
+    const end = (myReadingDates[id] || {}).end_date;
+    if (!end) return; // sin fecha de fin no se puede ubicar en el calendario
+    periods.push({ bookId: id, title: book.titulo, cover: book.imagen, adult: !!book.adult, start: end, end, ongoing: false });
   });
   return periods;
 }
@@ -11173,6 +11214,7 @@ function rdaySummaryHTML(bookId) {
   return `<span class="card-days-lbl" title="${esc(RDAY_COUNT_HINT)}">📖 ${esc(rdayCountText(s.n))}</span><span class="card-days-last">Última: ${esc(rdayFmt(s.last))}</span>`;
 }
 function rdayRefreshSummaries() {
+  if (homeActive) renderHomeStats(); // «He leído hoy» del inicio depende de los días ya registrados
   document.querySelectorAll('[data-rday-sum]').forEach(el => { el.innerHTML = rdaySummaryHTML(el.getAttribute('data-rday-sum')); });
 }
 function rdayDecorateShelfCard(card, e) {
@@ -11259,7 +11301,9 @@ function renderReadingCalendar() {
     const dateStr = calISO(calYear, calMonth, d);
     const active = periods.filter(p => p.start <= dateStr && dateStr <= p.end);
     const rbooks = calDiaryBooks(dateStr, byId); // una sola celda por fecha aunque haya varias historias
-    if (active.length) { monthReadDays++; active.forEach(p => monthBookIds.add(p.bookId)); }
+    if (active.length || rbooks.length) monthReadDays++;
+    active.forEach(p => monthBookIds.add(p.bookId));
+    rbooks.forEach(b => monthBookIds.add(b.id));
     if (rbooks.length) monthDiaryDays++;
     const isToday = dateStr === todayISO;
     const isSelected = dateStr === calSelectedDay;
@@ -11268,7 +11312,7 @@ function renderReadingCalendar() {
     const clickable = active.length > 0 || rbooks.length > 0;
     const parts = [];
     if (rbooks.length) parts.push(calPlural(rbooks.length, 'historia con día de lectura registrado', 'historias con día de lectura registrado'));
-    if (active.length) parts.push(calPlural(active.length, 'lectura en periodo', 'lecturas en periodo'));
+    if (active.length) parts.push(calPlural(active.length, 'historia terminada', 'historias terminadas'));
     const aria = calLabel(dateStr, { day: 'numeric', month: 'long', year: 'numeric' }) + (parts.length ? ': ' + parts.join(', ') : '');
     const badge = rbooks.length
       ? `<span class="cal-rday-badge" title="${esc(calPlural(rbooks.length, 'historia leída', 'historias leídas'))}" aria-hidden="true">📖${rbooks.length > 1 ? ' ' + rbooks.length : ''}</span>`
@@ -11294,10 +11338,9 @@ function renderReadingCalendar() {
         + rbooks.map(b => calPanelRowHTML(b.id, b.titulo, b.imagen, b.adult, 'Registrado como día de lectura')).join('');
     }
     if (active.length) {
-      inner += `<div class="cal-panel-sub">Periodo de lectura · según tus fechas de inicio y fin</div>`
+      inner += `<div class="cal-panel-sub">Terminada este día</div>`
         + active.map(p => {
-          const rangeStr = `${calLabel(p.start, { day: '2-digit', month: 'short' })} → ${p.ongoing ? 'ahora' : calLabel(p.end, { day: '2-digit', month: 'short' })}`;
-          return calPanelRowHTML(p.bookId, p.title, p.cover, p.adult, rangeStr);
+          return calPanelRowHTML(p.bookId, p.title, p.cover, p.adult, 'Marcada como terminada');
         }).join('');
     }
     if (!inner) {
@@ -11329,14 +11372,13 @@ function renderReadingCalendar() {
       </div>
     </div>
     <div class="cal-legend">
-      <span title="Periodo entre la fecha de inicio y la de fin de tu estado de lectura"><span class="cal-dot dot-reading"></span> Leyendo</span>
-      <span title="Periodo entre la fecha de inicio y la de fin de tu estado de lectura"><span class="cal-dot dot-read"></span> Terminado</span>
+      <span title="Día en que marcaste la historia como terminada"><span class="cal-dot dot-read"></span> Terminado</span>
       <span title="Día que registraste a mano en la ficha de una historia"><span class="cal-dot dot-rday"></span> 📖 Día de lectura registrado</span>
     </div>
     <div class="cal-summary" aria-label="Resumen del mes">
-      <div class="cal-stat" title="Días del mes con algún periodo de lectura abierto (entre fecha de inicio y de fin)"><span class="cal-stat-val" id="calStatDays">${monthReadDays}</span><span class="cal-stat-lbl">Días con lectura</span></div>
+      <div class="cal-stat" title="Días del mes con algún día de lectura registrado o alguna historia terminada"><span class="cal-stat-val" id="calStatDays">${monthReadDays}</span><span class="cal-stat-lbl">Días con lectura</span></div>
       <div class="cal-stat" title="Historias distintas con algún día de lectura en el mes; cada una cuenta una sola vez"><span class="cal-stat-val" id="calStatBooks">${monthBookIds.size}</span><span class="cal-stat-lbl">Historias en el mes</span></div>
-      <div class="cal-stat" title="Días del mes en los que registraste a mano una lectura en alguna ficha (no incluye los periodos de inicio y fin)"><span class="cal-stat-val" id="calStatRDays">${diaryReady ? monthDiaryDays : '–'}</span><span class="cal-stat-lbl">Días registrados</span></div>
+      <div class="cal-stat" title="Días del mes en los que registraste a mano una lectura en alguna ficha"><span class="cal-stat-val" id="calStatRDays">${diaryReady ? monthDiaryDays : '–'}</span><span class="cal-stat-lbl">Días registrados</span></div>
     </div>
     ${diaryNote}
     <div class="cal-grid">
@@ -11344,7 +11386,7 @@ function renderReadingCalendar() {
       ${cells}
     </div>
     ${panelHtml}
-    ${noData ? `<p class="cal-empty-msg">Aún no hay lecturas registradas. Marca un título como «Leyendo» o «Terminado» con fecha de inicio, o registra un día de lectura en su ficha, para verlo aquí 📖</p>` : ''}
+    ${noData ? `<p class="cal-empty-msg">Aún no hay lecturas registradas. Registra un día de lectura («He leído hoy») en la ficha de una historia, o márcala como «Terminado», para verlo aquí 📖</p>` : ''}
   `;
   if (focusKey) {
     const el = Array.from(container.querySelectorAll('[data-calfocus]')).find(n => n.getAttribute('data-calfocus') === focusKey);

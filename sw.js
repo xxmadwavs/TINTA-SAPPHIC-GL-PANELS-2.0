@@ -20,7 +20,7 @@
  */
 'use strict';
 
-const VERSION = '2';
+const VERSION = '3';
 const SCOPE_URL = new URL('./', self.location).href;          // https://…/TINTA-SAPPHIC-GL-PANELS-2.0/
 const SCOPE = new URL(SCOPE_URL).pathname;                      // /TINTA-SAPPHIC-GL-PANELS-2.0/
 const PFX = 'glp:' + SCOPE + ':';
@@ -38,7 +38,9 @@ const EXTERNAL_LIB = ['cdn.jsdelivr.net'];
 self.addEventListener('install', e => {
   // No se llama a skipWaiting() aquí: la actualización espera a que la persona la acepte.
   e.waitUntil(
-    caches.open(C_SHELL).then(c => c.addAll(PRECACHE.map(u => new Request(u, { cache: 'reload' }))))
+    // Tolerante: si un archivo de la lista falta en el servidor, el service worker se instala igual (con addAll() un solo 404
+    // lo impediría y el navegador dejaría de ofrecer «Instalar»). Lo que no se pueda guardar se pide a la red cuando haga falta.
+    caches.open(C_SHELL).then(c => Promise.all(PRECACHE.map(u => c.add(new Request(u, { cache: 'reload' })).catch(() => {}))))
   );
 });
 

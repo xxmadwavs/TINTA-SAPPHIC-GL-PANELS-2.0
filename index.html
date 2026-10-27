@@ -5442,12 +5442,9 @@ html:has(#homeNextDlg[open]){overflow:hidden}
   padding:.65rem .9rem;border:1px solid var(--border2);border-radius:14px;background:var(--surface2,#1e1e28);color:var(--gl-text,#f5f0e8);
   font:500 .8rem/1.45 var(--font-ui,system-ui,sans-serif);box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .pwa-bar[hidden]{display:none!important}
-.home-install{margin-top:.8rem}
-.home-install[hidden],.home-install-hint[hidden]{display:none!important}
-.home-install-btn{border:1px solid var(--border2);background:transparent;color:var(--gl-text);border-radius:999px;padding:.5rem 1.1rem;font:600 .8rem var(--font-ui,system-ui,sans-serif);cursor:pointer;transition:border-color .16s,color .16s}
-.home-install-btn:hover{border-color:var(--neon,#e8ff47);color:var(--neon,#e8ff47)}
-.home-install-btn:focus-visible{outline:2px solid var(--neon,#e8ff47);outline-offset:3px}
-.home-install-hint{max-width:420px;margin:.6rem auto 0;color:var(--gl-text-muted);font-size:.78rem;line-height:1.5}
+.pwa-install-top[hidden]{display:none!important}
+.pwa-install-top{flex-shrink:0}
+@media (max-width:600px){.topbar .pwa-install-top{padding:0 12px;min-width:44px;justify-content:center}.pwa-install-top .pwa-install-lbl{display:none}}
 .pwa-bar--off{border-color:var(--neon2,#ff47a3)}
 .pwa-bar button{border:1px solid var(--neon,#e8ff47);background:var(--neon,#e8ff47);color:#0a0a0a;border-radius:999px;padding:.35rem .9rem;font:700 .75rem var(--font-ui,system-ui,sans-serif);cursor:pointer}
 .pwa-bar button.pwa-later{background:transparent;color:var(--gl-text-muted,#aaa);border-color:var(--border2)}
@@ -5552,6 +5549,7 @@ html:has(#homeNextDlg[open]){overflow:hidden}
         <span id="adultLbl">+18 visible</span>
       </button>
     </div>
+    <button type="button" class="auth-topbar-btn pwa-install-top" id="pwaInstallBtn" aria-label="Instalar la app" title="Instalar la app" hidden><span aria-hidden="true">📲</span><span class="pwa-install-lbl">Instalar</span></button>
     <div id="authArea"></div>
   </div>
 </header>
@@ -5577,10 +5575,6 @@ html:has(#homeNextDlg[open]){overflow:hidden}
     <h1 class="home-clean-title" id="homeHeading">Tu próxima historia <em>te&nbsp;espera.</em></h1>
     <p class="home-clean-sub">Explora manga, manhwa y manhua Girls Love, descubre nuevas historias y encuentra tu próxima lectura favorita.</p>
     <button type="button" class="home-clean-login" id="homeLoginCta" onclick="openAuthModal()">Entrar</button>
-    <div class="home-install" id="pwaInstallWrap" hidden>
-      <button type="button" class="home-install-btn" id="pwaInstallBtn">📲 Instalar la app</button>
-      <p class="home-install-hint" id="pwaInstallHint" hidden></p>
-    </div>
   </section>
 
   <div class="home-clean-main">
@@ -11779,6 +11773,10 @@ document.addEventListener('keydown', function(e) {
 <div class="pwa-bar pwa-bar--off" id="pwaOffline" role="status" hidden>
   <span>Sin conexión. Puedes seguir explorando la última copia del catálogo; votar, tu estantería, el calendario y los días de lectura necesitan conexión.</span>
 </div>
+<div class="pwa-bar" id="pwaInstallHelp" role="status" hidden>
+  <span id="pwaInstallHelpTxt"></span>
+  <button type="button" class="pwa-later" id="pwaInstallHelpOk">Entendido</button>
+</div>
 <div class="pwa-bar" id="pwaUpdate" role="status" hidden>
   <span>Hay una versión nueva de GL PANELS.</span>
   <button type="button" id="pwaUpdateBtn">Actualizar</button>
@@ -11791,25 +11789,28 @@ document.addEventListener('keydown', function(e) {
   function syncOnline() { if (off) off.hidden = navigator.onLine !== false; }
   window.addEventListener('online', syncOnline); window.addEventListener('offline', syncOnline); syncOnline();
 
-  // Botón «Instalar la app» del inicio. Chrome / Edge / Samsung Internet avisan con beforeinstallprompt;
-  // Safari (iPhone) no lo tiene: ahí se muestran los pasos manuales. Se oculta si ya está instalada.
-  var wrap = document.getElementById('pwaInstallWrap'), btn = document.getElementById('pwaInstallBtn'), hint = document.getElementById('pwaInstallHint'), deferred = null;
+  // Botón «Instalar la app» de la cabecera (a la izquierda de Entrar / perfil). Visible siempre que la app no esté ya instalada:
+  // con beforeinstallprompt (Chrome / Edge / Samsung Internet) abre el aviso del navegador; si no, muestra los pasos manuales.
+  var btn = document.getElementById('pwaInstallBtn'), help = document.getElementById('pwaInstallHelp'), deferred = null;
   var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (wrap && btn && !standalone) {
-    window.addEventListener('beforeinstallprompt', function (ev) { ev.preventDefault(); deferred = ev; wrap.hidden = false; });
-    window.addEventListener('appinstalled', function () { deferred = null; wrap.hidden = true; });
-    if (isIOS) wrap.hidden = false;
+  if (btn && !standalone) {
+    btn.hidden = false;
+    window.addEventListener('beforeinstallprompt', function (ev) { ev.preventDefault(); deferred = ev; });
+    window.addEventListener('appinstalled', function () { deferred = null; btn.hidden = true; if (help) help.hidden = true; });
     btn.addEventListener('click', function () {
       if (deferred) {
-        deferred.prompt();
-        deferred.userChoice.then(function () { deferred = null; wrap.hidden = true; }).catch(function () {});
-      } else if (hint) {
-        hint.textContent = isIOS ? 'En Safari: pulsa Compartir y después «Añadir a pantalla de inicio».'
-          : 'Abre el menú del navegador (⋮) y elige «Instalar aplicación» o «Añadir a pantalla de inicio».';
-        hint.hidden = !hint.hidden;
+        var d = deferred; deferred = null;
+        d.prompt();
+        d.userChoice.then(function (c) { if (c && c.outcome === 'accepted') btn.hidden = true; }).catch(function () {});
+      } else if (help) {
+        document.getElementById('pwaInstallHelpTxt').textContent = isIOS
+          ? 'En Safari: pulsa Compartir y después «Añadir a pantalla de inicio».'
+          : 'Abre el menú del navegador (⋮ o ≡) y elige «Instalar aplicación» o «Añadir página a» → «Pantalla de inicio». Si no aparece, recarga la página con conexión y vuelve a intentarlo.';
+        help.hidden = false;
       }
     });
+    if (help) document.getElementById('pwaInstallHelpOk').addEventListener('click', function () { help.hidden = true; });
   }
 
   // Service worker: solo en https o localhost. Ruta relativa → queda en la carpeta de esta versión.

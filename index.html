@@ -11848,9 +11848,26 @@ document.addEventListener('keydown', function(e) {
       '<h2 style="font-family:Bebas Neue,sans-serif;font-size:1.9rem;letter-spacing:3px;color:var(--ink);line-height:1;margin:0">Instalar app</h2>' +
       '<div style="height:1.5px;background:linear-gradient(90deg,var(--neon),transparent);margin-top:10px;border-radius:2px;opacity:.7"></div></div>' +
       '<p class="pwa-lead">' + c.lead + '</p><ol class="pwa-steps">' + c.steps.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol>' +
-      (c.note ? '<p class="pwa-note">' + c.note + '</p>' : '');
+      (c.note ? '<p class="pwa-note">' + c.note + '</p>' : '') + '<div id="pwaDiag"></div>';
     bg.style.display = 'flex';
+    pwaDiagnose();
   };
+  // Si el navegador no ofrece instalar, lo más habitual es que falte algún archivo de la app en el servidor. Se comprueba y se avisa.
+  function pwaDiagnose() {
+    var box = document.getElementById('pwaDiag'); if (!box) return;
+    var files = ['manifest.webmanifest', 'sw.js', 'icons/icon-192.png', 'icons/icon-512.png'], missing = [];
+    Promise.all(files.map(function (f) {
+      return fetch(f, { cache: 'no-store' }).then(function (r) { if (!r.ok) missing.push(f); }).catch(function () { missing.push(f); });
+    })).then(function () {
+      var reg = navigator.serviceWorker && navigator.serviceWorker.getRegistration ? navigator.serviceWorker.getRegistration() : Promise.resolve(null);
+      return reg.then(function (r) { return !!(r && r.active); }).catch(function () { return false; });
+    }).then(function (swOk) {
+      var msg = '';
+      if (missing.length) msg = 'Faltan en el servidor: <strong>' + missing.join(', ') + '</strong>. Hasta que se suban, el navegador solo ofrecerá un acceso directo.';
+      else if (!swOk) msg = 'El service worker todavía no está activo. Recarga la página una vez con conexión y vuelve a probar.';
+      if (msg) box.innerHTML = '<p class="pwa-note" style="color:var(--neon2)">' + msg + '</p>';
+    });
+  }
   window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; refreshInstall(); });
   window.addEventListener('appinstalled', function () { deferred = null; accepted = true; refreshInstall(); if (typeof closeInfoModal === 'function') closeInfoModal(); });
   refreshInstall();

@@ -2763,6 +2763,7 @@ body.shelf-active .topbar-center { display: none; }
 .cal-cover-thumb { width: 20px; height: 28px; border-radius: 2px; object-fit: cover; flex-shrink: 0; border: 2px solid transparent; display: block; background: var(--surface); }
 .cal-cover-thumb.dot-reading { border-color: var(--neon); }
 .cal-cover-thumb.dot-read { border-color: #6bff9e; }
+.cal-cover-thumb.dot-rday, .cal-cover-ph.dot-rday { border-color: var(--neon3); }
 .cal-cover-ph { width: 20px; height: 28px; border-radius: 2px; flex-shrink: 0; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: var(--fs-badge); border: 2px solid transparent; }
 .cal-cover-ph.dot-reading { border-color: var(--neon); }
 .cal-cover-ph.dot-read { border-color: #6bff9e; }
@@ -5442,9 +5443,13 @@ html:has(#homeNextDlg[open]){overflow:hidden}
   padding:.65rem .9rem;border:1px solid var(--border2);border-radius:14px;background:var(--surface2,#1e1e28);color:var(--gl-text,#f5f0e8);
   font:500 .8rem/1.45 var(--font-ui,system-ui,sans-serif);box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .pwa-bar[hidden]{display:none!important}
-.pwa-install-top[hidden]{display:none!important}
-.pwa-install-top{flex-shrink:0}
-@media (max-width:600px){.topbar .pwa-install-top{padding:0 12px;min-width:44px;justify-content:center}.pwa-install-top .pwa-install-lbl{display:none}}
+.pwa-install[hidden]{display:none!important}
+.pwa-lead{font-size:13px;color:var(--muted);line-height:1.8;margin:0 0 .9rem}
+.pwa-steps{margin:0 0 .9rem 1.2rem;padding:0;font-size:13px;color:var(--muted);line-height:1.7}
+.pwa-steps li{margin-bottom:.45rem;padding-left:.15rem}
+.pwa-steps li::marker{color:var(--neon);font-weight:700}
+.pwa-steps strong{color:var(--gl-text,#f5f0e8);font-weight:700}
+.pwa-note{font-size:12px;color:var(--dim);margin:0 0 1.1rem}
 .pwa-bar--off{border-color:var(--neon2,#ff47a3)}
 .pwa-bar button{border:1px solid var(--neon,#e8ff47);background:var(--neon,#e8ff47);color:#0a0a0a;border-radius:999px;padding:.35rem .9rem;font:700 .75rem var(--font-ui,system-ui,sans-serif);cursor:pointer}
 .pwa-bar button.pwa-later{background:transparent;color:var(--gl-text-muted,#aaa);border-color:var(--border2)}
@@ -5540,6 +5545,10 @@ html:has(#homeNextDlg[open]){overflow:hidden}
             <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item nav-dd-item--ink" data-sec="ink_club" data-count="tc-ink_club" onclick="navInkClub()"><span class="nav-dd-ico" aria-hidden="true">📖</span><span class="nav-dd-lbl">INK CLUB</span><span class="nav-dd-count" aria-hidden="true"></span></button>
             <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item" id="ruletaNavBtn" onclick="navRuleta()"><span class="nav-dd-ico" aria-hidden="true">🎲</span><span class="nav-dd-lbl">Ruleta</span></button>
           </div>
+          <div class="nav-dd-group pwa-install" id="pwaInstallMoreGroup" role="group" aria-labelledby="navGrpApp" hidden>
+            <div class="nav-dd-group-label" id="navGrpApp">App</div>
+            <button type="button" role="menuitem" tabindex="-1" class="nav-dd-item pwa-install" id="pwaInstallMore" onclick="pwaInstallClick()"><span class="nav-dd-ico" aria-hidden="true">📲</span><span class="nav-dd-lbl">Instalar app</span></button>
+          </div>
           </div>
         </div>
         <button type="button" class="home-nav-btn nav-item nav-search-btn" id="navSearchBtn" onclick="navSearch()"><span class="nav-ico" aria-hidden="true">⌕</span> <span>Buscar</span></button>
@@ -5549,7 +5558,6 @@ html:has(#homeNextDlg[open]){overflow:hidden}
         <span id="adultLbl">+18 visible</span>
       </button>
     </div>
-    <button type="button" class="auth-topbar-btn pwa-install-top" id="pwaInstallBtn" aria-label="Instalar la app" title="Instalar la app" hidden><span aria-hidden="true">📲</span><span class="pwa-install-lbl">Instalar</span></button>
     <div id="authArea"></div>
   </div>
 </header>
@@ -5661,6 +5669,7 @@ html:has(#homeNextDlg[open]){overflow:hidden}
       <button onclick="openInfoModal('sobre')" class="hv-footer-pill">Sobre nosotras</button>
       <button onclick="openInfoModal('privacidad')" class="hv-footer-pill">Política de privacidad</button>
       <button onclick="openInfoModal('terminos')" class="hv-footer-pill">Términos de uso</button>
+      <button type="button" class="hv-footer-pill pwa-install" id="pwaInstallFooter" hidden onclick="pwaInstallClick()">Instalar app</button>
     </div>
     <div class="hv-footer-links" id="officialLinksZone" style="display:none">
       <div class="hv-footer-links-label">Fuentes y referencia</div>
@@ -11131,7 +11140,7 @@ function buildReadingPeriods() {
   return periods;
 }
 function _calCoverThumbHTML(p) {
-  const cls = p.ongoing ? 'dot-reading' : 'dot-read';
+  const cls = p.rday ? 'dot-rday' : p.ongoing ? 'dot-reading' : 'dot-read';
   const t = esc(p.title);
   return coverImgHTML('cal', p.cover, '', { adult: p.adult, cls, ttl: p.title, imgClass: 'cal-cover-thumb ' + cls }).replace(/^<img /, `<img title="${t}" `);
 }
@@ -11345,8 +11354,11 @@ function renderReadingCalendar() {
     if (rbooks.length) monthDiaryDays++;
     const isToday = dateStr === todayISO;
     const isSelected = dateStr === calSelectedDay;
-    const covers = active.slice(0, 3).map(p => _calCoverThumbHTML(p)).join('');
-    const more = active.length > 3 ? `<span class="cal-day-more">+${active.length - 3}</span>` : '';
+    // Portadas del día: primero las historias con día de lectura registrado, luego las terminadas (sin repetir)
+    const thumbs = rbooks.map(b => ({ bookId: b.id, title: b.titulo, cover: b.imagen, adult: b.adult, rday: true }));
+    active.forEach(p => { if (!thumbs.some(t => t.bookId === p.bookId)) thumbs.push(p); });
+    const covers = thumbs.slice(0, 3).map(p => _calCoverThumbHTML(p)).join('');
+    const more = thumbs.length > 3 ? `<span class="cal-day-more">+${thumbs.length - 3}</span>` : '';
     const clickable = active.length > 0 || rbooks.length > 0;
     const parts = [];
     if (rbooks.length) parts.push(calPlural(rbooks.length, 'historia con día de lectura registrado', 'historias con día de lectura registrado'));
@@ -11773,10 +11785,6 @@ document.addEventListener('keydown', function(e) {
 <div class="pwa-bar pwa-bar--off" id="pwaOffline" role="status" hidden>
   <span>Sin conexión. Puedes seguir explorando la última copia del catálogo; votar, tu estantería, el calendario y los días de lectura necesitan conexión.</span>
 </div>
-<div class="pwa-bar" id="pwaInstallHelp" role="status" hidden>
-  <span id="pwaInstallHelpTxt"></span>
-  <button type="button" class="pwa-later" id="pwaInstallHelpOk">Entendido</button>
-</div>
 <div class="pwa-bar" id="pwaUpdate" role="status" hidden>
   <span>Hay una versión nueva de GL PANELS.</span>
   <button type="button" id="pwaUpdateBtn">Actualizar</button>
@@ -11789,29 +11797,63 @@ document.addEventListener('keydown', function(e) {
   function syncOnline() { if (off) off.hidden = navigator.onLine !== false; }
   window.addEventListener('online', syncOnline); window.addEventListener('offline', syncOnline); syncOnline();
 
-  // Botón «Instalar la app» de la cabecera (a la izquierda de Entrar / perfil). Visible siempre que la app no esté ya instalada:
-  // con beforeinstallprompt (Chrome / Edge / Samsung Internet) abre el aviso del navegador; si no, muestra los pasos manuales.
-  var btn = document.getElementById('pwaInstallBtn'), help = document.getElementById('pwaInstallHelp'), deferred = null;
-  var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
-  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (btn && !standalone) {
-    btn.hidden = false;
-    window.addEventListener('beforeinstallprompt', function (ev) { ev.preventDefault(); deferred = ev; });
-    window.addEventListener('appinstalled', function () { deferred = null; btn.hidden = true; if (help) help.hidden = true; });
-    btn.addEventListener('click', function () {
-      if (deferred) {
-        var d = deferred; deferred = null;
-        d.prompt();
-        d.userChoice.then(function (c) { if (c && c.outcome === 'accepted') btn.hidden = true; }).catch(function () {});
-      } else if (help) {
-        document.getElementById('pwaInstallHelpTxt').textContent = isIOS
-          ? 'En Safari: pulsa Compartir y después «Añadir a pantalla de inicio».'
-          : 'Abre el menú del navegador (⋮ o ≡) y elige «Instalar aplicación» o «Añadir página a» → «Pantalla de inicio». Si no aparece, recarga la página con conexión y vuelve a intentarlo.';
-        help.hidden = false;
-      }
-    });
-    if (help) document.getElementById('pwaInstallHelpOk').addEventListener('click', function () { help.hidden = true; });
+  // «Instalar app» (mismo criterio que La Estantería): entrada en el pie y en Comunidad/«Más». Solo se muestra si hay una vía real:
+  // aviso nativo (beforeinstallprompt) o pasos válidos para ese navegador. Nunca afirma «instalada» hasta recibir appinstalled.
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/i.test(ua), isHuawei = /HuaweiBrowser/i.test(ua);
+  var isSafariDesktop = !isIOS && !isAndroid && /Macintosh/.test(ua) && /Safari\//.test(ua) && !/Chrome|Chromium|Edg|OPR|Firefox/.test(ua);
+  function mm(q) { try { return window.matchMedia(q).matches; } catch (e) { return false; } }
+  var standalone = mm('(display-mode: standalone)') || mm('(display-mode: fullscreen)') || mm('(display-mode: minimal-ui)') ||
+                   navigator.standalone === true || /^android-app:\/\//.test(document.referrer || '');
+  var deferred = null, accepted = false;
+  var CONTENT = {
+    ios: { tag: 'iPhone · iPad', lead: 'En iOS se instala desde el menú Compartir del navegador:',
+      steps: ['Pulsa el botón <strong>Compartir</strong> (el cuadrado con una flecha hacia arriba).', 'Desliza y elige <strong>«Añadir a pantalla de inicio»</strong>.', 'Confirma con <strong>«Añadir»</strong>.'],
+      note: 'Si no ves esa opción, abre esta web en Safari y repite los pasos.' },
+    huawei: { tag: 'Huawei Browser', lead: 'Desde el menú de Huawei Browser:',
+      steps: ['Abre el <strong>menú</strong> del navegador (botón de tres líneas o puntos).', 'Busca <strong>«Añadir a pantalla de inicio»</strong> (en algunas versiones está dentro de «Añadir a» o «Herramientas»).', 'Confirma el nombre y pulsa <strong>«Añadir»</strong>.'],
+      note: 'Si tienes Chrome en el móvil, también puedes abrir la web allí y usar ⋮ → «Instalar aplicación».' },
+    android: { tag: 'Android', lead: 'Desde el menú de tu navegador:',
+      steps: ['Abre el <strong>menú</strong> (⋮ en Chrome, ☰ en Samsung Internet).', 'Elige <strong>«Instalar aplicación»</strong>. Si solo aparece <strong>«Añadir a pantalla de inicio»</strong> (o «Añadir página a»), usa esa: crea un acceso directo a la web.', 'Confirma con <strong>«Instalar»</strong> o <strong>«Añadir»</strong>.'],
+      note: 'Si tu navegador no ofrece ninguna de las dos, prueba a abrir la web en Chrome.' },
+    safari: { tag: 'Safari · Mac', lead: 'En Safari 17 o posterior:',
+      steps: ['En la barra de menús, abre <strong>Archivo</strong>.', 'Elige <strong>«Añadir al Dock…»</strong>.', 'Confirma con <strong>«Añadir»</strong>.'], note: '' }
+  };
+  function currentMode() {
+    if (standalone || accepted) return null;
+    if (deferred) return 'prompt';
+    if (isIOS) return 'ios';
+    if (isHuawei) return 'huawei';
+    if (isAndroid) return 'android';
+    if (isSafariDesktop) return 'safari';
+    return null;   // sin vía de instalación conocida: no se muestra nada
   }
+  function refreshInstall() {
+    var show = currentMode() !== null;
+    ['pwaInstallFooter', 'pwaInstallMoreGroup', 'pwaInstallMore'].forEach(function (id) { var el = document.getElementById(id); if (el) el.hidden = !show; });
+  }
+  window.pwaInstallClick = function () {
+    if (deferred) {
+      var d = deferred; deferred = null;
+      d.prompt();
+      d.userChoice.then(function (c) { if (c && c.outcome === 'accepted') accepted = true; refreshInstall(); }).catch(refreshInstall);
+      return;
+    }
+    var c = CONTENT[currentMode()]; if (!c) return;
+    // Reutiliza la ventana de «Sobre nosotras / Privacidad»
+    var bg = document.getElementById('infoModalBg'), box = document.getElementById('infoModalContent');
+    if (!bg || !box) return;
+    box.innerHTML = '<div style="margin-bottom:1.25rem"><div style="font-size:9.5px;font-weight:700;color:var(--neon);letter-spacing:.15em;margin-bottom:6px">' + c.tag + '</div>' +
+      '<h2 style="font-family:Bebas Neue,sans-serif;font-size:1.9rem;letter-spacing:3px;color:var(--ink);line-height:1;margin:0">Instalar app</h2>' +
+      '<div style="height:1.5px;background:linear-gradient(90deg,var(--neon),transparent);margin-top:10px;border-radius:2px;opacity:.7"></div></div>' +
+      '<p class="pwa-lead">' + c.lead + '</p><ol class="pwa-steps">' + c.steps.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol>' +
+      (c.note ? '<p class="pwa-note">' + c.note + '</p>' : '');
+    bg.style.display = 'flex';
+  };
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; refreshInstall(); });
+  window.addEventListener('appinstalled', function () { deferred = null; accepted = true; refreshInstall(); if (typeof closeInfoModal === 'function') closeInfoModal(); });
+  refreshInstall();
 
   // Service worker: solo en https o localhost. Ruta relativa → queda en la carpeta de esta versión.
   if (!('serviceWorker' in navigator)) return;
